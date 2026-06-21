@@ -2,6 +2,8 @@
 
 This wiki covers everything you need to build, test, and ship Cockpit plugins using `@rxtx4816/cockpit-plugin-base-react`.
 
+**[API Reference](https://rxtx4816.github.io/cockpit-plugin-base-react/)** — auto-generated TypeDoc, updated on every release.
+
 ## Contents
 
 - [Getting Started](Getting-Started.md) — install, bootstrap, and first plugin setup

@@ -73,6 +73,8 @@ For full setup guidance, config sharing, and workflow integration see the [wiki]
 
 ## Documentation
 
+**[API Reference](https://rxtx4816.github.io/cockpit-plugin-base-react/)** — auto-generated from source, updated on every release.
+
 - [Getting Started](docs/wiki/Getting-Started.md)
 - [Hooks](docs/wiki/Hooks.md)
 - [Components](docs/wiki/Components.md)

@@ -24,6 +24,10 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
+      - name: Set version from release tag
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          npm pkg set version="${VERSION#v}"
       - run: npm run docs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
