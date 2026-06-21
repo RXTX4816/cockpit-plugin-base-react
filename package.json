@@ -11,7 +11,8 @@
     "url": "https://github.com/RXTX4816/cockpit-plugin-base-react.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   },
   "types": "./src/cockpit.d.ts",
   "exports": {

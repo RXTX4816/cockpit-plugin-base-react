@@ -50,8 +50,6 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@rxtx4816"
 
       - name: Get version from tag
         run: |
@@ -60,8 +58,6 @@ jobs:
           echo "VERSION_CLEAN=${VERSION#v}" >> "$GITHUB_ENV"
 
       - run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set version in package.json
         run: npm pkg set version="${VERSION_CLEAN}"

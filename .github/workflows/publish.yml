@@ -1,4 +1,4 @@
-name: Publish to GitHub Packages (manual)
+name: Publish to npm (manual)
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
 
 permissions:
   contents: read
-  packages: write
+  id-token: write  # required for npm provenance (trusted publisher)
 
 jobs:
   publish:
@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
-          registry-url: "https://npm.pkg.github.com"
+          registry-url: "https://registry.npmjs.org"
           scope: "@rxtx4816"
 
       - run: npm ci
@@ -35,6 +35,4 @@ jobs:
           npm pkg set version="${VERSION#v}"
 
       - name: Publish
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --access public --provenance

@@ -15,10 +15,6 @@ on:
         description: "Arch Linux AUR package name"
         required: true
         type: string
-    secrets:
-      GITHUB_TOKEN:
-        required: false
-
 jobs:
   rpm:
     name: RPM
@@ -35,11 +31,7 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@rxtx4816"
       - run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run build
       - name: Build tarball
         run: |
@@ -78,11 +70,7 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@rxtx4816"
       - run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run build
       - name: Build tarball
         run: |
