@@ -1,6 +1,12 @@
 name: Semantic Release (reusable)
 
 on:
+  workflow_dispatch:
+    inputs:
+      initial_version:
+        description: Version to use when no prior tag exists
+        type: string
+        default: v1.0.0
   workflow_call:
     inputs:
       initial_version:
