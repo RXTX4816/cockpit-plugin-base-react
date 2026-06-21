@@ -12,17 +12,32 @@ import {
 } from "@patternfly/react-core";
 
 interface Props {
+  /** Log lines to display. Each string becomes one line in the pre block. */
   lines: string[];
+  /** When `true`, shows a spinner instead of the log content. */
   loading?: boolean;
+  /** If set, renders a danger alert at the top of the component. */
   error?: string | null;
+  /** When provided, adds a refresh button to the toolbar. */
   onRefresh?: () => void;
+  /** Placeholder text for the search input. Defaults to `"Search logs…"`. */
   searchPlaceholder?: string;
+  /** Message shown when `lines` is empty. Defaults to `"No log entries."`. */
   emptyMessage?: string;
+  /** Message shown when the search filter matches nothing. Defaults to `"No matching entries."`. */
   noMatchesMessage?: string;
+  /** Title of the danger alert when `error` is set. Defaults to `"Failed to load logs"`. */
   errorTitle?: string;
+  /** `aria-label` for the refresh button. Defaults to `"Refresh"`. */
   refreshAriaLabel?: string;
 }
 
+/**
+ * A scrollable, searchable log viewer with a toolbar.
+ *
+ * Pass `lines` from `useAsyncStream` or any string array. The search
+ * input filters lines client-side; `onRefresh` adds a refresh button.
+ */
 export function LogViewer({
   lines,
   loading = false,

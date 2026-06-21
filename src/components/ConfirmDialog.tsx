@@ -9,18 +9,33 @@ import {
 import type { ReactNode } from "react";
 
 interface Props {
+  /** Controls modal visibility. */
   isOpen: boolean;
+  /** Modal heading text. */
   title: string;
+  /** Optional body content rendered above the inline error alert. */
   body?: ReactNode;
+  /** Label for the primary confirm button. */
   confirmLabel: string;
+  /** Label for the cancel button. Defaults to `"Cancel"`. */
   cancelLabel?: string;
+  /** Button variant — use `"danger"` for destructive actions. Defaults to `"primary"`. */
   variant?: "primary" | "danger";
+  /** When `true`, the confirm button shows a spinner and both buttons are disabled. */
   loading?: boolean;
+  /** If set, renders an inline danger alert above the footer buttons. */
   error?: string | null;
+  /** Called when the user clicks the confirm button. */
   onConfirm: () => void;
+  /** Called when the user clicks cancel or closes the modal. */
   onClose: () => void;
 }
 
+/**
+ * A PatternFly `Modal` wired up for a single confirm/cancel action.
+ *
+ * Pair with `useConfirmAction` to manage the open/close and loading state.
+ */
 export function ConfirmDialog({
   isOpen,
   title,

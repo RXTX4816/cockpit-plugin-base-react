@@ -1,16 +1,31 @@
 import { useState, useCallback, useEffect } from "react";
 import { useAutoRefresh } from "./useAutoRefresh";
 
+/**
+ * Result returned by {@link usePollingFetch}.
+ */
 export interface PollingFetchResult<T> {
+  /** Most recently fetched value, or `initial` before the first fetch completes. */
   data: T;
+  /** `true` only during the initial fetch — background polls update silently. */
   loading: boolean;
+  /** Error message from the most recent failed fetch, or `null`. */
   error: string | null;
+  /** Manually triggers a fetch; runs silently (no `loading` flash). */
   refresh: () => Promise<void>;
 }
 
 /**
- * Initial fetch shows loading=true; subsequent background polls update silently.
- * Calling refresh() manually also runs silently (no loading flash).
+ * Fetches data on mount and then polls at a fixed interval.
+ *
+ * The initial load sets `loading = true`; subsequent background polls and manual
+ * `refresh()` calls update `data` silently without a loading flash.
+ *
+ * @param fetcher - Async function that returns the data. Wrap in `useCallback` to
+ *   avoid restarting the interval on every render.
+ * @param initial - Value used for `data` before the first fetch resolves.
+ * @param intervalMs - Polling interval in milliseconds.
+ * @param paused - When `true`, pauses background polling (does not cancel an in-flight request).
  */
 export function usePollingFetch<T>(
   fetcher: () => Promise<T>,

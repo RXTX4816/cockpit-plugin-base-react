@@ -1,0 +1,20 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/index.ts",
+    "src/components/index.ts",
+    "src/systemd/index.ts",
+    "src/testing/helpers.ts"
+  ],
+  "entryPointStrategy": "resolve",
+  "out": "docs/api",
+  "name": "cockpit-plugin-base-react",
+  "readme": "README.md",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "navigationLinks": {
+    "GitHub": "https://github.com/RXTX4816/cockpit-plugin-base-react",
+    "Wiki": "https://github.com/RXTX4816/cockpit-plugin-base-react/wiki"
+  }
+}

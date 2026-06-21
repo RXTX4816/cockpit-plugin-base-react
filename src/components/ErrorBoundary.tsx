@@ -3,6 +3,7 @@ import { EmptyState, EmptyStateBody } from "@patternfly/react-core";
 
 interface Props {
   children: ReactNode;
+  /** Heading shown in the PatternFly EmptyState fallback. Defaults to `"Something went wrong"`. */
   fallbackTitle?: string;
 }
 
@@ -10,6 +11,10 @@ interface State {
   error: Error | null;
 }
 
+/**
+ * React error boundary that catches unhandled render errors and displays a
+ * PatternFly `EmptyState` fallback instead of a blank page.
+ */
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { error: null };
 

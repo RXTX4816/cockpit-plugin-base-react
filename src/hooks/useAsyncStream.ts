@@ -1,23 +1,34 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
+/**
+ * Accumulated result of a streaming Cockpit process.
+ */
 export interface AsyncStreamResult {
+  /** All output lines received so far, with blank lines and CR stripped. */
   lines: string[];
+  /** `true` once the process exits (success or failure). */
   done: boolean;
+  /** `true` when the process exited with an error. */
   failed: boolean;
+  /** Error message when `failed` is `true`, otherwise empty string. */
   errorMsg: string;
+  /** Closes the underlying process and stops accumulating output. */
   cancel: () => void;
 }
 
 /**
- * Generic hook for accumulating line-buffered output from a CockpitProcess.
+ * Accumulates line-buffered output from a Cockpit process into a `lines` array.
  *
  * The caller supplies a `startProcess` factory that receives a `launch` callback.
  * Call `launch(proc)` synchronously once the process is ready — this avoids the
- * JS Promise "following" behaviour that occurs when a CockpitProcess (which extends
- * Promise) is returned from inside a .then().
+ * JS Promise "following" behaviour that occurs when a `CockpitProcess` (which extends
+ * `Promise`) is returned from inside a `.then()`.
  *
- * The `deps` array works like useEffect deps — the hook tears down and restarts
+ * The `deps` array works like `useEffect` deps — the hook tears down and restarts
  * the process whenever any dep changes.
+ *
+ * @param startProcess - Factory that receives a `launch` callback and must call it with the process.
+ * @param deps - Re-run dependencies (same semantics as `useEffect`).
  */
 export function useAsyncStream(
   startProcess: (launch: (proc: CockpitProcess) => void) => Promise<void>,

@@ -1,5 +1,13 @@
 import { useState, useCallback } from "react";
 
+/**
+ * Wraps an async function with `loading` and `error` state.
+ *
+ * @param action - The async function to execute. A new stable reference should be
+ *   passed via `useCallback` to avoid unnecessary re-renders.
+ * @returns An object with `execute` (calls the action), `loading`, `error`, and
+ *   `clearError` (resets the error state).
+ */
 export function useAsyncAction<T>(
   action: () => Promise<T>,
 ): {

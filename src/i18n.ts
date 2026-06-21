@@ -1,6 +1,10 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
+/**
+ * i18next `resources` map keyed by locale (e.g. `"en"`, `"de"`), each with a
+ * `translation` namespace object. Pass this to {@link initCockpitI18n}.
+ */
 export type LocaleResources = Record<string, { translation: Record<string, unknown> }>;
 
 // Reads Cockpit's language setting in priority order:
@@ -25,6 +29,14 @@ const cockpitDetector = {
   },
 };
 
+/**
+ * Initialises i18next with Cockpit's active locale and sets up a live observer
+ * so the UI re-translates when the user switches language in Cockpit settings.
+ *
+ * Call once at plugin startup, before {@link bootstrapPlugin}.
+ *
+ * @param resources - Translation resources keyed by locale. See {@link LocaleResources}.
+ */
 export function initCockpitI18n(resources: LocaleResources): void {
   void i18n
     .use({ type: "languageDetector", ...cockpitDetector } as Parameters<typeof i18n.use>[0])

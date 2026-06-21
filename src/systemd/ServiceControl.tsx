@@ -7,12 +7,22 @@ import type { ServiceStatus } from "./types";
 
 type PendingAction = "start" | "stop" | "restart" | "reload";
 
+/**
+ * Overrides for all user-visible strings in {@link ServiceControl}.
+ * Every field is optional — unset fields fall back to English defaults.
+ */
 export interface ServiceControlLabels {
+  /** Start button label. */
   start?: string;
+  /** Stop button label. */
   stop?: string;
+  /** Restart button label. */
   restart?: string;
+  /** Reload button label. */
   reload?: string;
+  /** Cancel button label in the confirmation dialog. */
   cancel?: string;
+  /** Confirm button label in the confirmation dialog. */
   confirmAction?: string;
   confirmStartTitle?: string;
   confirmStartBody?: string;
@@ -42,14 +52,28 @@ const DEFAULTS: Required<ServiceControlLabels> = {
 };
 
 interface Props {
+  /** The systemd unit name (e.g. `"nginx.service"`). */
   unit: string;
+  /** Current unit status — drives which buttons are enabled. */
   status: ServiceStatus;
+  /** When `true`, shows a spinner in place of the status badge. */
   loading?: boolean;
+  /** Called after a successful action so the parent can re-poll status. */
   onRefresh?: () => void;
+  /** Optional status badge rendered to the left of the action buttons. */
   statusBadge?: ReactNode;
+  /** Override any user-visible string. See {@link ServiceControlLabels}. */
   labels?: ServiceControlLabels;
 }
 
+/**
+ * A row of Start / Stop / Restart / Reload buttons for a systemd unit.
+ *
+ * Each action opens a `ConfirmDialog` before executing. Errors are shown
+ * both inline in the dialog and via the nearest `ToastProvider`.
+ *
+ * Pair with `useServiceStatus` for reactive status updates.
+ */
 export function ServiceControl({ unit, status, loading = false, onRefresh, statusBadge, labels }: Props) {
   const toast = useToast();
   const l = { ...DEFAULTS, ...labels };

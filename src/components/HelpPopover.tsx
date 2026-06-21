@@ -3,11 +3,17 @@ import { Popover, Button } from "@patternfly/react-core";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 
 interface Props {
+  /** Popover heading text. */
   header: string;
+  /** Popover body text. */
   body: string;
+  /** `aria-label` for the trigger button. Defaults to `header`. */
   "aria-label"?: string;
 }
 
+/**
+ * A question-mark icon button that opens a PatternFly `Popover` with help text.
+ */
 export function HelpPopover({ header, body, "aria-label": ariaLabel }: Props) {
   const [visible, setVisible] = useState(false);
   return (

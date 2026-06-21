@@ -1,3 +1,4 @@
 node_modules/
 .vms/
 *.log
+docs/api/
