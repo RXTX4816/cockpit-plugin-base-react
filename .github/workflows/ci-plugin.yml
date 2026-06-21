@@ -1,0 +1,47 @@
+name: CI (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      plugin-name:
+        description: "Plugin name (e.g. cockpit-caddy)"
+        required: true
+        type: string
+
+jobs:
+  quality-checks:
+    name: Lint, Typecheck, Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Checkout cockpit-plugin-base-react (file: dependency)
+        uses: actions/checkout@v7
+        with:
+          repository: RXTX4816/cockpit-plugin-base-react
+          path: ../cockpit-plugin-base-react
+          token: ${{ github.token }}
+
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@rxtx4816"
+
+      - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: npm run lint
+
+      - run: npm run typecheck
+
+      - run: npm run test
+
+      - run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -f src/main.js || (echo "main.js missing" && exit 1)
+          test -f src/main.css || (echo "main.css missing" && exit 1)

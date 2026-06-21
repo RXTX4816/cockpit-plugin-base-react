@@ -1,0 +1,20 @@
+.cpb-toast-group {
+  position: fixed !important;
+  bottom: 4rem !important;
+  right: 1.5rem !important;
+  top: auto !important;
+  z-index: 9999;
+  max-width: 480px;
+  pointer-events: none;
+}
+
+.cpb-toast-group .pf-v6-c-alert {
+  pointer-events: all;
+  animation: cpb-toast-in 200ms ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes cpb-toast-in {
+  from { transform: translateX(2rem); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}

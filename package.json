@@ -1,0 +1,115 @@
+{
+  "name": "@rxtx4816/cockpit-plugin-base-react",
+  "version": "1.0.0",
+  "description": "Shared infrastructure for Cockpit plugins: i18n, dark theme, test setup, config presets, CI/CD workflows, and QEMU VM harness",
+  "type": "module",
+  "author": "RXTX4816",
+  "license": "MIT",
+  "homepage": "https://github.com/RXTX4816/cockpit-plugin-base-react",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RXTX4816/cockpit-plugin-base-react.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "types": "./src/cockpit.d.ts",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./dark-theme": {
+      "default": "./src/dark-theme.ts"
+    },
+    "./i18n": {
+      "default": "./src/i18n.ts"
+    },
+    "./bootstrap": {
+      "default": "./src/bootstrap.tsx"
+    },
+    "./hooks/useAsyncAction": {
+      "default": "./src/hooks/useAsyncAction.ts"
+    },
+    "./hooks/useAutoRefresh": {
+      "default": "./src/hooks/useAutoRefresh.ts"
+    },
+    "./hooks/useAsyncStream": {
+      "default": "./src/hooks/useAsyncStream.ts"
+    },
+    "./hooks/useConfirmAction": {
+      "default": "./src/hooks/useConfirmAction.ts"
+    },
+    "./hooks/usePollingFetch": {
+      "default": "./src/hooks/usePollingFetch.ts"
+    },
+    "./components": {
+      "default": "./src/components/index.ts"
+    },
+    "./systemd": {
+      "default": "./src/systemd/index.ts"
+    },
+    "./testing": {
+      "default": "./src/testing/setup.ts"
+    },
+    "./testing/helpers": {
+      "default": "./src/testing/helpers.ts"
+    },
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./eslint.config.base": {
+      "default": "./eslint.config.base.js"
+    },
+    "./vitest.config.base": {
+      "default": "./vitest.config.base.ts"
+    }
+  },
+  "files": [
+    "src/",
+    "scripts/",
+    "tsconfig.base.json",
+    "eslint.config.base.js",
+    "vitest.config.base.ts"
+  ],
+  "bin": {
+    "cockpit-test-vm": "./scripts/test-vm.sh"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "i18next": ">=26",
+    "react": ">=19",
+    "react-dom": ">=19",
+    "react-i18next": ">=17"
+  },
+  "devDependencies": {
+    "@patternfly/react-core": "^6.5.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.61.1",
+    "@typescript-eslint/parser": "^8.61.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "i18next": "^26.3.1",
+    "jsdom": "^29.1.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-i18next": "^17.0.8",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "cockpit",
+    "plugin",
+    "base",
+    "shared",
+    "infrastructure"
+  ]
+}

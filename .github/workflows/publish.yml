@@ -1,0 +1,40 @@
+name: Publish to GitHub Packages (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version tag to publish (e.g. v1.0.0)"
+        required: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Publish @rxtx4816/cockpit-plugin-base-react
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@rxtx4816"
+
+      - run: npm ci
+
+      - name: Set version from tag
+        run: |
+          VERSION="${{ github.event.inputs.tag }}"
+          npm pkg set version="${VERSION#v}"
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,106 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    name: Typecheck, Version & Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@rxtx4816"
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - name: Determine next version
+        id: version
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "NONE")
+          echo "Last tag: $LAST_TAG"
+
+          if [ "$LAST_TAG" = "NONE" ]; then
+            NEXT_VERSION="v0.1.0"
+            CHANGE_TYPE="initial"
+            echo "No prior tag — using initial version $NEXT_VERSION"
+          else
+            COMMITS=$(git log "${LAST_TAG}..HEAD" --format='%s')
+
+            if [ -z "$COMMITS" ]; then
+              echo "No commits since last tag — nothing to release."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            echo "Commits since $LAST_TAG:"
+            echo "$COMMITS"
+
+            MAJOR=$(echo "$LAST_TAG" | cut -d. -f1 | sed 's/v//')
+            MINOR=$(echo "$LAST_TAG" | cut -d. -f2)
+            PATCH=$(echo "$LAST_TAG" | cut -d. -f3 | cut -d- -f1)
+
+            if echo "$COMMITS" | grep -qi "BREAKING CHANGE"; then
+              NEXT_VERSION="v$((MAJOR + 1)).0.0"
+              CHANGE_TYPE="major"
+            elif echo "$COMMITS" | grep -qi "^feat"; then
+              NEXT_VERSION="v${MAJOR}.$((MINOR + 1)).0"
+              CHANGE_TYPE="minor"
+            else
+              NEXT_VERSION="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+              CHANGE_TYPE="patch"
+            fi
+          fi
+
+          echo "Next version: $NEXT_VERSION ($CHANGE_TYPE bump)"
+          echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: Create git tag
+        if: steps.version.outputs.skip != 'true'
+        env:
+          NEXT_VERSION: ${{ steps.version.outputs.next_version }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          SHA=$(git rev-parse HEAD)
+          gh api repos/${{ github.repository }}/git/refs \
+            --method POST \
+            -f ref="refs/tags/${NEXT_VERSION}" \
+            -f sha="${SHA}"
+          echo "Created tag $NEXT_VERSION"
+
+      - name: Set package.json version and publish
+        if: steps.version.outputs.skip != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEXT_VERSION: ${{ steps.version.outputs.next_version }}
+        run: |
+          npm pkg set version="${NEXT_VERSION#v}"
+          npm publish
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          NEXT_VERSION: ${{ steps.version.outputs.next_version }}
+        run: |
+          gh release create "$NEXT_VERSION" \
+            --title "cockpit-plugin-base-react $NEXT_VERSION" \
+            --generate-notes
