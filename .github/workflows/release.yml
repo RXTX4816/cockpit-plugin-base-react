@@ -36,7 +36,7 @@ jobs:
           echo "Last tag: $LAST_TAG"
 
           if [ "$LAST_TAG" = "NONE" ]; then
-            NEXT_VERSION="v0.1.0"
+            NEXT_VERSION="v1.0.0"
             CHANGE_TYPE="initial"
             echo "No prior tag — using initial version $NEXT_VERSION"
           else
@@ -90,6 +90,7 @@ jobs:
         if: steps.version.outputs.skip != 'true'
         env:
           NEXT_VERSION: ${{ steps.version.outputs.next_version }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm pkg set version="${NEXT_VERSION#v}"
           npm publish --access public --provenance
