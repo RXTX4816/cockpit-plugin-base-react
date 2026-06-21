@@ -1,6 +1,6 @@
 {
   "name": "@rxtx4816/cockpit-plugin-base-react",
-  "version": "1.2.1",
+  "version": "dev-local",
   "description": "Shared infrastructure for Cockpit plugins: i18n, dark theme, test setup, config presets, CI/CD workflows, and QEMU VM harness",
   "type": "module",
   "author": "RXTX4816",
