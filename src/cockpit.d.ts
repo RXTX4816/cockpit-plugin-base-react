@@ -1,5 +1,6 @@
 // Ambient type declarations for the Cockpit browser global.
 // Superset covering cockpit-caddy and cockpit-compose usage patterns.
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./css.d.ts" />
 
 declare interface CockpitProcess extends Promise<string> {

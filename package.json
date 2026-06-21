@@ -74,6 +74,7 @@
     "cockpit-test-vm": "./scripts/test-vm.sh"
   },
   "scripts": {
+    "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
