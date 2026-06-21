@@ -64,6 +64,7 @@
     }
   },
   "files": [
+    "LICENSE",
     "src/",
     "scripts/",
     "tsconfig.base.json",
