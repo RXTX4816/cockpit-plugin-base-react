@@ -10,3 +10,4 @@ export type { ConfirmStep, ConfirmActionState } from "./hooks/useConfirmAction";
 export { usePollingFetch } from "./hooks/usePollingFetch";
 export type { PollingFetchResult } from "./hooks/usePollingFetch";
 export { useLayout } from "./hooks/useLayout";
+export { useAdminMode } from "./hooks/useAdminMode";

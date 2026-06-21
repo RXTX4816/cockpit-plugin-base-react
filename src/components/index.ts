@@ -10,3 +10,4 @@ export { PluginFooter } from "./PluginFooter";
 export { CollapsibleSearch } from "./CollapsibleSearch";
 export { LayoutSelector } from "./LayoutSelector";
 export type { LayoutOption } from "./LayoutSelector";
+export { Tooltip } from "./Tooltip";

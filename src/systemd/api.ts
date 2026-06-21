@@ -59,3 +59,32 @@ export async function restartService(unit: string): Promise<void> {
 export async function reloadService(unit: string): Promise<void> {
   await cockpit.spawn(["systemctl", "reload", unit], { superuser: "try" });
 }
+
+/**
+ * Reads a file from the host filesystem via Cockpit, requesting superuser escalation.
+ * @param path - Absolute path to the file.
+ */
+export async function readFile(path: string): Promise<string> {
+  return cockpit.file(path, { superuser: "try" }).read();
+}
+
+/**
+ * Writes content to a file on the host filesystem via Cockpit, requesting superuser escalation.
+ * @param path    - Absolute path to the file.
+ * @param content - UTF-8 string content to write.
+ */
+export async function writeFile(path: string, content: string): Promise<void> {
+  await cockpit.file(path, { superuser: "try" }).replace(content);
+}
+
+/**
+ * Fetches recent journal entries for a systemd unit via `journalctl`.
+ * @param unit  - The systemd unit name (e.g. `"caddy.service"`).
+ * @param lines - Number of lines to return (default 300).
+ */
+export async function fetchServiceLogs(unit: string, lines = 300): Promise<string> {
+  return cockpit.spawn(
+    ["journalctl", "-u", unit, "-n", String(lines), "--no-pager", "--output=short-iso"],
+    { superuser: "try" },
+  );
+}

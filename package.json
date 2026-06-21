@@ -1,6 +1,6 @@
 {
   "name": "@rxtx4816/cockpit-plugin-base-react",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "description": "Shared infrastructure for Cockpit plugins: i18n, dark theme, test setup, config presets, CI/CD workflows, and QEMU VM harness",
   "type": "module",
   "author": "RXTX4816",
@@ -43,6 +43,9 @@
     "./hooks/usePollingFetch": {
       "default": "./src/hooks/usePollingFetch.ts"
     },
+    "./hooks/useAdminMode": {
+      "default": "./src/hooks/useAdminMode.ts"
+    },
     "./components": {
       "default": "./src/components/index.ts"
     },
@@ -61,6 +64,9 @@
     },
     "./vitest.config.base": {
       "default": "./vitest.config.base.js"
+    },
+    "./lib/logParser": {
+      "default": "./src/lib/logParser.tsx"
     }
   },
   "files": [
@@ -91,17 +97,19 @@
     "react-dom": ">=19",
     "react-i18next": ">=17"
   },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.61.1",
+    "@typescript-eslint/parser": "^8.61.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1"
+  },
   "devDependencies": {
     "@patternfly/react-core": "^6.5.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.61.1",
-    "@typescript-eslint/parser": "^8.61.1",
     "eslint": "^9.39.4",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
     "i18next": "^26.3.1",
     "jsdom": "^29.1.1",
     "react": "^19.2.7",

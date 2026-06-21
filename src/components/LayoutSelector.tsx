@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, type ReactNode } from "react";
-import { Button, Tooltip, ToggleGroup, ToggleGroupItem } from "@patternfly/react-core";
+import { Button, ToggleGroup, ToggleGroupItem } from "@patternfly/react-core";
+import { Tooltip } from "./Tooltip";
 import { SlidersHIcon } from "@patternfly/react-icons";
 import "./LayoutSelector.css";
 
