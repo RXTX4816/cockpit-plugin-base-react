@@ -2,6 +2,11 @@ name: Semantic Release (reusable)
 
 on:
   workflow_call:
+    inputs:
+      initial_version:
+        description: Version to use when no prior tag exists
+        type: string
+        default: v1.0.0
     secrets:
       RELEASE_TOKEN:
         required: true
@@ -31,7 +36,7 @@ jobs:
           echo "Last tag: $LAST_TAG"
 
           if [ "$LAST_TAG" = "NONE" ]; then
-            NEXT_VERSION="v1.0.0"
+            NEXT_VERSION="${{ inputs.initial_version }}"
             CHANGE_TYPE="initial"
             echo "No prior tag — using initial version $NEXT_VERSION"
           else
