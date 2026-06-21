@@ -39,8 +39,16 @@ declare interface CockpitUser {
   groups: string[];
 }
 
+declare interface CockpitPermission {
+  allowed: boolean | null;
+  addEventListener(event: "changed", callback: () => void): void;
+  removeEventListener(event: "changed", callback: () => void): void;
+  close(): void;
+}
+
 declare const cockpit: {
   user(): Promise<CockpitUser>;
+  permission(options: { admin: boolean }): CockpitPermission;
   spawn(
     args: string[],
     options?: { superuser?: "try" | "require"; err?: string; environ?: string[] }

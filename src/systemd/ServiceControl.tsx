@@ -32,6 +32,10 @@ export interface ServiceControlLabels {
   confirmRestartBody?: string;
   confirmReloadTitle?: string;
   confirmReloadBody?: string;
+  successStart?: string;
+  successStop?: string;
+  successRestart?: string;
+  successReload?: string;
 }
 
 const DEFAULTS: Required<ServiceControlLabels> = {
@@ -49,6 +53,10 @@ const DEFAULTS: Required<ServiceControlLabels> = {
   confirmRestartBody: "The service will be restarted.",
   confirmReloadTitle: "Reload service?",
   confirmReloadBody: "The service configuration will be reloaded.",
+  successStart: "Service started",
+  successStop: "Service stopped",
+  successRestart: "Service restarted",
+  successReload: "Configuration reloaded",
 };
 
 interface Props {
@@ -88,12 +96,20 @@ export function ServiceControl({ unit, status, loading = false, onRefresh, statu
     reload: () => reloadService(unit),
   };
 
+  const successLabel: Record<PendingAction, string> = {
+    start: l.successStart,
+    stop: l.successStop,
+    restart: l.successRestart,
+    reload: l.successReload,
+  };
+
   async function runAction() {
     if (!pendingAction) return;
     setBusy(true);
     setActionError(null);
     try {
       await ACTION_FN[pendingAction]();
+      toast.success(successLabel[pendingAction]);
       setPendingAction(null);
       onRefresh?.();
     } catch (e) {
@@ -112,6 +128,7 @@ export function ServiceControl({ unit, status, loading = false, onRefresh, statu
 
   const isRunning = status === "active";
   const notInstalled = status === "not-installed";
+  const isDisabledBase = busy || loading || notInstalled;
 
   const confirmTitle: Record<PendingAction, string> = {
     start: l.confirmStartTitle,
@@ -141,7 +158,7 @@ export function ServiceControl({ unit, status, loading = false, onRefresh, statu
           <Button
             variant="primary"
             size="sm"
-            isDisabled={busy || notInstalled || isRunning}
+            isDisabled={isDisabledBase || isRunning}
             onClick={() => openAction("start")}
           >
             {l.start}
@@ -151,7 +168,7 @@ export function ServiceControl({ unit, status, loading = false, onRefresh, statu
           <Button
             variant="secondary"
             size="sm"
-            isDisabled={busy || notInstalled || !isRunning}
+            isDisabled={isDisabledBase || !isRunning}
             onClick={() => openAction("stop")}
           >
             {l.stop}
@@ -161,7 +178,7 @@ export function ServiceControl({ unit, status, loading = false, onRefresh, statu
           <Button
             variant="secondary"
             size="sm"
-            isDisabled={busy || notInstalled || !isRunning}
+            isDisabled={isDisabledBase || !isRunning}
             onClick={() => openAction("restart")}
           >
             {l.restart}
@@ -171,7 +188,7 @@ export function ServiceControl({ unit, status, loading = false, onRefresh, statu
           <Button
             variant="plain"
             size="sm"
-            isDisabled={busy || notInstalled || !isRunning}
+            isDisabled={isDisabledBase || !isRunning}
             onClick={() => openAction("reload")}
           >
             {l.reload}
