@@ -38,6 +38,23 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
-          gh release create "${{ github.ref_name }}" \
-            --title "cockpit-plugin-base-react ${{ github.ref_name }}" \
-            --generate-notes
+          VERSION="${{ github.ref_name }}"
+          VERSION_CLEAN="${VERSION#v}"
+
+          CHANGELOG=$(gh api repos/${{ github.repository }}/releases/generate-notes \
+            -f tag_name="${VERSION}" \
+            --jq '.body' 2>/dev/null || echo "")
+
+          {
+            echo "## Install / Upgrade"
+            echo ""
+            printf '```bash\nnpm install @rxtx4816/cockpit-plugin-base-react@%s\n```\n' "${VERSION_CLEAN}"
+            echo ""
+            printf '```json\n"@rxtx4816/cockpit-plugin-base-react": "^%s"\n```\n' "${VERSION_CLEAN}"
+            echo ""
+            echo "${CHANGELOG}"
+          } > release-notes.md
+
+          gh release create "${VERSION}" \
+            --title "${VERSION}" \
+            --notes-file release-notes.md
