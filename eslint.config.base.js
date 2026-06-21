@@ -41,6 +41,7 @@ const BASE_GLOBALS = {
   requestAnimationFrame: "readonly",
   Node: "readonly",
   PointerEvent: "readonly",
+  MouseEvent: "readonly",
   cockpit: "readonly",
   CockpitProcess: "readonly",
   CockpitChannel: "readonly",

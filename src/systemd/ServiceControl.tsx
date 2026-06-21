@@ -72,6 +72,8 @@ interface Props {
   statusBadge?: ReactNode;
   /** Override any user-visible string. See {@link ServiceControlLabels}. */
   labels?: ServiceControlLabels;
+  /** Extra content rendered at the far right of the button row (e.g. Backup / Restore buttons). */
+  extraActions?: ReactNode;
 }
 
 /**
@@ -82,7 +84,7 @@ interface Props {
  *
  * Pair with `useServiceStatus` for reactive status updates.
  */
-export function ServiceControl({ unit, status, loading = false, onRefresh, statusBadge, labels }: Props) {
+export function ServiceControl({ unit, status, loading = false, onRefresh, statusBadge, labels, extraActions }: Props) {
   const toast = useToast();
   const l = { ...DEFAULTS, ...labels };
   const [busy, setBusy] = useState(false);
@@ -194,6 +196,11 @@ export function ServiceControl({ unit, status, loading = false, onRefresh, statu
             {l.reload}
           </Button>
         </FlexItem>
+        {extraActions && (
+          <FlexItem align={{ default: "alignRight" }}>
+            {extraActions}
+          </FlexItem>
+        )}
       </Flex>
 
       <ConfirmDialog

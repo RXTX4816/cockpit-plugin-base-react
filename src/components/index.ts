@@ -8,3 +8,5 @@ export { LogViewer } from "./LogViewer";
 export { HelpPopover } from "./HelpPopover";
 export { PluginFooter } from "./PluginFooter";
 export { CollapsibleSearch } from "./CollapsibleSearch";
+export { LayoutSelector } from "./LayoutSelector";
+export type { LayoutOption } from "./LayoutSelector";
