@@ -65,6 +65,8 @@
   },
   "files": [
     "LICENSE",
+    "README.md",
+    "docs/",
     "src/",
     "scripts/",
     "tsconfig.base.json",
