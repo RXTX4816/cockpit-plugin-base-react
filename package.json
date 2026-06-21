@@ -60,7 +60,7 @@
       "default": "./eslint.config.base.js"
     },
     "./vitest.config.base": {
-      "default": "./vitest.config.base.ts"
+      "default": "./vitest.config.base.js"
     }
   },
   "files": [
@@ -71,7 +71,7 @@
     "scripts/",
     "tsconfig.base.json",
     "eslint.config.base.js",
-    "vitest.config.base.ts"
+    "vitest.config.base.js"
   ],
   "bin": {
     "cockpit-test-vm": "./scripts/test-vm.sh"
