@@ -110,7 +110,7 @@ export function LogViewer({
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (filterValue !== undefined) setInternalSearch(filterValue);
+    setInternalSearch(filterValue ?? "");
   }, [filterValue]);
 
   const search = filterValue !== undefined ? filterValue : internalSearch;
