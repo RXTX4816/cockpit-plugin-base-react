@@ -81,6 +81,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "yalc": "yalc push",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch"
   },

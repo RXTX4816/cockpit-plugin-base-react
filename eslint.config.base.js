@@ -39,6 +39,8 @@ const BASE_GLOBALS = {
   HTMLPreElement: "readonly",
   HTMLTableSectionElement: "readonly",
   requestAnimationFrame: "readonly",
+  Node: "readonly",
+  PointerEvent: "readonly",
   cockpit: "readonly",
   CockpitProcess: "readonly",
   CockpitChannel: "readonly",

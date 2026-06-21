@@ -6,3 +6,5 @@ export type { StatusBadgeConfig } from "./StatusBadge";
 export { ConfirmDialog } from "./ConfirmDialog";
 export { LogViewer } from "./LogViewer";
 export { HelpPopover } from "./HelpPopover";
+export { PluginFooter } from "./PluginFooter";
+export { CollapsibleSearch } from "./CollapsibleSearch";
