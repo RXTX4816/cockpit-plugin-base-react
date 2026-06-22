@@ -58,6 +58,35 @@ export async function extractTarArchive(
   );
 }
 
+export async function listArchiveMembers(
+  archivePath: string,
+  options?: { superuser?: "require" | "try" },
+): Promise<string[]> {
+  let out = "";
+  const proc = cockpit.spawn(
+    ["tar", "-tzf", archivePath],
+    { superuser: options?.superuser, err: "message" },
+  );
+  proc.stream((d: string) => { out += d; });
+  await proc;
+  return out.trim().split("\n").filter(Boolean);
+}
+
+export async function readArchiveMember(
+  archivePath: string,
+  memberPath: string,
+  options?: { superuser?: "require" | "try" },
+): Promise<string> {
+  let out = "";
+  const proc = cockpit.spawn(
+    ["tar", "-xzOf", archivePath, memberPath],
+    { superuser: options?.superuser, err: "message" },
+  );
+  proc.stream((d: string) => { out += d; });
+  await proc;
+  return out;
+}
+
 export async function listTarArchives(
   dir: string,
   pattern: string,

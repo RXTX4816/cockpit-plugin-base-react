@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mockProcess } from "../testing/helpers";
-import { createTarArchive, extractTarArchive, listTarArchives } from "./tar";
+import { createTarArchive, extractTarArchive, listArchiveMembers, listTarArchives, readArchiveMember } from "./tar";
 
 const mockSpawn = vi.fn();
 vi.stubGlobal("cockpit", { spawn: mockSpawn });
@@ -90,6 +90,54 @@ describe("extractTarArchive", () => {
   it("propagates errors from cockpit.spawn", async () => {
     mockSpawn.mockRejectedValueOnce(new Error("permission denied"));
     await expect(extractTarArchive("/backup.tar.gz", "/dest")).rejects.toThrow("permission denied");
+  });
+});
+
+describe("listArchiveMembers", () => {
+  it("spawns tar -tzf on the archive path", async () => {
+    mockSpawn.mockReturnValue(mockProcess("myapp/\nmyapp/docker-compose.yml\n"));
+    await listArchiveMembers("/backups/myapp.tar.gz");
+    const args = mockSpawn.mock.calls[0][0] as string[];
+    expect(args).toEqual(["tar", "-tzf", "/backups/myapp.tar.gz"]);
+  });
+
+  it("returns each line as an array entry", async () => {
+    mockSpawn.mockReturnValue(mockProcess("myapp/\nmyapp/docker-compose.yml\nmyapp/.env\n"));
+    const result = await listArchiveMembers("/backups/myapp.tar.gz");
+    expect(result).toEqual(["myapp/", "myapp/docker-compose.yml", "myapp/.env"]);
+  });
+
+  it("returns [] for empty archive", async () => {
+    mockSpawn.mockReturnValue(mockProcess(""));
+    const result = await listArchiveMembers("/backups/myapp.tar.gz");
+    expect(result).toEqual([]);
+  });
+
+  it("passes superuser option", async () => {
+    mockSpawn.mockReturnValue(mockProcess(""));
+    await listArchiveMembers("/backups/myapp.tar.gz", { superuser: "require" });
+    expect(mockSpawn.mock.calls[0][1]).toMatchObject({ superuser: "require" });
+  });
+});
+
+describe("readArchiveMember", () => {
+  it("spawns tar -xzOf with archive and member path", async () => {
+    mockSpawn.mockReturnValue(mockProcess("name: myapp\nservices:\n"));
+    await readArchiveMember("/backups/myapp.tar.gz", "myapp/docker-compose.yml");
+    const args = mockSpawn.mock.calls[0][0] as string[];
+    expect(args).toEqual(["tar", "-xzOf", "/backups/myapp.tar.gz", "myapp/docker-compose.yml"]);
+  });
+
+  it("returns the file content as a string", async () => {
+    mockSpawn.mockReturnValue(mockProcess("name: myapp\nservices:\n  web:\n"));
+    const content = await readArchiveMember("/backups/myapp.tar.gz", "myapp/docker-compose.yml");
+    expect(content).toBe("name: myapp\nservices:\n  web:\n");
+  });
+
+  it("passes superuser option", async () => {
+    mockSpawn.mockReturnValue(mockProcess(""));
+    await readArchiveMember("/backups/myapp.tar.gz", "myapp/file", { superuser: "try" });
+    expect(mockSpawn.mock.calls[0][1]).toMatchObject({ superuser: "try" });
   });
 });
 
