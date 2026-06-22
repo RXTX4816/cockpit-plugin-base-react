@@ -18,3 +18,5 @@ export { EnvTable } from "./EnvTable";
 export { ExternalLinkModal } from "./ExternalLinkModal";
 export { DiffEditor } from "./DiffEditor";
 export type { DiffEditorProps } from "./DiffEditor";
+export { ExternalAddressInput } from "./ExternalAddressInput";
+export type { ExternalAddressInputProps } from "./ExternalAddressInput";
