@@ -1,6 +1,6 @@
 {
   "name": "@rxtx4816/cockpit-plugin-base-react",
-  "version": "dev-local",
+  "version": "0.0.0",
   "description": "Shared infrastructure for Cockpit plugins: i18n, dark theme, test setup, config presets, CI/CD workflows, and QEMU VM harness",
   "type": "module",
   "author": "RXTX4816",
@@ -46,6 +46,18 @@
     "./hooks/useAdminMode": {
       "default": "./src/hooks/useAdminMode.ts"
     },
+    "./hooks/useKeyboardShortcuts": {
+      "default": "./src/hooks/useKeyboardShortcuts.ts"
+    },
+    "./hooks/useOperationCounter": {
+      "default": "./src/hooks/useOperationCounter.ts"
+    },
+    "./hooks/usePersistedSet": {
+      "default": "./src/hooks/usePersistedSet.ts"
+    },
+    "./hooks/useDarkMode": {
+      "default": "./src/hooks/useDarkMode.ts"
+    },
     "./components": {
       "default": "./src/components/index.ts"
     },
@@ -67,6 +79,27 @@
     },
     "./lib/logParser": {
       "default": "./src/lib/logParser.tsx"
+    },
+    "./lib/ansi": {
+      "default": "./src/lib/ansi.ts"
+    },
+    "./lib/bytes": {
+      "default": "./src/lib/bytes.ts"
+    },
+    "./lib/parseJsonOutput": {
+      "default": "./src/lib/parseJsonOutput.ts"
+    },
+    "./lib/timestamp": {
+      "default": "./src/lib/timestamp.ts"
+    },
+    "./lib/color": {
+      "default": "./src/lib/color.ts"
+    },
+    "./lib/tar": {
+      "default": "./src/lib/tar.ts"
+    },
+    "./lib/envLint": {
+      "default": "./src/lib/envLint.ts"
     }
   },
   "files": [
@@ -92,10 +125,32 @@
     "docs:watch": "typedoc --watch"
   },
   "peerDependencies": {
+    "@codemirror/lint": ">=6",
+    "@codemirror/merge": ">=6",
+    "@codemirror/theme-one-dark": ">=6",
+    "@patternfly/react-icons": ">=6",
+    "codemirror": ">=6",
     "i18next": ">=26",
     "react": ">=19",
     "react-dom": ">=19",
     "react-i18next": ">=17"
+  },
+  "peerDependenciesMeta": {
+    "@codemirror/lint": {
+      "optional": true
+    },
+    "@codemirror/merge": {
+      "optional": true
+    },
+    "@codemirror/theme-one-dark": {
+      "optional": true
+    },
+    "@patternfly/react-icons": {
+      "optional": true
+    },
+    "codemirror": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^8.61.1",
@@ -104,11 +159,17 @@
     "eslint-plugin-react-hooks": "^7.1.1"
   },
   "devDependencies": {
+    "@codemirror/lint": "^6.9.7",
+    "@codemirror/merge": "^6.12.2",
+    "@codemirror/state": "^6.6.0",
+    "@codemirror/theme-one-dark": "^6.1.3",
     "@patternfly/react-core": "^6.5.1",
+    "@patternfly/react-icons": "^6.5.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "codemirror": "^6.0.2",
     "eslint": "^9.39.4",
     "i18next": "^26.3.1",
     "jsdom": "^29.1.1",

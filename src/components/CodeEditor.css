@@ -1,0 +1,11 @@
+.ce-editor .cm-editor {
+  height: 100%;
+}
+
+.ce-editor .cm-scroller {
+  overflow: auto;
+}
+
+.ce-editor {
+  min-height: 6rem;
+}

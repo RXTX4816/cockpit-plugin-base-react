@@ -11,3 +11,7 @@ export { usePollingFetch } from "./hooks/usePollingFetch";
 export type { PollingFetchResult } from "./hooks/usePollingFetch";
 export { useLayout } from "./hooks/useLayout";
 export { useAdminMode } from "./hooks/useAdminMode";
+export { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
+export { useOperationCounter } from "./hooks/useOperationCounter";
+export { usePersistedSet } from "./hooks/usePersistedSet";
+export { useDarkMode } from "./hooks/useDarkMode";
