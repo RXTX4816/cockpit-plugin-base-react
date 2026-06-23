@@ -83,19 +83,28 @@ npm install --save-dev @playwright/test
 npx playwright install chromium
 ```
 
-**2. Create `playwright.config.ts`** in your project root:
+**2. Create `playwright.config.ts`** in your project root.
+
+Pass one `VmDefinition` entry per VM defined in `scripts/test-vm.config.sh`. Ports are assigned sequentially from `COCKPIT_BASE`:
 
 ```ts
 import { createPlaywrightConfig } from '@rxtx4816/cockpit-plugin-base-react/playwright.config.base';
-export default createPlaywrightConfig('your-plugin-name');
+
+export default createPlaywrightConfig('your-plugin-name', [
+  { name: 'arch',   port: 9090 },
+  { name: 'debian', port: 9091 },
+  { name: 'fedora', port: 9092 },
+]);
 ```
+
+Each VM becomes a separate Playwright project. Keep the names in sync with `ALL_VMS` in your `test-vm.config.sh`.
 
 **3. Add npm scripts** to `package.json`:
 
 ```json
 "test:e2e":        "playwright test",
 "test:e2e:ui":     "playwright test --ui",
-"test:e2e:codegen":"playwright codegen https://localhost:9090"
+"test:e2e:codegen":"playwright codegen"
 ```
 
 **4. Add to `.gitignore`**:
@@ -138,34 +147,48 @@ Then import from your local file instead of the base package.
 
 ### Running E2E tests
 
-```bash
-# 1. Make sure a VM is running
-npm run vm start debian-podman
-npm run vm wait debian-podman
+Each VM is a Playwright project. Use `--project` to select which VM(s) to test:
 
-# 2. Run tests (headless)
+```bash
+# Start one or more VMs first
+npm run vm start arch-podman && npm run vm wait arch-podman
+
+# Run against a specific VM (Playwright --project flag)
+npm run test:e2e -- --project=arch-podman
+
+# Run against multiple VMs
+npm run test:e2e -- --project=arch-podman --project=debian-podman
+
+# Run against all defined VMs (all must be running)
 npm run test:e2e
 
-# 3. Or use the visual runner (great for debugging)
+# Visual runner — shows every step, great for debugging
 npm run test:e2e:ui
 
-# 4. Record a new test by clicking through the UI
-npm run test:e2e:codegen
+# Record a new test interactively (pass BASE_URL to target a specific VM)
+BASE_URL=https://localhost:9090 npm run test:e2e:codegen
 ```
 
-### Targeting a different VM
-
-Use the `BASE_URL` env var to point at any VM port:
+Check which VMs are up before running:
 
 ```bash
-BASE_URL=https://localhost:9094 npm run test:e2e   # debian-docker
-BASE_URL=https://localhost:9096 npm run test:e2e   # fedora-podman
+npm run vm status
 ```
+
+### Targeting a VM by URL
+
+Use `BASE_URL` to bypass the project list entirely and target one specific VM:
+
+```bash
+BASE_URL=https://localhost:9094 npm run test:e2e   # single VM, any port
+```
+
+This creates a single "custom" project regardless of how many VMs are defined in the config.
 
 ### Environment variables
 
 | Variable | Default | Description |
 |---|---|---|
-| `BASE_URL` | `https://localhost:9090` | Cockpit URL of the target VM |
+| `BASE_URL` | *(from vm list)* | Override: target a single VM by URL |
 | `VM_USER` | `test` | Login username |
 | `VM_PASSWORD` | `test` | Login password |

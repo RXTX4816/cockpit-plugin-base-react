@@ -1,21 +1,23 @@
-import { test as base, expect, type Page } from '@playwright/test';
-
-type CockpitFixtures = {
-  pluginPage: Page;
-};
+/* global process */
+import { test as base, expect } from '@playwright/test';
 
 /**
- * Extended test with automatic Cockpit login.
- * Use `pluginPage` instead of `page` to get a page already authenticated and
- * navigated to the plugin's index.html.
+ * Extended Playwright test with automatic Cockpit login.
  *
- * The plugin URL is derived from the `COCKPIT_PLUGIN` env var, which must be
- * set in the consuming project's playwright.config.ts (via `process.env`).
+ * Use `pluginPage` instead of `page` — it is already authenticated and
+ * navigated to the plugin's index.html before your test body runs.
+ *
+ * Credentials come from VM_USER / VM_PASSWORD env vars (default: test / test).
+ * The plugin URL is set by createPlaywrightConfig via COCKPIT_PLUGIN env var.
  *
  * @example
  * import { test, expect } from '@rxtx4816/cockpit-plugin-base-react/e2e';
+ *
+ * test('dashboard renders', async ({ pluginPage: page }) => {
+ *   await expect(page.getByRole('heading', { name: 'My Plugin' })).toBeVisible();
+ * });
  */
-export const test = base.extend<CockpitFixtures>({
+export const test = base.extend({
   pluginPage: async ({ page }, use) => {
     const user = process.env.VM_USER ?? 'test';
     const password = process.env.VM_PASSWORD ?? 'test';

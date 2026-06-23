@@ -102,7 +102,7 @@
       "default": "./src/lib/envLint.ts"
     },
     "./e2e": {
-      "default": "./src/e2e/fixtures.ts"
+      "default": "./src/e2e/fixtures.js"
     },
     "./playwright.config.base": {
       "default": "./playwright.config.base.js"
