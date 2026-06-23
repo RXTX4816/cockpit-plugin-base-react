@@ -10,7 +10,7 @@ import type { ServiceStatus } from "./types";
  */
 export async function getServiceStatus(unit: string): Promise<ServiceStatus> {
   try {
-    await cockpit.spawn(["which", unit]);
+    await cockpit.spawn(["sh", "-c", `command -v ${unit}`]);
   } catch {
     return "not-installed";
   }
