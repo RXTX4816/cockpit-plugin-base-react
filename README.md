@@ -32,15 +32,17 @@ Shared foundation for building [Cockpit](https://cockpit-project.org/) plugins w
 **Shared tooling config**
 - `tsconfig.base.json` — TypeScript base config tuned for Cockpit plugins
 - `eslint.config.base` — `createEslintConfig()` factory with TS, React, and react-hooks rules
-- `vitest.config.base` — Vitest base config with jsdom and PatternFly setup
+- `vitest.config.base` — `createVitestConfig()` factory with jsdom and PatternFly setup
+- `playwright.config.base` — `createPlaywrightConfig(pluginName)` factory for E2E tests against live VMs
 
 **Testing utilities**
 - Vitest setup file that installs jsdom and jest-dom matchers
 - `mockCockpit` — in-memory Cockpit API mock for unit tests
 - `mockHttpClient` — mock for Cockpit HTTP client used in tests
+- `./e2e` — `pluginPage` Playwright fixture that handles Cockpit login and navigates to your plugin automatically
 
 **QEMU VM test harness**
-- `npm run vm` — spins up real cloud VMs (Arch, Debian, Fedora) with Cockpit installed and your plugin mounted via virtfs. Used for end-to-end testing against a live Cockpit instance. See [VM Testing](docs/wiki/VM-Testing.md).
+- `npm run vm` — spins up real cloud VMs (Arch, Debian, Fedora) with Cockpit installed and your plugin mounted via virtfs. Used for manual and automated browser testing against a live Cockpit instance. See [VM Testing](docs/wiki/VM-Testing.md).
 
 **Reusable CI/CD workflows**
 - Lint, typecheck, test, and build on every push

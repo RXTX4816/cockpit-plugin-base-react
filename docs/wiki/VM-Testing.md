@@ -97,3 +97,27 @@ npm run vm wait arch
 | `VM_MEM` | `1024` | Memory per VM in MB |
 | `VM_CPUS` | `2` | vCPU count |
 | `VM_DISK_SIZE` | `12G` | Overlay disk size |
+
+---
+
+## Automated browser tests (Playwright)
+
+The VM harness pairs naturally with Playwright E2E tests. Once a VM is running, point Playwright at it and let the tests drive the full UI in Chromium.
+
+The base library ships a `pluginPage` fixture that handles Cockpit login automatically, and a `createPlaywrightConfig` factory that pre-configures `baseURL`, `ignoreHTTPSErrors`, and Chromium as the only browser. Consumer plugins just call the factory and write their tests.
+
+```bash
+npm run build
+npm run vm start arch
+npm run vm wait arch
+npm run test:e2e          # headless
+npm run test:e2e:ui       # visual runner — great for debugging
+```
+
+To target a non-default VM:
+
+```bash
+BASE_URL=https://localhost:9091 npm run test:e2e   # second VM port
+```
+
+See [Testing](Testing.md) for complete setup and usage documentation.

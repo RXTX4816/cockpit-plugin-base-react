@@ -84,5 +84,14 @@ export function createEslintConfig(extraGlobals = {}) {
       },
       settings: { react: { version: "detect" } },
     },
+    {
+      files: ["src/e2e/**/*.{ts,tsx}"],
+      languageOptions: {
+        globals: { process: "readonly" },
+      },
+      rules: {
+        "react-hooks/rules-of-hooks": "off",
+      },
+    },
   ];
 }

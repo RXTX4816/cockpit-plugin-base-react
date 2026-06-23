@@ -100,6 +100,12 @@
     },
     "./lib/envLint": {
       "default": "./src/lib/envLint.ts"
+    },
+    "./e2e": {
+      "default": "./src/e2e/fixtures.ts"
+    },
+    "./playwright.config.base": {
+      "default": "./playwright.config.base.js"
     }
   },
   "files": [
@@ -110,7 +116,8 @@
     "scripts/",
     "tsconfig.base.json",
     "eslint.config.base.js",
-    "vitest.config.base.js"
+    "vitest.config.base.js",
+    "playwright.config.base.js"
   ],
   "bin": {
     "cockpit-test-vm": "./scripts/test-vm.sh"
@@ -165,8 +172,10 @@
     "@codemirror/theme-one-dark": "^6.1.3",
     "@patternfly/react-core": "^6.5.1",
     "@patternfly/react-icons": "^6.5.1",
+    "@playwright/test": "^1.61.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@types/node": "^26.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "codemirror": "^6.0.2",

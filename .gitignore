@@ -2,3 +2,5 @@ node_modules/
 .vms/
 *.log
 docs/api/
+test-results/
+playwright-report/
