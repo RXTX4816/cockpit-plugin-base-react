@@ -3,7 +3,7 @@ import type { ServiceStatus } from "./types";
 /**
  * Returns the current {@link ServiceStatus} of a systemd unit.
  *
- * Checks with `which` first — returns `"not-installed"` when the unit binary is absent.
+ * Checks with `command -v` first — returns `"not-installed"` when the unit binary is absent.
  * Then calls `systemctl is-active` and maps the output to a {@link ServiceStatus} value.
  *
  * @param unit - The systemd unit name (e.g. `"nginx.service"`).
