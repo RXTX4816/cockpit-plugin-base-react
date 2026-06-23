@@ -51,7 +51,7 @@ describe("useServiceStatus", () => {
   it("passes the unit name through spawn calls", async () => {
     stubStatus("active");
     renderHook(() => useServiceStatus("nginx"));
-    await waitFor(() => expect(mockSpawn).toHaveBeenCalledWith(["which", "nginx"]));
+    await waitFor(() => expect(mockSpawn).toHaveBeenCalledWith(["sh", "-c", "command -v nginx"]));
   });
 
   it("polls at the given interval", async () => {

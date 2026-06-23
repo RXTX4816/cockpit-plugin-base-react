@@ -1,11 +1,19 @@
+/* All levels of the chain use flex: 1 + min-height: 0 so that CodeMirror's scroller
+   gets a bounded height through the flex layout cascade, without requiring any ancestor
+   to have an explicit CSS height. height: 100% does NOT work here because it needs a
+   "definite" height on the parent, which is not available in a flex-max-height context. */
+.ce-editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 .ce-editor .cm-editor {
-  height: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 .ce-editor .cm-scroller {
   overflow: auto;
-}
-
-.ce-editor {
-  min-height: 6rem;
 }

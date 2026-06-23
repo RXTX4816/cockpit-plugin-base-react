@@ -3,14 +3,14 @@ import type { ServiceStatus } from "./types";
 /**
  * Returns the current {@link ServiceStatus} of a systemd unit.
  *
- * Checks with `which` first — returns `"not-installed"` when the unit binary is absent.
+ * Checks with `command -v` first — returns `"not-installed"` when the unit binary is absent.
  * Then calls `systemctl is-active` and maps the output to a {@link ServiceStatus} value.
  *
  * @param unit - The systemd unit name (e.g. `"nginx.service"`).
  */
 export async function getServiceStatus(unit: string): Promise<ServiceStatus> {
   try {
-    await cockpit.spawn(["which", unit]);
+    await cockpit.spawn(["sh", "-c", `command -v ${unit}`]);
   } catch {
     return "not-installed";
   }

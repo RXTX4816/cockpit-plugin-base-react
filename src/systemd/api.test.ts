@@ -52,7 +52,7 @@ describe("getServiceStatus", () => {
   it("passes the unit name to which", async () => {
     mockSpawn.mockRejectedValueOnce(new Error("not found"));
     await getServiceStatus("nginx");
-    expect(mockSpawn).toHaveBeenCalledWith(["which", "nginx"]);
+    expect(mockSpawn).toHaveBeenCalledWith(["sh", "-c", "command -v nginx"]);
   });
 });
 
