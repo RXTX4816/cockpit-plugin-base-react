@@ -27,7 +27,9 @@ export const test = base.extend({
     await page.locator('#login-user-input').fill(user);
     await page.locator('#login-password-input').fill(password);
     await page.locator('#login-button').click();
-    await page.waitForURL(/\/cockpit\/@localhost\//);
+    // Wait for the login form to disappear — more reliable than matching the
+    // redirect URL, which varies across Cockpit versions and configurations.
+    await page.locator('#login-user-input').waitFor({ state: 'hidden' });
 
     if (plugin) {
       await page.goto(`/cockpit/@localhost/${plugin}/index.html`);
