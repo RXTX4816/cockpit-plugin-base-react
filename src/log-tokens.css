@@ -1,0 +1,51 @@
+:root {
+  --log-viewer-bg: var(--pf-t--global--background--color--secondary--default);
+  --log-viewer-text: var(--pf-t--global--text--color--regular);
+  --log-stripe-odd: rgba(0, 0, 0, 0.03);
+
+  --log-token-error:   #b91c1c;
+  --log-token-warn:    #92400e;
+  --log-token-info:    #1d4ed8;
+  --log-token-debug:   #6b7280;
+  --log-token-trace:   #9ca3af;
+  --log-token-5xx:     #b91c1c;
+  --log-token-4xx:     #92400e;
+  --log-token-2xx:     #15803d;
+  --log-token-string:  #1e40af;
+  --log-token-path:    #6d28d9;
+  --log-token-default: #9a3412;
+
+  --log-svc-0: #1d4ed8;
+  --log-svc-1: #15803d;
+  --log-svc-2: #6d28d9;
+  --log-svc-3: #c2410c;
+  --log-svc-4: #b91c1c;
+  --log-svc-5: #92400e;
+  --log-svc-6: #0369a1;
+  --log-svc-7: #166534;
+}
+
+.pf-v6-theme-dark {
+  --log-stripe-odd: rgba(255, 255, 255, 0.015);
+
+  --log-token-error:   #f85149;
+  --log-token-warn:    #e3b341;
+  --log-token-info:    #79c0ff;
+  --log-token-debug:   #8b949e;
+  --log-token-trace:   #6e7681;
+  --log-token-5xx:     #f85149;
+  --log-token-4xx:     #e3b341;
+  --log-token-2xx:     #56d364;
+  --log-token-string:  #a5d6ff;
+  --log-token-path:    #d2a8ff;
+  --log-token-default: #ffa657;
+
+  --log-svc-0: #58a6ff;
+  --log-svc-1: #56d364;
+  --log-svc-2: #d2a8ff;
+  --log-svc-3: #ffa657;
+  --log-svc-4: #f78166;
+  --log-svc-5: #e3b341;
+  --log-svc-6: #79c0ff;
+  --log-svc-7: #3fb950;
+}
