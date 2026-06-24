@@ -16,17 +16,17 @@ export const TOKEN_RE = new RegExp(
 
 export function tokenColor(token: string): string {
   const u = token.toUpperCase();
-  if (/^(FATAL|CRITICAL|ERROR|ERR)$/.test(u)) return "#f85149";
-  if (/^WARN/.test(u)) return "#e3b341";
-  if (u === "INFO") return "#79c0ff";
-  if (u === "DEBUG") return "#8b949e";
-  if (u === "TRACE") return "#6e7681";
-  if (/^5\d{2}$/.test(token)) return "#f85149";
-  if (/^4\d{2}$/.test(token)) return "#e3b341";
-  if (/^[23]\d{2}$/.test(token)) return "#56d364";
-  if (token.startsWith('"') || token.startsWith("'")) return "#a5d6ff";
-  if (token.startsWith("/")) return "#d2a8ff";
-  return "#ffa657";
+  if (/^(FATAL|CRITICAL|ERROR|ERR)$/.test(u)) return "var(--log-token-error)";
+  if (/^WARN/.test(u)) return "var(--log-token-warn)";
+  if (u === "INFO") return "var(--log-token-info)";
+  if (u === "DEBUG") return "var(--log-token-debug)";
+  if (u === "TRACE") return "var(--log-token-trace)";
+  if (/^5\d{2}$/.test(token)) return "var(--log-token-5xx)";
+  if (/^4\d{2}$/.test(token)) return "var(--log-token-4xx)";
+  if (/^[23]\d{2}$/.test(token)) return "var(--log-token-2xx)";
+  if (token.startsWith('"') || token.startsWith("'")) return "var(--log-token-string)";
+  if (token.startsWith("/")) return "var(--log-token-path)";
+  return "var(--log-token-default)";
 }
 
 export function tokenWeight(token: string): string | number {

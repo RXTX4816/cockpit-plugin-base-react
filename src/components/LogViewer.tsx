@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, type CSSProperties, type ReactNode } from "react";
+import "../log-tokens.css";
 import {
   Alert,
   AlertActionCloseButton,
@@ -54,7 +55,7 @@ interface Props {
 const VIEWER_STYLE: CSSProperties = {
   overflowY: "auto",
   maxHeight: "60vh",
-  background: "#0d1117",
+  background: "var(--log-viewer-bg)",
   borderRadius: "var(--pf-v6-global--BorderRadius--sm, 4px)",
   padding: "0.4rem 0",
   fontFamily: "var(--pf-t--global--font--family--mono, monospace)",
@@ -66,7 +67,7 @@ const LINE_BASE: CSSProperties = {
   padding: "0.05rem 0.75rem",
   whiteSpace: "pre-wrap",
   wordBreak: "break-all",
-  color: "#e6edf3",
+  color: "var(--log-viewer-text)",
 };
 
 function levelBg(line: string): string {
@@ -78,7 +79,7 @@ function levelBg(line: string): string {
 function LogLine({ line, search, isRegex, index }: {
   line: string; search: string; isRegex: boolean; index: number;
 }): ReactNode {
-  const bg = levelBg(line) || (index % 2 !== 0 ? "rgba(255,255,255,0.015)" : "transparent");
+  const bg = levelBg(line) || (index % 2 !== 0 ? "var(--log-stripe-odd)" : "transparent");
   return (
     <div style={{ ...LINE_BASE, background: bg }}>
       {highlightWithSearch(line, search, isRegex)}

@@ -22,6 +22,7 @@
     "./dark-theme": {
       "default": "./src/dark-theme.ts"
     },
+    "./log-tokens.css": "./src/log-tokens.css",
     "./i18n": {
       "default": "./src/i18n.ts"
     },
