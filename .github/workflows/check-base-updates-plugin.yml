@@ -38,7 +38,7 @@ jobs:
 
       - name: Create pull request
         if: steps.versions.outputs.updated == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "build(deps): bump @rxtx4816/cockpit-plugin-base-react from ${{ steps.versions.outputs.old }} to ${{ steps.versions.outputs.new }}"
           title: "build(deps): bump @rxtx4816/cockpit-plugin-base-react from ${{ steps.versions.outputs.old }} to ${{ steps.versions.outputs.new }}"
