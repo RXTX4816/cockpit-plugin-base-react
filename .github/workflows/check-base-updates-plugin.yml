@@ -15,19 +15,29 @@ jobs:
           node-version: "22"
           cache: "npm"
 
+      - run: npm install -g npm@11
+
       - name: Capture versions
         id: versions
         run: |
-          OLD=$(node -p "const p=require('./package.json'); (p.dependencies?.['@rxtx4816/cockpit-plugin-base-react'] ?? p.devDependencies?.['@rxtx4816/cockpit-plugin-base-react'])")
+          OLD=$(node -p "const p=require('./package.json'); p.dependencies?.['@rxtx4816/cockpit-plugin-base-react'] ?? p.devDependencies?.['@rxtx4816/cockpit-plugin-base-react']")
           npx npm-check-updates -u --filter @rxtx4816/cockpit-plugin-base-react
-          NEW=$(node -p "const p=require('./package.json'); (p.dependencies?.['@rxtx4816/cockpit-plugin-base-react'] ?? p.devDependencies?.['@rxtx4816/cockpit-plugin-base-react'])")
+          NEW=$(node -p "const p=require('./package.json'); p.dependencies?.['@rxtx4816/cockpit-plugin-base-react'] ?? p.devDependencies?.['@rxtx4816/cockpit-plugin-base-react']")
           echo "old=$OLD" >> $GITHUB_OUTPUT
           echo "new=$NEW" >> $GITHUB_OUTPUT
+          if [ "$OLD" = "$NEW" ]; then
+            echo "Base package is already up to date ($OLD), skipping."
+            echo "updated=false" >> $GITHUB_OUTPUT
+          else
+            echo "updated=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Install updated dependencies
+        if: steps.versions.outputs.updated == 'true'
         run: npm install
 
       - name: Create pull request
+        if: steps.versions.outputs.updated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "build(deps): bump @rxtx4816/cockpit-plugin-base-react from ${{ steps.versions.outputs.old }} to ${{ steps.versions.outputs.new }}"
