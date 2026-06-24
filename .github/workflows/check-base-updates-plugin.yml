@@ -1,0 +1,37 @@
+name: Bump base package (reusable)
+
+on:
+  workflow_call:
+
+jobs:
+  check-updates:
+    name: Bump @rxtx4816/cockpit-plugin-base-react
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Capture versions
+        id: versions
+        run: |
+          OLD=$(node -p "const p=require('./package.json'); (p.dependencies?.['@rxtx4816/cockpit-plugin-base-react'] ?? p.devDependencies?.['@rxtx4816/cockpit-plugin-base-react'])")
+          npx npm-check-updates -u --filter @rxtx4816/cockpit-plugin-base-react
+          NEW=$(node -p "const p=require('./package.json'); (p.dependencies?.['@rxtx4816/cockpit-plugin-base-react'] ?? p.devDependencies?.['@rxtx4816/cockpit-plugin-base-react'])")
+          echo "old=$OLD" >> $GITHUB_OUTPUT
+          echo "new=$NEW" >> $GITHUB_OUTPUT
+
+      - name: Install updated dependencies
+        run: npm install
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "build(deps): bump @rxtx4816/cockpit-plugin-base-react from ${{ steps.versions.outputs.old }} to ${{ steps.versions.outputs.new }}"
+          title: "build(deps): bump @rxtx4816/cockpit-plugin-base-react from ${{ steps.versions.outputs.old }} to ${{ steps.versions.outputs.new }}"
+          body: "Bumps [@rxtx4816/cockpit-plugin-base-react](https://www.npmjs.com/package/@rxtx4816/cockpit-plugin-base-react) to the latest published version."
+          branch: deps/bump-base
+          delete-branch: true
