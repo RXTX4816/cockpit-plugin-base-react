@@ -50,6 +50,8 @@ interface Props {
   errorTitle?: string;
   /** `aria-label` for the refresh button. */
   refreshAriaLabel?: string;
+  /** Extra content rendered in the toolbar between the filter group and the action buttons. */
+  extraToolbarItems?: ReactNode;
 }
 
 const VIEWER_STYLE: CSSProperties = {
@@ -103,22 +105,30 @@ export function LogViewer({
   noMatchesMessage = "No matching entries.",
   errorTitle = "Failed to load logs",
   refreshAriaLabel = "Refresh",
+  extraToolbarItems,
 }: Props) {
   const [internalSearch, setInternalSearch] = useState(filterValue ?? "");
+  const [debouncedSearch, setDebouncedSearch] = useState(filterValue ?? "");
   const [isRegex, setIsRegex] = useState(false);
   const [downloadNote, setDownloadNote] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setInternalSearch(filterValue ?? "");
+    setDebouncedSearch(filterValue ?? "");
   }, [filterValue]);
 
-  const search = filterValue !== undefined ? filterValue : internalSearch;
+  const search = filterValue !== undefined ? filterValue : debouncedSearch;
 
   const setSearch = useCallback((v: string) => {
-    if (onFilterChange) onFilterChange(v);
-    else setInternalSearch(v);
+    setInternalSearch(v);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearch(v);
+      onFilterChange?.(v);
+    }, 1000);
   }, [onFilterChange]);
 
   useEffect(() => {
@@ -230,7 +240,7 @@ export function LogViewer({
                 <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
                   <SearchInput
                     placeholder={searchPlaceholder}
-                    value={search}
+                    value={internalSearch}
                     onChange={(_e, v) => setSearch(v)}
                     onClear={() => setSearch("")}
                     style={{ width: 220 }}
@@ -247,6 +257,10 @@ export function LogViewer({
                 </span>
               </ToolbarItem>
             </ToolbarGroup>
+
+            {extraToolbarItems && (
+              <ToolbarItem style={{ alignSelf: "center" }}>{extraToolbarItems}</ToolbarItem>
+            )}
 
             <ToolbarGroup variant="action-group-plain" align={{ default: "alignEnd" }}>
               <ToolbarItem>
