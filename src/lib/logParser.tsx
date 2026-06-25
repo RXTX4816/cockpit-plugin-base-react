@@ -1,5 +1,61 @@
 import { type ReactNode } from "react";
 
+/**
+ * Try to extract a JSON object from a log line.
+ * Handles bare JSON lines and lines with a journalctl "unit[pid]: {" prefix.
+ */
+export function extractJsonPayload(line: string): { prefix: string; obj: Record<string, unknown> } | null {
+  const trimmed = line.trimStart();
+  if (trimmed.startsWith("{")) {
+    try {
+      return { prefix: "", obj: JSON.parse(trimmed) as Record<string, unknown> };
+    } catch { /* not valid JSON */ }
+  }
+  const m = line.match(/^(.*?\[\d+\]: )(\{.*)/s);
+  if (m) {
+    try {
+      return { prefix: m[1], obj: JSON.parse(m[2]) as Record<string, unknown> };
+    } catch { /* not valid JSON */ }
+  }
+  return null;
+}
+
+// Matches JSON strings (with optional trailing colon = key), numbers, booleans, null.
+const JSON_TOKEN_RE = /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b|(true|false|null)/g;
+
+/** Renders a pretty-printed JSON string with syntax coloring. Does not apply search highlighting. */
+export function colorizeJson(json: string): ReactNode {
+  const parts: ReactNode[] = [];
+  let last = 0;
+  let k = 0;
+  JSON_TOKEN_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = JSON_TOKEN_RE.exec(json)) !== null) {
+    if (m.index > last) parts.push(<span key={k++}>{json.slice(last, m.index)}</span>);
+    if (m[1] !== undefined) {
+      if (m[2]) {
+        // JSON key: "key":
+        parts.push(<span key={k++} style={{ color: "var(--log-token-path)" }}>{m[1]}</span>);
+        parts.push(<span key={k++}>{m[2]}</span>);
+      } else {
+        // String value
+        parts.push(<span key={k++} style={{ color: "var(--log-token-string)" }}>{m[1]}</span>);
+      }
+    } else if (m[3] !== undefined) {
+      parts.push(<span key={k++} style={{ color: "var(--log-token-2xx)" }}>{m[3]}</span>);
+    } else if (m[4] !== undefined) {
+      parts.push(
+        <span key={k++} style={{ color: m[4] === "null" ? "var(--log-token-trace)" : "var(--log-token-info)" }}>
+          {m[4]}
+        </span>,
+      );
+    }
+    last = m.index + m[0].length;
+  }
+  if (last < json.length) parts.push(<span key={k++}>{json.slice(last)}</span>);
+  return <>{parts}</>;
+}
+
 // Token types in priority order; first match wins at each position.
 export const TOKEN_RE = new RegExp(
   [
