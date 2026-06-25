@@ -14,6 +14,15 @@ class ResizeObserverMock {
 }
 vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 
+// MutationObserver: jsdom provides a functional implementation so we don't stub it.
+// takeRecords() is not implemented in jsdom — add a no-op only for that method.
+if (typeof MutationObserver !== "undefined") {
+  const proto = MutationObserver.prototype as MutationObserver & { takeRecords?: () => [] };
+  if (!proto.takeRecords) {
+    proto.takeRecords = () => [];
+  }
+}
+
 // localStorage mock must be installed before i18n's cockpitDetector runs.
 const localStorageMock = (() => {
   let store: Record<string, string> = {};

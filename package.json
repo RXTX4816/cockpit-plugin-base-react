@@ -59,6 +59,18 @@
     "./hooks/useDarkMode": {
       "default": "./src/hooks/useDarkMode.ts"
     },
+    "./hooks/useLayout": {
+      "default": "./src/hooks/useLayout.ts"
+    },
+    "./hooks/useLocalStorage": {
+      "default": "./src/hooks/useLocalStorage.ts"
+    },
+    "./hooks/useSessionStorage": {
+      "default": "./src/hooks/useSessionStorage.ts"
+    },
+    "./hooks/useDialogState": {
+      "default": "./src/hooks/useDialogState.ts"
+    },
     "./components": {
       "default": "./src/components/index.ts"
     },
@@ -102,11 +114,20 @@
     "./lib/envLint": {
       "default": "./src/lib/envLint.ts"
     },
+    "./lib/uri": {
+      "default": "./src/lib/uri.ts"
+    },
+    "./lib/cockpit-fs": {
+      "default": "./src/lib/cockpit-fs.ts"
+    },
     "./e2e": {
       "default": "./src/e2e/fixtures.js"
     },
     "./playwright.config.base": {
       "default": "./playwright.config.base.js"
+    },
+    "./esbuild.config.base": {
+      "default": "./esbuild.config.base.js"
     }
   },
   "files": [
@@ -118,10 +139,12 @@
     "tsconfig.base.json",
     "eslint.config.base.js",
     "vitest.config.base.js",
-    "playwright.config.base.js"
+    "playwright.config.base.js",
+    "esbuild.config.base.js"
   ],
   "bin": {
-    "cockpit-test-vm": "./scripts/test-vm.sh"
+    "cockpit-test-vm": "./scripts/test-vm.sh",
+    "cockpit-i18n-check": "./scripts/i18n-coverage.mjs"
   },
   "scripts": {
     "lint": "eslint src/",

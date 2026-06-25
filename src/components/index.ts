@@ -20,3 +20,4 @@ export { DiffEditor } from "./DiffEditor";
 export type { DiffEditorProps } from "./DiffEditor";
 export { ExternalAddressInput } from "./ExternalAddressInput";
 export type { ExternalAddressInputProps } from "./ExternalAddressInput";
+export { PluginPage } from "./PluginPage";

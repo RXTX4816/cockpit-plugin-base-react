@@ -1,4 +1,5 @@
 import type { ServiceStatus } from "./types";
+import { readFile as fsReadFile, writeFile as fsWriteFile } from "../lib/cockpit-fs";
 
 /**
  * Returns the current {@link ServiceStatus} of a systemd unit.
@@ -64,8 +65,8 @@ export async function reloadService(unit: string): Promise<void> {
  * Reads a file from the host filesystem via Cockpit, requesting superuser escalation.
  * @param path - Absolute path to the file.
  */
-export async function readFile(path: string): Promise<string> {
-  return cockpit.file(path, { superuser: "try" }).read();
+export async function readFile(path: string): Promise<string | null> {
+  return fsReadFile(path, "try");
 }
 
 /**
@@ -74,7 +75,7 @@ export async function readFile(path: string): Promise<string> {
  * @param content - UTF-8 string content to write.
  */
 export async function writeFile(path: string, content: string): Promise<void> {
-  await cockpit.file(path, { superuser: "try" }).replace(content);
+  return fsWriteFile(path, content, "try");
 }
 
 /**

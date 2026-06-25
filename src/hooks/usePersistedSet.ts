@@ -1,4 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+
+export interface PersistedSetOptions {
+  /** When true, subscribes to StorageEvent to stay in sync across browser tabs. */
+  crossTabSync?: boolean;
+}
 
 function load(storageKey: string): Set<string> {
   try {
@@ -16,7 +21,10 @@ function save(storageKey: string, items: Set<string>) {
 
 // localStorage-backed Set<string> with toggle and clear.
 // Useful for accordion expanded state, multi-selection, etc.
-export function usePersistedSet(storageKey: string) {
+export function usePersistedSet(
+  storageKey: string,
+  options: PersistedSetOptions = {},
+) {
   const [items, setItems] = useState<Set<string>>(() => load(storageKey));
 
   const toggle = useCallback((id: string) => {
@@ -33,6 +41,17 @@ export function usePersistedSet(storageKey: string) {
     setItems(new Set());
     save(storageKey, new Set());
   }, [storageKey]);
+
+  useEffect(() => {
+    if (!options.crossTabSync) return;
+    const handler = (e: StorageEvent) => {
+      if (e.key === storageKey && (e.storageArea === null || e.storageArea === localStorage)) {
+        setItems(load(storageKey));
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, [storageKey, options.crossTabSync]);
 
   return { items, toggle, clear };
 }

@@ -45,6 +45,13 @@ const BASE_GLOBALS = {
   cockpit: "readonly",
   CockpitProcess: "readonly",
   CockpitChannel: "readonly",
+  CockpitHttpClient: "readonly",
+  CockpitUser: "readonly",
+  CockpitPermission: "readonly",
+  CockpitLocation: "readonly",
+  CockpitTransport: "readonly",
+  CockpitDBusProxy: "readonly",
+  CockpitDBusClient: "readonly",
 };
 
 /**
