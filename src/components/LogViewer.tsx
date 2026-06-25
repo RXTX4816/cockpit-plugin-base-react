@@ -13,7 +13,7 @@ import {
   ToolbarItem,
   ToolbarGroup,
 } from "@patternfly/react-core";
-import { highlightWithSearch } from "../lib/logParser";
+import { colorizeJson, extractJsonPayload, highlightWithSearch } from "../lib/logParser";
 
 interface Props {
   /** Log lines to display. Each string becomes one highlighted line. */
@@ -78,10 +78,24 @@ function levelBg(line: string): string {
   return "";
 }
 
-function LogLine({ line, search, isRegex, index }: {
-  line: string; search: string; isRegex: boolean; index: number;
+function LogLine({ line, search, isRegex, isPretty, index }: {
+  line: string; search: string; isRegex: boolean; isPretty: boolean; index: number;
 }): ReactNode {
   const bg = levelBg(line) || (index % 2 !== 0 ? "var(--log-stripe-odd)" : "transparent");
+
+  if (isPretty) {
+    const extracted = extractJsonPayload(line);
+    if (extracted) {
+      const { prefix, obj } = extracted;
+      return (
+        <div style={{ ...LINE_BASE, background: bg }}>
+          {prefix && <span style={{ opacity: 0.4 }}>{prefix}</span>}
+          {colorizeJson(JSON.stringify(obj, null, 2))}
+        </div>
+      );
+    }
+  }
+
   return (
     <div style={{ ...LINE_BASE, background: bg }}>
       {highlightWithSearch(line, search, isRegex)}
@@ -110,6 +124,7 @@ export function LogViewer({
   const [internalSearch, setInternalSearch] = useState(filterValue ?? "");
   const [debouncedSearch, setDebouncedSearch] = useState(filterValue ?? "");
   const [isRegex, setIsRegex] = useState(false);
+  const [isPretty, setIsPretty] = useState(false);
   const [downloadNote, setDownloadNote] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
@@ -187,7 +202,7 @@ export function LogViewer({
 
   const hasPauseControl = onPause !== undefined || onResume !== undefined;
 
-  const regexBtnStyle: CSSProperties = {
+  const toggleBtnStyle = (active: boolean): CSSProperties => ({
     height: "var(--pf-t--global--control--size--base, 36px)",
     padding: "0 0.5rem",
     fontFamily: "var(--pf-t--global--font--family--mono, monospace)",
@@ -197,12 +212,12 @@ export function LogViewer({
     borderRadius: "var(--pf-t--global--border--radius--100, 4px)",
     cursor: "pointer",
     transition: "background 120ms ease, color 120ms ease",
-    background: isRegex
+    background: active
       ? "var(--pf-t--global--color--brand--default, #06c)"
       : "var(--pf-t--global--background--color--primary--default)",
-    color: isRegex ? "#fff" : "var(--pf-t--global--text--color--subtle)",
-    borderColor: isRegex ? "var(--pf-t--global--color--brand--default, #06c)" : undefined,
-  };
+    color: active ? "#fff" : "var(--pf-t--global--text--color--subtle)",
+    borderColor: active ? "var(--pf-t--global--color--brand--default, #06c)" : undefined,
+  });
 
   return (
     <Stack hasGutter>
@@ -247,8 +262,12 @@ export function LogViewer({
                   />
                   <button type="button" aria-label="Toggle regex" aria-pressed={isRegex}
                     title="Toggle regex filter" onClick={() => setIsRegex(r => !r)}
-                    style={regexBtnStyle}
+                    style={toggleBtnStyle(isRegex)}
                   >.*</button>
+                  <button type="button" aria-label="Toggle pretty print" aria-pressed={isPretty}
+                    title="Pretty print JSON" onClick={() => setIsPretty(p => !p)}
+                    style={toggleBtnStyle(isPretty)}
+                  >{"{}"}</button>
                 </div>
               </ToolbarItem>
               <ToolbarItem>
@@ -302,7 +321,7 @@ export function LogViewer({
         ) : (
           <div ref={logRef} style={VIEWER_STYLE}>
             {filtered.map((line, i) => (
-              <LogLine key={i} line={line} search={search} isRegex={isRegex} index={i} />
+              <LogLine key={i} line={line} search={search} isRegex={isRegex} isPretty={isPretty} index={i} />
             ))}
           </div>
         )}
