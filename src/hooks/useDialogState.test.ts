@@ -59,6 +59,16 @@ describe("useDialogState", () => {
     expect(result.current.getData("rename")).toEqual({ id: "abc", name: "foo" });
   });
 
+  it("open works for dialogs with undefined data type", () => {
+    const { result } = renderHook(() => useDialogState<Modals>(NAMES));
+    act(() => { result.current.open("create"); });
+    expect(result.current.isOpen("create")).toBe(true);
+    expect(result.current.hasOpen).toBe(true);
+    act(() => { result.current.close("create"); });
+    expect(result.current.isOpen("create")).toBe(false);
+    expect(result.current.hasOpen).toBe(false);
+  });
+
   it("transition with no explicit data carries from's data forward", () => {
     type T = { a: { v: number }; b: { v: number } };
     const { result } = renderHook(() => useDialogState<T>(["a", "b"]));

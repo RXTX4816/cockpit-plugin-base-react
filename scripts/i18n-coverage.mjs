@@ -13,10 +13,10 @@
 //   <!-- i18n-coverage-end -->
 
 import { readFileSync, writeFileSync, readdirSync } from "fs";
-import { join, resolve, dirname } from "path";
-import { fileURLToPath } from "url";
+import { join, resolve } from "path";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+// When run as an installed bin, resolve paths against the consuming project's cwd.
+const root = process.cwd();
 
 // Parse CLI args
 const args = process.argv.slice(2);

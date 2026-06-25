@@ -62,7 +62,7 @@ export function useDialogState<TDialogs extends Record<string, unknown>>(
     {} as InternalState<TDialogs>,
   );
 
-  const hasOpen = names.some(n => state[n] !== undefined);
+  const hasOpen = names.some(n => Object.prototype.hasOwnProperty.call(state, n));
 
   const open = useCallback(<K extends keyof TDialogs>(name: K, data?: TDialogs[K]) => {
     dispatch({ type: "open", name, data });
@@ -90,7 +90,7 @@ export function useDialogState<TDialogs extends Record<string, unknown>>(
   }, []);
 
   const isOpen = <K extends keyof TDialogs>(name: K): boolean =>
-    state[name] !== undefined;
+    Object.prototype.hasOwnProperty.call(state, name);
 
   const getData = <K extends keyof TDialogs>(name: K): TDialogs[K] | undefined =>
     state[name] as TDialogs[K] | undefined;
