@@ -1,6 +1,7 @@
 name: Sync Wiki (reusable)
 
 on:
+  workflow_dispatch:
   workflow_call: {}
 
 jobs:
