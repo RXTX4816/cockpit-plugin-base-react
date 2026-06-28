@@ -11,6 +11,15 @@ allow-licenses:
   - 0BSD
   - Unlicense
   - CC0-1.0
-# Do not scan workflow files — Actions are not npm packages and have null
-# license metadata, which produces false "unknown license" warnings
-allow-dependencies-licenses: []
+
+# GitHub Actions referenced in workflow files are detected as dependencies but
+# have null license metadata — they are not npm packages. Allowlist them here
+# to suppress spurious "unknown license" warnings.
+# Add any new actions introduced to .github/workflows/ in the same format.
+allow-dependencies-licenses:
+  - pkg:githubactions/actions/checkout
+  - pkg:githubactions/actions/setup-node
+  - pkg:githubactions/actions/cache
+  - pkg:githubactions/actions/dependency-review-action
+  - pkg:githubactions/github/codeql-action
+  - pkg:githubactions/actions/github-script
