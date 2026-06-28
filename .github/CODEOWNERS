@@ -1,0 +1,33 @@
+# CODEOWNERS
+#
+# Each line is a pattern followed by one or more owners.
+# Owners are matched against paths in pull requests.
+# The last matching rule takes precedence.
+#
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything not matched below
+* @RXTX4816
+
+# Public source API and components
+/src/ @RXTX4816
+
+# GitHub Actions workflows — changes here affect all CI/CD pipelines
+/.github/workflows/ @RXTX4816
+
+# Publishing and release configuration
+/package.json @RXTX4816
+/.releaserc* @RXTX4816
+/semantic-release-* @RXTX4816
+
+# Shared tooling config — changes affect all downstream consumers
+/tsconfig.base.json @RXTX4816
+/eslint.config.base.js @RXTX4816
+/vitest.config.base.ts @RXTX4816
+/vitest.config.base.js @RXTX4816
+/playwright.config.base.js @RXTX4816
+/esbuild.config.base.js @RXTX4816
+
+# Security and governance documents
+/SECURITY.md @RXTX4816
+/.github/CODEOWNERS @RXTX4816
