@@ -1,0 +1,62 @@
+name: Cross-Repo Regression
+description: Report a regression caused by a base package change that broke a downstream consumer
+labels: ["bug", "cross-repo"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when a change in cockpit-plugin-base-react broke something in cockpit-compose or cockpit-caddy.
+
+  - type: dropdown
+    id: affected-repo
+    attributes:
+      label: Affected downstream repository
+      options:
+        - cockpit-compose
+        - cockpit-caddy
+        - Both
+    validations:
+      required: true
+
+  - type: input
+    id: base-version
+    attributes:
+      label: cockpit-plugin-base-react version or commit
+      placeholder: "e.g. 1.3.0 or abc1234"
+    validations:
+      required: true
+
+  - type: input
+    id: consumer-version
+    attributes:
+      label: Consumer repo version or branch
+      placeholder: "e.g. main or 2.1.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include error messages or stack traces if available.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
