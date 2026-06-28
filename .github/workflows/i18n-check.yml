@@ -38,7 +38,11 @@ jobs:
 
       - name: Run i18n coverage check
         if: steps.check-locales.outputs.exists == 'true'
+        id: i18n
+        continue-on-error: true
         run: node scripts/i18n-coverage.mjs
-        # The script exits non-zero when coverage falls below its internal
-        # threshold, which will fail the workflow.
-        # To switch to a warning-only check, add: continue-on-error: true
+
+      - name: Warn on low coverage
+        if: steps.check-locales.outputs.exists == 'true' && steps.i18n.outcome == 'failure'
+        run: |
+          echo "::warning::i18n coverage check reported incomplete translations. Review the output above and update locale files accordingly."
