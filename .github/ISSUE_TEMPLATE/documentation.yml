@@ -1,0 +1,38 @@
+name: Documentation Improvement
+description: Request a documentation addition, correction, or clarification
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for documentation improvements — README, wiki, API docs, or inline code comments.
+
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: Which document or page needs to be improved?
+      placeholder: "e.g. docs/wiki/Getting-Started.md or README.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current state
+      description: What does the documentation currently say or lack?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed improvement
+      description: What should it say or include?
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context

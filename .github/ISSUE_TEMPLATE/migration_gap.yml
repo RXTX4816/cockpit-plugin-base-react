@@ -1,0 +1,56 @@
+name: Migration Gap
+description: Report a missing or incomplete migration from a consumer repo to the base package
+labels: ["migration"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to report code that should have been migrated to cockpit-plugin-base-react but was not.
+
+  - type: dropdown
+    id: source-repo
+    attributes:
+      label: Source repository
+      description: Where does the code currently live?
+      options:
+        - cockpit-compose
+        - cockpit-caddy
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Affected version or branch
+      placeholder: "e.g. main or 1.2.3"
+    validations:
+      required: true
+
+  - type: textarea
+    id: gap
+    attributes:
+      label: Description of the gap
+      description: What functionality is missing or incompletely migrated?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected state after migration
+      description: What should the base package export or provide?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: downstream-followup
+    attributes:
+      label: Downstream follow-up required?
+      options:
+        - "No"
+        - "Yes — cockpit-compose"
+        - "Yes — cockpit-caddy"
+        - "Yes — both"
+    validations:
+      required: true
