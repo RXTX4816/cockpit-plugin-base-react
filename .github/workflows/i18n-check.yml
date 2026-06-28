@@ -26,9 +26,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check for locales directory
+        id: check-locales
+        run: |
+          if [ -d "src/i18n/locales" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No src/i18n/locales directory found — i18n check skipped. Add locale JSON files to enable coverage tracking."
+          fi
+
       - name: Run i18n coverage check
+        if: steps.check-locales.outputs.exists == 'true'
         run: node scripts/i18n-coverage.mjs
-        # The script exits with a non-zero code when coverage falls below the
-        # threshold defined in the script, failing the workflow automatically.
-        # To change from a blocking check to a warning-only check, replace this
-        # step with: continue-on-error: true
+        # The script exits non-zero when coverage falls below its internal
+        # threshold, which will fail the workflow.
+        # To switch to a warning-only check, add: continue-on-error: true
