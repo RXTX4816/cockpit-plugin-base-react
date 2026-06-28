@@ -1,0 +1,72 @@
+name: Issue Triage
+
+on:
+  issues:
+    types: [opened, reopened]
+
+jobs:
+  triage:
+    name: Auto-label and triage
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Label by issue form type
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { issue } = context.payload;
+            const body = issue.body ?? "";
+            const title = issue.title ?? "";
+            const labels = [];
+
+            // ── Cross-repo detection ─────────────────────────────────────────
+            // Flag issues that mention both this repo and a consumer repo.
+            const mentionsCrossRepo =
+              /cockpit-compose|cockpit-caddy/i.test(body) ||
+              /cross.?repo|downstream/i.test(body + title);
+            if (mentionsCrossRepo) labels.push("cross-repo");
+
+            // ── Label by keyword patterns in title / body ────────────────────
+            if (/\b(bug|error|regression|broken|fail|crash)\b/i.test(title)) {
+              labels.push("bug");
+            }
+            if (/\b(doc|docs|documentation|wiki|readme|guide)\b/i.test(title)) {
+              labels.push("documentation");
+            }
+            if (/\b(migrat|gap|missing)\b/i.test(title)) {
+              labels.push("migration");
+            }
+            if (/\b(ci|workflow|action|pipeline|lint|typecheck|test)\b/i.test(title)) {
+              labels.push("github_actions");
+            }
+            if (/\b(security|cve|vulnerability|secret|scan)\b/i.test(title)) {
+              labels.push("security");
+            }
+            if (/\b(depend|package|npm|lockfile)\b/i.test(title)) {
+              labels.push("dependencies");
+            }
+            if (/\b(base)\b/i.test(title + body)) {
+              labels.push("base");
+            }
+            if (/cockpit-compose/i.test(title + body)) {
+              labels.push("compose");
+            }
+            if (/cockpit-caddy/i.test(title + body)) {
+              labels.push("caddy");
+            }
+
+            // ── Apply labels (deduplicated) ──────────────────────────────────
+            const unique = [...new Set(labels)];
+            if (unique.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: unique,
+              });
+              console.log(`Applied labels: ${unique.join(", ")}`);
+            } else {
+              console.log("No automatic labels matched for this issue.");
+            }
