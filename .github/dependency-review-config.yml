@@ -1,0 +1,16 @@
+# Dependency review configuration
+# https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/configuring-dependency-review
+
+fail-on-severity: high
+allow-licenses:
+  - MIT
+  - Apache-2.0
+  - BSD-2-Clause
+  - BSD-3-Clause
+  - ISC
+  - 0BSD
+  - Unlicense
+  - CC0-1.0
+# Do not scan workflow files — Actions are not npm packages and have null
+# license metadata, which produces false "unknown license" warnings
+allow-dependencies-licenses: []

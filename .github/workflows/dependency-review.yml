@@ -23,5 +23,8 @@ jobs:
           fail-on-severity: high
           # Post a summary comment on the pull request
           comment-summary-in-pr: always
-          # Warn on packages with licenses incompatible with MIT
-          deny-licenses: GPL-2.0, GPL-3.0, AGPL-3.0
+          # Allow only OSI-approved permissive licenses (replaces deprecated deny-licenses)
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0
+          # Exclude workflow files — GitHub Actions are not npm packages and
+          # produce spurious "unknown license" warnings when scanned
+          config-file: ".github/dependency-review-config.yml"
