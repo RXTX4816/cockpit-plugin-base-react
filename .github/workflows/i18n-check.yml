@@ -1,0 +1,48 @@
+name: i18n Coverage Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  i18n-check:
+    name: i18n Coverage
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for locales directory
+        id: check-locales
+        run: |
+          if [ -d "src/i18n/locales" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No src/i18n/locales directory found — i18n check skipped. Add locale JSON files to enable coverage tracking."
+          fi
+
+      - name: Run i18n coverage check
+        if: steps.check-locales.outputs.exists == 'true'
+        id: i18n
+        continue-on-error: true
+        run: node scripts/i18n-coverage.mjs
+
+      - name: Warn on low coverage
+        if: steps.check-locales.outputs.exists == 'true' && steps.i18n.outcome == 'failure'
+        run: |
+          echo "::warning::i18n coverage check reported incomplete translations. Review the output above and update locale files accordingly."
