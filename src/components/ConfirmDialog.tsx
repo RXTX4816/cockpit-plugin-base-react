@@ -62,6 +62,7 @@ export function ConfirmDialog({
             variant="danger"
             isInline
             title={error}
+            component="h2"
             style={{ marginTop: body ? "var(--pf-v6-global--spacer--md)" : undefined }}
           />
         )}

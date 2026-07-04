@@ -1,5 +1,6 @@
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { axe } from "jest-axe";
 import { ToastProvider, useToast } from "./ToastProvider";
 
 function ToastTrigger({ label, message }: { label: string; message: string }) {
@@ -57,5 +58,12 @@ describe("ToastProvider", () => {
     render(<Standalone />);
     // Should not throw
     expect(() => screen.getByText("trigger")).not.toThrow();
+  });
+
+  it("has no accessibility violations with a toast shown", async () => {
+    vi.useRealTimers(); // axe's internal scan relies on real timers
+    const { container } = setup();
+    act(() => { fireEvent.click(screen.getByText("add")); });
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

@@ -11,5 +11,6 @@ This wiki covers everything you need to build, test, and ship Cockpit plugins us
 - [Components](Components.md) — UI building blocks: toasts, dialogs, logs, badges
 - [Systemd Layer](Systemd.md) — service status, control, and typed API wrappers
 - [Testing](Testing.md) — unit testing with mocked Cockpit and HTTP client
+- [Accessibility](Accessibility.md) — a11y expectations and test approach for shared components
 - [VM Testing](VM-Testing.md) — end-to-end testing with real QEMU VMs
 - [CI/CD Workflows](CI-CD.md) — reusable GitHub Actions for builds, packages, and releases
