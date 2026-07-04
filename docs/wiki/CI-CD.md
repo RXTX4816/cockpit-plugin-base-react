@@ -78,11 +78,30 @@ No inputs or secrets required beyond the default `GITHUB_TOKEN`.
 
 ---
 
+## Internal workflows (base repo only)
+
+These run only in `cockpit-plugin-base-react`'s own CI — not reusable, not something plugins call with `uses:`.
+
+### downstream-check.yml
+
+Catches breaking base changes before they reach consumers: packs the current source tree, then checks out `cockpit-compose`'s and `cockpit-caddy`'s **default branch** (a fresh `actions/checkout` with `repository:` set — both are public repos, so the default `GITHUB_TOKEN` is sufficient, no PAT needed), overrides their pinned `@rxtx4816/cockpit-plugin-base-react` with the freshly packed tarball (`npm install <tarball> --no-save`, so it doesn't touch the consumer's own `package.json`/lockfile), and runs that consumer's own `typecheck` and `build` scripts against it.
+
+Triggers on PRs to `main` that touch `src/**`, `package.json`, `*.config.base.js`, or `tsconfig.base.json`, and weekly on a schedule (to catch drift from changes landing in a consumer repo itself, not just a base PR).
+
+**This intentionally uses each consumer's default branch.** An intentional breaking base change will fail this check until the consumer is updated in lockstep — that's a real cross-repo coordination signal, not a bug. There's currently no built-in way to acknowledge/skip it for a deliberate breaking change other than merging the base PR anyway and following up in the consumer repo promptly; a label-gated `continue-on-error` would be a reasonable follow-up if this becomes a recurring need.
+
+### pack-smoke.yml / visual-regression.yml
+
+See [Pack smoke tests](Testing.md#pack-smoke-tests) and [Visual Regression Testing](Testing.md#visual-regression-testing-internal-only).
+
+---
+
 ## Release checklist (base package)
 
-`src/__contract__/exports.test.ts` (runtime) and `src/__contract__/typecheck-fixture.ts` (type-level, picked up automatically by `npm run typecheck`) guard every public subpath's exports against source — see [Export contract tests](Testing.md#export-contract-tests). `npm run test:pack` (see [Pack smoke tests](Testing.md#pack-smoke-tests)) does the same thing against the actual packed npm tarball, catching `"files"` array omissions or export-path mistakes that only surface post-pack. Both run automatically in CI (path-filtered), but nothing currently gates a real `npm publish` on them — as a manual pre-publish step:
+`src/__contract__/exports.test.ts` (runtime) and `src/__contract__/typecheck-fixture.ts` (type-level, picked up automatically by `npm run typecheck`) guard every public subpath's exports against source — see [Export contract tests](Testing.md#export-contract-tests). `npm run test:pack` (see [Pack smoke tests](Testing.md#pack-smoke-tests)) does the same thing against the actual packed npm tarball, catching `"files"` array omissions or export-path mistakes that only surface post-pack. `downstream-check.yml` (above) proves the packed tarball also builds and typechecks cleanly in both real consumers. All three run automatically in CI (path-filtered), but nothing currently gates a real `npm publish` on them — as a manual pre-publish step:
 
 - [ ] `npm run test:pack` passes locally against the version about to be published.
+- [ ] `downstream-check.yml`'s latest scheduled/PR run is green for both `cockpit-compose` and `cockpit-caddy` (or, if it's currently red due to an intentional breaking change, the consumer-side follow-up PR is ready to merge immediately after this release).
 
 ---
 
