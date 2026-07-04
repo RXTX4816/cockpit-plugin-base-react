@@ -206,22 +206,30 @@ This repo has its own lightweight visual regression suite for shared UI componen
 - `playwright.config.visual.ts` starts that dev server as a Playwright `webServer` and points Chromium at it.
 - `src/visual/visual.spec.ts` navigates to each view and calls `toHaveScreenshot()` — full-page for things that fill the viewport (dialogs, toast stacks), or a `data-testid="fixture-root"` locator for small elements like badges (a full-page screenshot dilutes the diff ratio enough that a real change to a small element can go undetected).
 
-### Running locally
+### Running locally — must use the pinned Playwright Docker image
+
+Font rendering and anti-aliasing differ enough between environments — even different Linux distros — that baselines generated on a bare host will fail in CI (or vice versa). Baselines **must** be generated (and ideally verified) inside the exact Playwright Docker image CI uses, pinned in `.github/workflows/visual-regression.yml`:
 
 ```bash
-npm run test:visual           # compare against committed baselines in src/visual/__screenshots__/
-npm run test:visual:update    # regenerate baselines after an intentional visual change
+docker run --rm -v "$(pwd)":/work -w /work --ipc=host \
+  mcr.microsoft.com/playwright:v1.61.1-noble \
+  npm run test:visual:update
 ```
+
+Swap `test:visual:update` for `test:visual` to just verify without regenerating. If you bump `@playwright/test`'s version, update the image tag in both the `docker run` command above and the CI workflow's `container:` block to match, then regenerate baselines through the new image.
 
 Review regenerated baseline images in the diff before committing — don't blindly accept `--update-snapshots` output.
 
 ### A real flakiness pitfall found during the spike
 
-Playwright's default `toHaveScreenshot()` per-pixel `threshold` (0.2) uses a perceptual/luminance-based comparison (pixelmatch's YIQ algorithm). Two PatternFly pastel label colors (e.g. `green` vs `purple` background fills) can have similar luminance despite being a different hue, and the default threshold let a deliberately-wrong color pass undetected. `playwright.config.visual.ts` lowers `threshold` to `0.05` to catch hue-only changes — this is safe here because these fixtures are flat-color PatternFly components with no photographic content, so it shouldn't introduce anti-aliasing false positives. If you add a fixture with real gradients/photos, re-evaluate this threshold.
+Two, actually, both found by deliberately breaking a badge's color and confirming the test caught it (twice — the first attempt silently passed):
+
+1. **Cross-environment font rendering.** Baselines generated on a bare local machine failed in CI even with no real change, because CI (`ubuntu-latest`) renders fonts slightly differently than the local host. Fixed by generating and running inside the pinned Playwright Docker image everywhere (see above), so "local" and "CI" are the same environment.
+2. **Perceptual color threshold.** Playwright's default `toHaveScreenshot()` per-pixel `threshold` (0.2) uses a perceptual/luminance-based comparison (pixelmatch's YIQ algorithm). Two PatternFly pastel label colors (e.g. `green` vs `purple` background fills) can have similar luminance despite being a different hue, and the default threshold let a deliberately-wrong color pass undetected. `playwright.config.visual.ts` lowers `threshold` to `0.05` to catch hue-only changes — safe here because these fixtures are flat-color PatternFly components with no photographic content. If you add a fixture with real gradients/photos, re-evaluate this threshold.
 
 ### CI
 
-`.github/workflows/visual-regression.yml` runs only on PRs touching `src/components/**`, `src/systemd/**`, or `src/visual/**` — not on every PR. It uploads the Playwright HTML report (with diff images) as an artifact on failure. This job is **not required to merge** — a maintainer should look at the diff report and manually re-run `test:visual:update` if the change is intentional.
+`.github/workflows/visual-regression.yml` runs only on PRs touching `src/components/**`, `src/systemd/**`, or `src/visual/**` — not on every PR — inside the same pinned Docker image baselines are generated with. It uploads the Playwright HTML report (with diff images) as an artifact on failure. This job is **not required to merge** — a maintainer should look at the diff report and manually re-run `test:visual:update` (via Docker, per above) if the change is intentional.
 
 ### Adding more components
 
