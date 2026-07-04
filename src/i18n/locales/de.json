@@ -1,0 +1,44 @@
+{
+  "errorBoundary": {
+    "title": "Etwas ist schiefgelaufen"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Protokolle durchsuchen…",
+    "emptyMessage": "Keine Protokolleinträge.",
+    "noMatchesMessage": "Keine übereinstimmenden Einträge.",
+    "errorTitle": "Protokolle konnten nicht geladen werden",
+    "refreshAriaLabel": "Aktualisieren",
+    "retry": "Erneut versuchen",
+    "linesSuffix": "Zeilen"
+  },
+  "externalLinkModal": {
+    "title": "Externen Link öffnen",
+    "ariaLabel": "Bestätigung für externen Link",
+    "warningTitle": "Sie verlassen diese Anwendung",
+    "continueButton": "Fortfahren"
+  },
+  "common": {
+    "cancel": "Abbrechen"
+  },
+  "service": {
+    "start": "Starten",
+    "stop": "Stoppen",
+    "restart": "Neustarten",
+    "reload": "Neu laden",
+    "confirm_action": "Bestätigen",
+    "confirm_start_title": "Dienst starten?",
+    "confirm_start_body": "Der Dienst wird gestartet.",
+    "confirm_stop_title": "Dienst stoppen?",
+    "confirm_stop_body": "Der Dienst wird gestoppt.",
+    "confirm_restart_title": "Dienst neu starten?",
+    "confirm_restart_body": "Der Dienst wird neu gestartet.",
+    "confirm_reload_title": "Dienst neu laden?",
+    "confirm_reload_body": "Die Dienstkonfiguration wird neu geladen."
+  },
+  "toast": {
+    "service_started": "Dienst gestartet",
+    "service_stopped": "Dienst gestoppt",
+    "service_restarted": "Dienst neu gestartet",
+    "service_reloaded": "Konfiguration neu geladen"
+  }
+}

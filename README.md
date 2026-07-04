@@ -73,6 +73,16 @@ bootstrapPlugin(App);
 
 For full setup guidance, config sharing, and workflow integration see the [wiki](docs/wiki/Home.md).
 
+## i18n coverage
+
+Translation completeness for `src/i18n/locales/`, checked on every push by `scripts/i18n-coverage.mjs`.
+
+<!-- i18n-coverage-start -->
+| Coverage | Languages |
+|---|---|
+| 100% | English (`en`) — source, `de`, `pl` |
+<!-- i18n-coverage-end -->
+
 ## Documentation
 
 **[API Reference](https://rxtx4816.github.io/cockpit-plugin-base-react/)** — auto-generated from source, updated on every release.

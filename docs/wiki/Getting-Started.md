@@ -48,6 +48,27 @@ export { i18n } from "@rxtx4816/cockpit-plugin-base-react/i18n";
 
 `buildLocaleResources` wraps each locale's plain translation object in the `{ translation: ... }` shape `initCockpitI18n` expects, so you don't have to hand-wrap every locale yourself. This sets up i18next with Cockpit's locale loading conventions so `useTranslation()` works throughout your plugin.
 
+### Inheriting base component translations
+
+Shared components (`ErrorBoundary`, `LogViewer`, `ExternalLinkModal`, `ConfirmDialog`, ...) render sensible English text out of the box even if you do nothing further. To get real translations for those strings in your other locales, spread `baseTranslations` into your own resources:
+
+```ts
+import { initCockpitI18n, buildLocaleResources, baseTranslations } from "@rxtx4816/cockpit-plugin-base-react/i18n";
+import en from "./locales/en.json";
+import de from "./locales/de.json";
+
+initCockpitI18n(
+  buildLocaleResources({
+    en: { ...baseTranslations.en, ...en },
+    de: { ...baseTranslations.de, ...de },
+  }),
+);
+
+export { i18n } from "@rxtx4816/cockpit-plugin-base-react/i18n";
+```
+
+Your own keys always win on collision — put them last in the spread. Locales `baseTranslations` doesn't cover simply fall back to the English base strings via i18next's `fallbackLng`.
+
 ---
 
 ## Shared tooling config

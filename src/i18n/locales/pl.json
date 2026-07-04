@@ -1,0 +1,44 @@
+{
+  "errorBoundary": {
+    "title": "Coś poszło nie tak"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Szukaj w logach…",
+    "emptyMessage": "Brak wpisów w logu.",
+    "noMatchesMessage": "Brak pasujących wpisów.",
+    "errorTitle": "Nie udało się załadować logów",
+    "refreshAriaLabel": "Odśwież",
+    "retry": "Ponów",
+    "linesSuffix": "wierszy"
+  },
+  "externalLinkModal": {
+    "title": "Otwórz link zewnętrzny",
+    "ariaLabel": "Potwierdzenie linku zewnętrznego",
+    "warningTitle": "Zamierzasz opuścić tę aplikację",
+    "continueButton": "Kontynuuj"
+  },
+  "common": {
+    "cancel": "Anuluj"
+  },
+  "service": {
+    "start": "Uruchom",
+    "stop": "Zatrzymaj",
+    "restart": "Uruchom ponownie",
+    "reload": "Przeładuj",
+    "confirm_action": "Potwierdź",
+    "confirm_start_title": "Uruchomić usługę?",
+    "confirm_start_body": "Usługa zostanie uruchomiona.",
+    "confirm_stop_title": "Zatrzymać usługę?",
+    "confirm_stop_body": "Usługa zostanie zatrzymana.",
+    "confirm_restart_title": "Uruchomić usługę ponownie?",
+    "confirm_restart_body": "Usługa zostanie uruchomiona ponownie.",
+    "confirm_reload_title": "Przeładować konfigurację usługi?",
+    "confirm_reload_body": "Konfiguracja usługi zostanie przeładowana."
+  },
+  "toast": {
+    "service_started": "Usługa uruchomiona",
+    "service_stopped": "Usługa zatrzymana",
+    "service_restarted": "Usługa uruchomiona ponownie",
+    "service_reloaded": "Konfiguracja przeładowana"
+  }
+}

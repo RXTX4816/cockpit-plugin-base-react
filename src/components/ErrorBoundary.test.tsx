@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import i18next from "i18next";
 import { ErrorBoundary } from "./ErrorBoundary";
 
 function Bomb({ shouldThrow }: { shouldThrow: boolean }) {
@@ -46,5 +47,20 @@ describe("ErrorBoundary", () => {
       </ErrorBoundary>,
     );
     expect(screen.getByText("Something went wrong")).toBeInTheDocument();
+  });
+
+  it("uses the translated string once i18next is initialized", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    await i18next.init({
+      lng: "en",
+      fallbackLng: "en",
+      resources: { en: { translation: { errorBoundary: { title: "Etwas ist schiefgelaufen" } } } },
+    });
+    render(
+      <ErrorBoundary>
+        <Bomb shouldThrow={true} />
+      </ErrorBoundary>,
+    );
+    expect(screen.getByText("Etwas ist schiefgelaufen")).toBeInTheDocument();
   });
 });

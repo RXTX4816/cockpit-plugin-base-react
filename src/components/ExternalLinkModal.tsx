@@ -6,6 +6,7 @@ import {
   Button,
   Alert,
 } from "@patternfly/react-core";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   url: string;
@@ -20,12 +21,15 @@ interface Props {
 }
 
 export function ExternalLinkModal({ url, onClose, labels = {} }: Props) {
+  const { t, i18n } = useTranslation();
+  const tf = (key: string, fallback: string) => (i18n.isInitialized ? t(key, fallback) : fallback);
+
   const {
-    title = "Open external link",
-    ariaLabel = "External link confirmation",
-    warningTitle = "You are about to leave this application",
-    continueButton = "Continue",
-    cancelButton = "Cancel",
+    title = tf("externalLinkModal.title", "Open external link"),
+    ariaLabel = tf("externalLinkModal.ariaLabel", "External link confirmation"),
+    warningTitle = tf("externalLinkModal.warningTitle", "You are about to leave this application"),
+    continueButton = tf("externalLinkModal.continueButton", "Continue"),
+    cancelButton = tf("common.cancel", "Cancel"),
   } = labels;
 
   function handleContinue() {
