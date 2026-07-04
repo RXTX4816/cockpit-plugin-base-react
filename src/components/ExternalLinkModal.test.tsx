@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import i18next from "i18next";
+import { initReactI18next } from "react-i18next";
 import { ExternalLinkModal } from "./ExternalLinkModal";
 
 describe("ExternalLinkModal", () => {
@@ -35,5 +37,23 @@ describe("ExternalLinkModal", () => {
     );
     expect(screen.getByRole("button", { name: "Open it" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Nope" })).toBeInTheDocument();
+  });
+
+  it("uses translated defaults once i18next is initialized", async () => {
+    await i18next.use(initReactI18next).init({
+      lng: "en",
+      fallbackLng: "en",
+      resources: {
+        en: {
+          translation: {
+            externalLinkModal: { continueButton: "Weiter" },
+            common: { cancel: "Abbrechen" },
+          },
+        },
+      },
+    });
+    render(<ExternalLinkModal url="https://example.com" onClose={vi.fn()} />);
+    expect(screen.getByRole("button", { name: "Weiter" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Abbrechen" })).toBeInTheDocument();
   });
 });

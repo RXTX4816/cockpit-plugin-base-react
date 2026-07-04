@@ -1,5 +1,8 @@
 import { Component, type ReactNode } from "react";
 import { EmptyState, EmptyStateBody } from "@patternfly/react-core";
+import { i18n } from "../i18n";
+
+const DEFAULT_TITLE = "Something went wrong";
 
 interface Props {
   children: ReactNode;
@@ -25,7 +28,13 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.error) {
       return (
-        <EmptyState headingLevel="h2" titleText={this.props.fallbackTitle ?? "Something went wrong"}>
+        <EmptyState
+          headingLevel="h2"
+          titleText={
+            this.props.fallbackTitle
+            ?? (i18n.isInitialized ? i18n.t("errorBoundary.title", DEFAULT_TITLE) : DEFAULT_TITLE)
+          }
+        >
           <EmptyStateBody>{this.state.error.message}</EmptyStateBody>
         </EmptyState>
       );

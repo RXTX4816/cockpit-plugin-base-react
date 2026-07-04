@@ -13,6 +13,7 @@ import {
   ToolbarItem,
   ToolbarGroup,
 } from "@patternfly/react-core";
+import { useTranslation } from "react-i18next";
 import { colorizeJson, extractJsonPayload, highlightWithSearch } from "../lib/logParser";
 
 interface Props {
@@ -114,13 +115,23 @@ export function LogViewer({
   downloadFileName,
   filterValue,
   onFilterChange,
-  searchPlaceholder = "Search logs…",
-  emptyMessage = "No log entries.",
-  noMatchesMessage = "No matching entries.",
-  errorTitle = "Failed to load logs",
-  refreshAriaLabel = "Refresh",
+  searchPlaceholder,
+  emptyMessage,
+  noMatchesMessage,
+  errorTitle,
+  refreshAriaLabel,
   extraToolbarItems,
 }: Props) {
+  const { t, i18n } = useTranslation();
+  const tf = (key: string, fallback: string) => (i18n.isInitialized ? t(key, fallback) : fallback);
+  const resolvedSearchPlaceholder = searchPlaceholder ?? tf("logViewer.searchPlaceholder", "Search logs…");
+  const resolvedEmptyMessage = emptyMessage ?? tf("logViewer.emptyMessage", "No log entries.");
+  const resolvedNoMatchesMessage = noMatchesMessage ?? tf("logViewer.noMatchesMessage", "No matching entries.");
+  const resolvedErrorTitle = errorTitle ?? tf("logViewer.errorTitle", "Failed to load logs");
+  const resolvedRefreshAriaLabel = refreshAriaLabel ?? tf("logViewer.refreshAriaLabel", "Refresh");
+  const retryLabel = tf("logViewer.retry", "Retry");
+  const linesSuffix = tf("logViewer.linesSuffix", "lines");
+
   const [internalSearch, setInternalSearch] = useState(filterValue ?? "");
   const [debouncedSearch, setDebouncedSearch] = useState(filterValue ?? "");
   const [isRegex, setIsRegex] = useState(false);
@@ -225,8 +236,8 @@ export function LogViewer({
         <StackItem>
           <Alert
             variant="danger"
-            title={errorTitle}
-            actionLinks={onRefresh && <Button variant="link" onClick={onRefresh}>Retry</Button>}
+            title={resolvedErrorTitle}
+            actionLinks={onRefresh && <Button variant="link" onClick={onRefresh}>{retryLabel}</Button>}
           >
             {error}
           </Alert>
@@ -254,7 +265,7 @@ export function LogViewer({
               <ToolbarItem>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
                   <SearchInput
-                    placeholder={searchPlaceholder}
+                    placeholder={resolvedSearchPlaceholder}
                     value={internalSearch}
                     onChange={(_e, v) => setSearch(v)}
                     onClear={() => setSearch("")}
@@ -272,7 +283,7 @@ export function LogViewer({
               </ToolbarItem>
               <ToolbarItem>
                 <span style={{ fontSize: "0.75rem", color: "var(--pf-v6-global--Color--200)" }}>
-                  {lineCount} lines
+                  {lineCount} {linesSuffix}
                 </span>
               </ToolbarItem>
             </ToolbarGroup>
@@ -303,7 +314,7 @@ export function LogViewer({
               )}
               {onRefresh && (
                 <ToolbarItem>
-                  <Button variant="plain" size="sm" onClick={onRefresh} aria-label={refreshAriaLabel} title={refreshAriaLabel}>↺</Button>
+                  <Button variant="plain" size="sm" onClick={onRefresh} aria-label={resolvedRefreshAriaLabel} title={resolvedRefreshAriaLabel}>↺</Button>
                 </ToolbarItem>
               )}
             </ToolbarGroup>
@@ -316,7 +327,7 @@ export function LogViewer({
           <Spinner />
         ) : filtered.length === 0 ? (
           <p style={{ color: "var(--pf-v6-global--Color--200)" }}>
-            {lines.length === 0 ? emptyMessage : noMatchesMessage}
+            {lines.length === 0 ? resolvedEmptyMessage : resolvedNoMatchesMessage}
           </p>
         ) : (
           <div ref={logRef} style={VIEWER_STYLE}>

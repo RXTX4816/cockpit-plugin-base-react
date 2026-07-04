@@ -1,0 +1,44 @@
+{
+  "errorBoundary": {
+    "title": "Something went wrong"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Search logs…",
+    "emptyMessage": "No log entries.",
+    "noMatchesMessage": "No matching entries.",
+    "errorTitle": "Failed to load logs",
+    "refreshAriaLabel": "Refresh",
+    "retry": "Retry",
+    "linesSuffix": "lines"
+  },
+  "externalLinkModal": {
+    "title": "Open external link",
+    "ariaLabel": "External link confirmation",
+    "warningTitle": "You are about to leave this application",
+    "continueButton": "Continue"
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
+  "service": {
+    "start": "Start",
+    "stop": "Stop",
+    "restart": "Restart",
+    "reload": "Reload",
+    "confirm_action": "Confirm",
+    "confirm_start_title": "Start service?",
+    "confirm_start_body": "The service will be started.",
+    "confirm_stop_title": "Stop service?",
+    "confirm_stop_body": "The service will be stopped.",
+    "confirm_restart_title": "Restart service?",
+    "confirm_restart_body": "The service will be restarted.",
+    "confirm_reload_title": "Reload service?",
+    "confirm_reload_body": "The service configuration will be reloaded."
+  },
+  "toast": {
+    "service_started": "Service started",
+    "service_stopped": "Service stopped",
+    "service_restarted": "Service restarted",
+    "service_reloaded": "Configuration reloaded"
+  }
+}

@@ -1,5 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import i18next from "i18next";
+import { initReactI18next } from "react-i18next";
 import { ConfirmDialog } from "./ConfirmDialog";
 
 function setup(overrides: Partial<Parameters<typeof ConfirmDialog>[0]> = {}) {
@@ -57,5 +59,15 @@ describe("ConfirmDialog", () => {
   it("renders body content", () => {
     setup({ body: <p>Are you sure you want to delete this?</p> });
     expect(screen.getByText("Are you sure you want to delete this?")).toBeInTheDocument();
+  });
+
+  it("uses the translated cancel label once i18next is initialized", async () => {
+    await i18next.use(initReactI18next).init({
+      lng: "en",
+      fallbackLng: "en",
+      resources: { en: { translation: { common: { cancel: "Abbrechen" } } } },
+    });
+    setup();
+    expect(screen.getByRole("button", { name: "Abbrechen" })).toBeInTheDocument();
   });
 });
