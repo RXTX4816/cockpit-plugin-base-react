@@ -37,6 +37,21 @@ const cockpitDetector = {
  *
  * @param resources - Translation resources keyed by locale. See {@link LocaleResources}.
  */
+/**
+ * Wraps a plain `{ locale: translationObject }` map in the `{ translation: X }`
+ * shape {@link initCockpitI18n} expects, so consumers don't hand-wrap every locale.
+ *
+ * @example
+ * ```ts
+ * initCockpitI18n(buildLocaleResources({ en, de }));
+ * ```
+ */
+export function buildLocaleResources(locales: Record<string, Record<string, unknown>>): LocaleResources {
+  return Object.fromEntries(
+    Object.entries(locales).map(([code, translation]) => [code, { translation }]),
+  );
+}
+
 export function initCockpitI18n(resources: LocaleResources): void {
   void i18n
     .use({ type: "languageDetector", ...cockpitDetector } as Parameters<typeof i18n.use>[0])
