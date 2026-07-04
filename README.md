@@ -85,6 +85,10 @@ For full setup guidance, config sharing, and workflow integration see the [wiki]
 - [VM Testing](docs/wiki/VM-Testing.md)
 - [CI/CD Workflows](docs/wiki/CI-CD.md)
 
+## Security
+
+Secrets must never be committed to this repository. GitHub Secret Scanning and Push Protection are active — see [SECURITY.md](SECURITY.md) for the vulnerability reporting process and the false-positive bypass flow if a push is blocked.
+
 ## License
 
 MIT © 2026 RXTX4816
