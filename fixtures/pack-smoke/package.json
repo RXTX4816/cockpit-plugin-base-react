@@ -1,0 +1,29 @@
+{
+  "name": "pack-smoke-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "smoke": "esbuild smoke.tsx --bundle --platform=node --format=esm --jsx=automatic --loader:.css=empty --outfile=smoke.bundle.mjs && node smoke.bundle.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rxtx4816/cockpit-plugin-base-react": "file:../../rxtx4816-cockpit-plugin-base-react.tgz"
+  },
+  "devDependencies": {
+    "@codemirror/lint": "^6.9.7",
+    "@codemirror/merge": "^6.12.2",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@patternfly/react-core": "^6.6.0",
+    "@patternfly/react-icons": "^6.6.0",
+    "@types/node": "^26.0.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "codemirror": "^6.0.2",
+    "i18next": "^26.3.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-i18next": "^17.0.8",
+    "esbuild": "^0.28.1",
+    "typescript": "^6.0.3"
+  }
+}

@@ -79,7 +79,21 @@ npm run test:watch  # watch mode
 
 `src/__contract__/exports.test.ts` protects the public API surface (this is internal to the base repo itself, not something consumers need to set up). It holds a manifest of every JS/TS-importable subpath in `package.json`'s `"exports"` map and the specific named exports each one must keep providing, then dynamically imports each and asserts those names exist. `src/__contract__/typecheck-fixture.ts` does the type-level equivalent — it's picked up automatically by `npm run typecheck` since that already covers all of `src/**/*`.
 
-**Adding, renaming, or removing a public export requires updating both files** — that's the point: it turns an accidental break into a loud, specific test failure instead of silent breakage a consumer discovers later. Non-module subpaths referenced by file path rather than imported (`./log-tokens.css`, `./tsconfig.base.json`) are intentionally excluded — those are covered by the packed-artifact smoke test ([#31](https://github.com/RXTX4816/cockpit-plugin-base-react/issues/31)) instead.
+**Adding, renaming, or removing a public export requires updating both files** — that's the point: it turns an accidental break into a loud, specific test failure instead of silent breakage a consumer discovers later. Non-module subpaths referenced by file path rather than imported (`./log-tokens.css`, `./tsconfig.base.json`) are intentionally excluded — those are covered by the pack smoke test below instead.
+
+### Pack smoke tests
+
+Export contract tests run against source — they can't catch packaging mistakes that only exist in the actual published artifact (a file missing from `"files"`, a broken `"exports"` path, bad type resolution once installed as a real dependency rather than linked source). `npm run test:pack` (`scripts/run-pack-smoke.mjs`) does:
+
+1. `npm pack` the current source tree into a real `.tgz`.
+2. `npm install` that tarball into `fixtures/pack-smoke/` as an actual dependency (not source, not `yalc`).
+3. Bundle `fixtures/pack-smoke/smoke.tsx` with esbuild (`--loader:.css=empty`, since some components import CSS and a plain Node/`tsx` run — unlike a real consumer's bundler — doesn't handle that) and run the bundle under Node, asserting the main supported subpaths (root, `i18n`, `components`, `systemd`, `hooks/useAsyncAction`, `testing/helpers`) resolve with their expected exports present.
+4. `tsc --noEmit` inside the fixture (extending `tsconfig.base.json` from the installed package, exactly like a real consumer) — `fixtures/pack-smoke/type-check-only.ts` additionally covers `./dark-theme`, which touches `window`/`document` at module load time and so can't safely run under plain Node regardless of packaging correctness.
+5. Clean up the tarball, `node_modules`, lockfile, and esbuild output regardless of pass/fail.
+
+This is why `.npmignore` doesn't work here and isn't used: **when `package.json` has a `"files"` array, npm ignores `.npmignore`/`.gitignore` for anything that array already matches** — exclusions have to be negation patterns inside `"files"` itself (e.g. `"!src/**/*.test.ts"`). Discovered because the first `npm pack --dry-run` shipped all 190+ test files and the internal visual-regression harness (screenshots included) before `"files"` was tightened.
+
+Runs in CI via `.github/workflows/pack-smoke.yml`, path-filtered to files that affect packaging or the main export surface.
 
 ---
 

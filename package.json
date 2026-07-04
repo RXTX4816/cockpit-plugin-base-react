@@ -140,7 +140,11 @@
     "eslint.config.base.js",
     "vitest.config.base.js",
     "playwright.config.base.js",
-    "esbuild.config.base.js"
+    "esbuild.config.base.js",
+    "!src/**/*.test.ts",
+    "!src/**/*.test.tsx",
+    "!src/__contract__/**",
+    "!src/visual/**"
   ],
   "bin": {
     "cockpit-test-vm": "./scripts/test-vm.sh",
@@ -153,6 +157,7 @@
     "test:watch": "vitest",
     "test:visual": "playwright test --config playwright.config.visual.ts",
     "test:visual:update": "playwright test --config playwright.config.visual.ts --update-snapshots",
+    "test:pack": "node scripts/run-pack-smoke.mjs",
     "yalc": "yalc push",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch"
