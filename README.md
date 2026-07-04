@@ -88,6 +88,7 @@ Translation completeness for `src/i18n/locales/`, checked on every push by `scri
 **[API Reference](https://rxtx4816.github.io/cockpit-plugin-base-react/)** — auto-generated from source, updated on every release.
 
 - [Getting Started](docs/wiki/Getting-Started.md)
+- [Consumer Guide](docs/wiki/Consumer-Guide.md) — import patterns, stability, and upgrade checklist for plugin maintainers
 - [Hooks](docs/wiki/Hooks.md)
 - [Components](docs/wiki/Components.md)
 - [Systemd Layer](docs/wiki/Systemd.md)
