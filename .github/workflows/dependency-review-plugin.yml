@@ -1,0 +1,45 @@
+name: Dependency Review (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      fail-on-severity:
+        description: "Minimum severity that fails the check (e.g. low, moderate, high, critical)"
+        required: false
+        type: string
+        default: "high"
+      allow-licenses:
+        description: "Comma-separated list of allowed SPDX license identifiers"
+        required: false
+        type: string
+        default: "MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0"
+      allow-dependencies-licenses:
+        description: "Comma-separated list of packages (in purl format) excluded from license checks"
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: ${{ inputs.fail-on-severity }}
+          # Post a summary comment on the pull request
+          comment-summary-in-pr: always
+          # Allow only OSI-approved permissive licenses (replaces deprecated deny-licenses)
+          allow-licenses: ${{ inputs.allow-licenses }}
+          # Excludes specific packages (in purl format) from license checks —
+          # e.g. GitHub Actions, which are not npm packages and produce
+          # spurious "unknown license" warnings when scanned
+          allow-dependencies-licenses: ${{ inputs.allow-dependencies-licenses }}
