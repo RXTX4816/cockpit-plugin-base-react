@@ -1,0 +1,44 @@
+name: Visual Regression
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/components/**"
+      - "src/systemd/**"
+      - "src/visual/**"
+      - "playwright.config.visual.ts"
+
+jobs:
+  visual-regression:
+    name: Visual Regression
+    runs-on: ubuntu-latest
+    # Pinned to the same Playwright Docker image used to generate the committed
+    # baselines (src/visual/__screenshots__/) — font rendering/anti-aliasing
+    # differs enough between environments (even different Linux distros) that
+    # baselines generated outside this exact image will fail here. When
+    # bumping the @playwright/test version, update this tag to match and
+    # regenerate baselines via the same image (see docs/wiki/Testing.md).
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      options: --ipc=host
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run visual regression tests
+        run: npm run test:visual
+
+      - name: Upload diff report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-report
+          path: playwright-report/
+          retention-days: 14
