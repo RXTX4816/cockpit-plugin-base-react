@@ -21,10 +21,20 @@ export function extractJsonPayload(line: string): { prefix: string; obj: Record<
 }
 
 // Matches JSON strings (with optional trailing colon = key), numbers, booleans, null.
-const JSON_TOKEN_RE = /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b|(true|false|null)/g;
+// The string and number branches are written to avoid ambiguous backtracking paths
+// (see #51 / CodeQL js/polynomial-redos): each iteration of the string branch must
+// consume an escape before a run of plain characters, and the number branch can't
+// have \d+ and \.\d+ both attempt to match the same digits.
+const JSON_TOKEN_RE = /("[^"\\]*(?:\\.[^"\\]*)*")(\s*:)?|(-?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)|(true|false|null)/g;
+
+// Defense in depth alongside the unambiguous JSON_TOKEN_RE above: bounds worst-case
+// regex work even against malformed (e.g. unterminated-string) input that could never
+// come from JSON.stringify but isn't ruled out for future callers of this function.
+const MAX_COLORIZE_LENGTH = 20000;
 
 /** Renders a pretty-printed JSON string with syntax coloring. Does not apply search highlighting. */
 export function colorizeJson(json: string): ReactNode {
+  if (json.length > MAX_COLORIZE_LENGTH) return json;
   const parts: ReactNode[] = [];
   let last = 0;
   let k = 0;
