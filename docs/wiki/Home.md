@@ -14,3 +14,4 @@ This wiki covers everything you need to build, test, and ship Cockpit plugins us
 - [Accessibility](Accessibility.md) — a11y expectations and test approach for shared components
 - [VM Testing](VM-Testing.md) — end-to-end testing with real QEMU VMs
 - [CI/CD Workflows](CI-CD.md) — reusable GitHub Actions for builds, packages, and releases
+- [Compatibility](Compatibility.md) — version matrix and upgrade policy across base, compose, and caddy
