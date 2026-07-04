@@ -1,0 +1,74 @@
+name: Downstream Compatibility
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "package.json"
+      - "*.config.base.js"
+      - "tsconfig.base.json"
+  schedule:
+    # Weekly, to catch drift from changes landing in the consumer repos
+    # themselves rather than in a base PR.
+    - cron: "0 9 * * 1"
+
+jobs:
+  pack:
+    name: Build packed tarball
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - run: npm ci
+
+      - run: npm pack --pack-destination /tmp/base-tarball
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: base-tarball
+          path: /tmp/base-tarball/*.tgz
+
+  downstream-check:
+    name: ${{ matrix.repo }}
+    needs: pack
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [cockpit-compose, cockpit-caddy]
+    steps:
+      - name: Checkout ${{ matrix.repo }} (default branch)
+        uses: actions/checkout@v7
+        with:
+          repository: RXTX4816/${{ matrix.repo }}
+          path: consumer
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: base-tarball
+          path: /tmp/base-tarball
+
+      - name: Install ${{ matrix.repo }} dependencies (published base)
+        working-directory: consumer
+        run: npm ci
+
+      - name: Override base with the freshly packed tarball
+        working-directory: consumer
+        run: npm install "$(ls /tmp/base-tarball/*.tgz)" --no-save
+
+      - name: Typecheck ${{ matrix.repo }} against packed base
+        working-directory: consumer
+        run: npm run typecheck
+
+      - name: Build ${{ matrix.repo }} against packed base
+        working-directory: consumer
+        run: npm run build
