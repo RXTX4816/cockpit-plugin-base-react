@@ -80,7 +80,7 @@ No inputs or secrets required beyond the default `GITHUB_TOKEN`.
 
 ## Release checklist (base package)
 
-Until export/pack contract tests exist to automate this ([#30](https://github.com/RXTX4816/cockpit-plugin-base-react/issues/30), [#31](https://github.com/RXTX4816/cockpit-plugin-base-react/issues/31)), manually verify type resolution before publishing:
+`src/__contract__/exports.test.ts` (runtime) and `src/__contract__/typecheck-fixture.ts` (type-level, picked up automatically by `npm run typecheck`) now guard every public subpath's exports — see [Export contract tests](Testing.md#export-contract-tests). Until the packed-artifact smoke test exists too ([#31](https://github.com/RXTX4816/cockpit-plugin-base-react/issues/31)), also manually verify against a real packed tarball before publishing:
 
 - [ ] Root import (`import { ... } from "@rxtx4816/cockpit-plugin-base-react"`) resolves correctly in `tsc --noEmit` and in-editor, in a consumer project (e.g. `cockpit-caddy`/`cockpit-compose` linked locally via `yalc`).
 
