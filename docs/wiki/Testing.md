@@ -18,20 +18,20 @@ export default createVitestConfig();
 ### Test utilities
 
 ```ts
-import { mockCockpit, mockHttpClient } from "@rxtx4816/cockpit-plugin-base-react/testing/helpers";
+import {
+  mockProcess, mockHttpClient, mockCockpitFile, mockCockpitPermission, mockCockpitUser,
+} from "@rxtx4816/cockpit-plugin-base-react/testing/helpers";
 ```
 
-#### mockCockpit
+Stub the `cockpit` global yourself (e.g. `vi.stubGlobal("cockpit", { spawn: vi.fn(), file: vi.fn(), ... })`), then use these helpers to control what individual methods return:
 
-Returns an in-memory mock of the `cockpit` browser global. Stubs out `cockpit.spawn`, `cockpit.file`, `cockpit.http`, and channel creation so tests never attempt real system calls.
+#### mockProcess
+
+Returns a mock `CockpitProcess` (the object `cockpit.spawn()` returns) resolving to given output, or rejecting with an error.
 
 ```ts
-beforeEach(() => {
-  vi.stubGlobal("cockpit", mockCockpit());
-});
+vi.spyOn(cockpit, "spawn").mockReturnValue(mockProcess("hello\nworld\n"));
 ```
-
-Individual spawn calls can be configured to return specific output or to reject, letting you test both success and error paths.
 
 #### mockHttpClient
 
@@ -43,12 +43,43 @@ const client = mockHttpClient({ "/api/status": '{"running": true}' });
 
 `get`, `post`, and `request` are all `vi.fn()` instances, so you can assert call counts and arguments with standard Vitest matchers.
 
+#### mockCockpitFile
+
+Returns a mock `CockpitFile` (what `cockpit.file()` returns) resolving to given content, or `null` to simulate a missing file.
+
+```ts
+vi.spyOn(cockpit, "file").mockReturnValue(mockCockpitFile("[Unit]\nDescription=test\n"));
+vi.spyOn(cockpit, "file").mockReturnValue(mockCockpitFile(null)); // missing file
+```
+
+#### mockCockpitPermission
+
+Returns a mock `CockpitPermission` (what `cockpit.permission()` returns) with a fixed `allowed` state.
+
+```ts
+vi.spyOn(cockpit, "permission").mockReturnValue(mockCockpitPermission(true));
+```
+
+#### mockCockpitUser
+
+Returns a mock user object (what `cockpit.user()` resolves to), with overridable fields.
+
+```ts
+vi.spyOn(cockpit, "user").mockResolvedValue(mockCockpitUser({ home: "/home/admin" }));
+```
+
 ### Running unit tests
 
 ```bash
 npm test            # single run
 npm run test:watch  # watch mode
 ```
+
+### Export contract tests
+
+`src/__contract__/exports.test.ts` protects the public API surface (this is internal to the base repo itself, not something consumers need to set up). It holds a manifest of every JS/TS-importable subpath in `package.json`'s `"exports"` map and the specific named exports each one must keep providing, then dynamically imports each and asserts those names exist. `src/__contract__/typecheck-fixture.ts` does the type-level equivalent — it's picked up automatically by `npm run typecheck` since that already covers all of `src/**/*`.
+
+**Adding, renaming, or removing a public export requires updating both files** — that's the point: it turns an accidental break into a loud, specific test failure instead of silent breakage a consumer discovers later. Non-module subpaths referenced by file path rather than imported (`./log-tokens.css`, `./tsconfig.base.json`) are intentionally excluded — those are covered by the packed-artifact smoke test ([#31](https://github.com/RXTX4816/cockpit-plugin-base-react/issues/31)) instead.
 
 ---
 

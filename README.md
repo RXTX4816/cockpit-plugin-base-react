@@ -37,7 +37,7 @@ Shared foundation for building [Cockpit](https://cockpit-project.org/) plugins w
 
 **Testing utilities**
 - Vitest setup file that installs jsdom and jest-dom matchers
-- `mockCockpit` — in-memory Cockpit API mock for unit tests
+- `mockProcess`, `mockCockpitFile`, `mockCockpitPermission`, `mockCockpitUser` — mock return values for individual `cockpit.*` methods
 - `mockHttpClient` — mock for Cockpit HTTP client used in tests
 - `./e2e` — `pluginPage` Playwright fixture that handles Cockpit login and navigates to your plugin automatically
 
