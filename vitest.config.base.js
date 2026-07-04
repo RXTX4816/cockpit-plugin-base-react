@@ -5,9 +5,15 @@ export function createVitestConfig(overrides = {}) {
 
   return defineConfig({
     server: {
+      // Allow Vite's dev server to serve files from symlinked file: packages
+      // that live outside the consuming project's root directory.
       fs: { allow: [".."] },
     },
     resolve: {
+      // Deduplicate packages that must be singletons when cockpit-plugin-base-react
+      // is installed as a file: link (symlink) — without this, the linked
+      // package resolves these from its own node_modules and React / i18next
+      // end up with two separate instances, breaking hooks and translations.
       dedupe: ["react", "react-dom", "i18next", "react-i18next", "@patternfly/react-core", "@patternfly/react-icons"],
     },
     test: {
