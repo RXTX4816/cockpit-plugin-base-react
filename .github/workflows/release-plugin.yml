@@ -104,19 +104,59 @@ jobs:
           cd "${{ inputs.plugin-name }}-${VERSION_CLEAN}"
           dpkg-buildpackage -us -uc -b
 
-      # ── Upload ──────────────────────────────────────────────────────────
-      - name: Upload release assets
+      # ── Checksums and stable alias assets ───────────────────────────────
+      - name: Generate checksums and create latest aliases
         run: |
           RPM=$(find rpmbuild/RPMS -name "*.rpm" | head -1)
           DEB=$(find . -maxdepth 1 -name "*.deb" | head -1)
+          TARBALL="${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz"
+
+          # sha256 for versioned rpm and deb
+          sha256sum "${RPM}" > "${RPM}.sha256"
+          sha256sum "${DEB}" > "${DEB}.sha256"
+
+          # stable alias copies
+          LATEST_RPM="${{ inputs.plugin-name }}-latest.rpm"
+          LATEST_DEB="${{ inputs.plugin-name }}-latest.deb"
+          LATEST_TAR="${{ inputs.plugin-name }}-latest.tar.gz"
+          cp "${RPM}" "${LATEST_RPM}"
+          cp "${DEB}" "${LATEST_DEB}"
+          cp "${TARBALL}" "${LATEST_TAR}"
+
+          # sha256 for stable alias copies
+          sha256sum "${LATEST_RPM}" > "${LATEST_RPM}.sha256"
+          sha256sum "${LATEST_DEB}" > "${LATEST_DEB}.sha256"
+          sha256sum "${LATEST_TAR}" > "${LATEST_TAR}.sha256"
+
+          # export paths for upload step
+          echo "RPM=${RPM}" >> "$GITHUB_ENV"
+          echo "DEB=${DEB}" >> "$GITHUB_ENV"
+          echo "LATEST_RPM=${LATEST_RPM}" >> "$GITHUB_ENV"
+          echo "LATEST_DEB=${LATEST_DEB}" >> "$GITHUB_ENV"
+          echo "LATEST_TAR=${LATEST_TAR}" >> "$GITHUB_ENV"
+
+      # ── Upload ──────────────────────────────────────────────────────────
+      - name: Upload release assets
+        run: |
           TARBALL="${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz"
           CHECKSUM="${TARBALL}.sha256"
           gh release create "${VERSION}" \
             --title "${VERSION}" \
             --generate-notes \
-            "${TARBALL}" "${CHECKSUM}" "${RPM}" "${DEB}" \
+            "${TARBALL}"            "${CHECKSUM}" \
+            "${RPM}"                "${RPM}.sha256" \
+            "${DEB}"                "${DEB}.sha256" \
+            "${LATEST_TAR}"         "${LATEST_TAR}.sha256" \
+            "${LATEST_RPM}"         "${LATEST_RPM}.sha256" \
+            "${LATEST_DEB}"         "${LATEST_DEB}.sha256" \
           || gh release upload "${VERSION}" \
-            "${TARBALL}" "${CHECKSUM}" "${RPM}" "${DEB}" --clobber
+            "${TARBALL}"            "${CHECKSUM}" \
+            "${RPM}"                "${RPM}.sha256" \
+            "${DEB}"                "${DEB}.sha256" \
+            "${LATEST_TAR}"         "${LATEST_TAR}.sha256" \
+            "${LATEST_RPM}"         "${LATEST_RPM}.sha256" \
+            "${LATEST_DEB}"         "${LATEST_DEB}.sha256" \
+            --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
