@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Button, Flex, FlexItem, Spinner } from "@patternfly/react-core";
+import { useTranslation } from "react-i18next";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useToast } from "../components/ToastProvider";
 import { startService, stopService, restartService, reloadService } from "./api";
@@ -9,7 +10,9 @@ type PendingAction = "start" | "stop" | "restart" | "reload";
 
 /**
  * Overrides for all user-visible strings in {@link ServiceControl}.
- * Every field is optional — unset fields fall back to English defaults.
+ * Every field is optional — unset fields fall back to the active locale's base
+ * translation (see `baseTranslations` in `../i18n`), or an English literal if
+ * i18next isn't initialized.
  */
 export interface ServiceControlLabels {
   /** Start button label. */
@@ -38,7 +41,11 @@ export interface ServiceControlLabels {
   successReload?: string;
 }
 
-const DEFAULTS: Required<ServiceControlLabels> = {
+// English literals used only when i18next isn't initialized at all (unit-test
+// safety) — otherwise each key resolves via t(key, fallback) below, which also
+// covers the "initialized but key missing" case (consumer hasn't adopted
+// baseTranslations yet).
+const ENGLISH_FALLBACKS: Required<ServiceControlLabels> = {
   start: "Start",
   stop: "Stop",
   restart: "Restart",
@@ -86,7 +93,29 @@ interface Props {
  */
 export function ServiceControl({ unit, status, loading = false, onRefresh, statusBadge, labels, extraActions }: Props) {
   const toast = useToast();
-  const l = { ...DEFAULTS, ...labels };
+  const { t, i18n } = useTranslation();
+  const tf = (key: string, fallback: string) => (i18n.isInitialized ? t(key, fallback) : fallback);
+  const i18nDefaults: Required<ServiceControlLabels> = {
+    start: tf("service.start", ENGLISH_FALLBACKS.start),
+    stop: tf("service.stop", ENGLISH_FALLBACKS.stop),
+    restart: tf("service.restart", ENGLISH_FALLBACKS.restart),
+    reload: tf("service.reload", ENGLISH_FALLBACKS.reload),
+    cancel: tf("common.cancel", ENGLISH_FALLBACKS.cancel),
+    confirmAction: tf("service.confirm_action", ENGLISH_FALLBACKS.confirmAction),
+    confirmStartTitle: tf("service.confirm_start_title", ENGLISH_FALLBACKS.confirmStartTitle),
+    confirmStartBody: tf("service.confirm_start_body", ENGLISH_FALLBACKS.confirmStartBody),
+    confirmStopTitle: tf("service.confirm_stop_title", ENGLISH_FALLBACKS.confirmStopTitle),
+    confirmStopBody: tf("service.confirm_stop_body", ENGLISH_FALLBACKS.confirmStopBody),
+    confirmRestartTitle: tf("service.confirm_restart_title", ENGLISH_FALLBACKS.confirmRestartTitle),
+    confirmRestartBody: tf("service.confirm_restart_body", ENGLISH_FALLBACKS.confirmRestartBody),
+    confirmReloadTitle: tf("service.confirm_reload_title", ENGLISH_FALLBACKS.confirmReloadTitle),
+    confirmReloadBody: tf("service.confirm_reload_body", ENGLISH_FALLBACKS.confirmReloadBody),
+    successStart: tf("toast.service_started", ENGLISH_FALLBACKS.successStart),
+    successStop: tf("toast.service_stopped", ENGLISH_FALLBACKS.successStop),
+    successRestart: tf("toast.service_restarted", ENGLISH_FALLBACKS.successRestart),
+    successReload: tf("toast.service_reloaded", ENGLISH_FALLBACKS.successReload),
+  };
+  const l = { ...i18nDefaults, ...labels };
   const [busy, setBusy] = useState(false);
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
