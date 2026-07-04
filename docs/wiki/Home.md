@@ -7,6 +7,7 @@ This wiki covers everything you need to build, test, and ship Cockpit plugins us
 ## Contents
 
 - [Getting Started](Getting-Started.md) — install, bootstrap, and first plugin setup
+- [Consumer Guide](Consumer-Guide.md) — import patterns, stability, and upgrade checklist for plugin maintainers
 - [Hooks](Hooks.md) — async state, polling, streams, confirmation flows
 - [Components](Components.md) — UI building blocks: toasts, dialogs, logs, badges
 - [Systemd Layer](Systemd.md) — service status, control, and typed API wrappers

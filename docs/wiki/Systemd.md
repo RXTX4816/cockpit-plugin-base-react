@@ -6,6 +6,8 @@ The systemd layer provides typed hooks, a control component, and low-level API w
 import { useServiceStatus, ServiceControl, ServiceStatusBadge } from "@rxtx4816/cockpit-plugin-base-react/systemd";
 ```
 
+**Stability:** ✅ **Stable**. Currently used only by `cockpit-caddy` — `cockpit-compose` manages multiple containers per stack rather than a single systemd unit, so it has no use for this layer. That's expected (see the [Export Audit](Export-Audit.md)), not a sign this is caddy-specific code that leaked into base.
+
 ---
 
 ## useServiceStatus
