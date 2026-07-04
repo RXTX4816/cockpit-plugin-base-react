@@ -3,7 +3,7 @@
 The systemd layer provides typed hooks, a control component, and low-level API wrappers for interacting with systemd services through Cockpit.
 
 ```ts
-import { useServiceStatus, ServiceControl } from "@rxtx4816/cockpit-plugin-base-react/systemd";
+import { useServiceStatus, ServiceControl, ServiceStatusBadge } from "@rxtx4816/cockpit-plugin-base-react/systemd";
 ```
 
 ---
@@ -26,6 +26,24 @@ The hook automatically re-polls at a configurable interval, so your UI stays in 
 A self-contained component that renders start/stop/restart/enable/disable buttons for a named service. Internally uses `useServiceStatus` for the current state and the `api` helpers to dispatch commands.
 
 Buttons are disabled while an operation is in progress. Status changes are reflected immediately via an optimistic state update, then confirmed by the next poll.
+
+---
+
+## ServiceStatusBadge
+
+A `StatusBadge` pre-configured for the five `ServiceStatus` values (`active`, `inactive`, `failed`, `not-installed`, `unknown`), with built-in colors (green/grey/red/orange/grey) and labels sourced from the base i18n translations (`service.running`, `service.stopped`, `service.failed`, `service.not_installed`, `service.unknown`).
+
+```tsx
+import { ServiceStatusBadge } from "@rxtx4816/cockpit-plugin-base-react/systemd";
+
+<ServiceStatusBadge status={status} />
+```
+
+Override individual labels with the optional `labels` prop — unset entries keep using the i18n default:
+
+```tsx
+<ServiceStatusBadge status={status} labels={{ "not-installed": "Caddy is not installed" }} />
+```
 
 ---
 

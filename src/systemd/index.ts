@@ -3,3 +3,5 @@ export { getServiceStatus, startService, stopService, restartService, reloadServ
 export { useServiceStatus } from "./useServiceStatus";
 export { ServiceControl } from "./ServiceControl";
 export type { ServiceControlLabels } from "./ServiceControl";
+export { ServiceStatusBadge } from "./ServiceStatusBadge";
+export type { ServiceStatusBadgeLabels } from "./ServiceStatusBadge";
