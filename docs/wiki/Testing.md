@@ -192,3 +192,37 @@ This creates a single "custom" project regardless of how many VMs are defined in
 | `BASE_URL` | *(from vm list)* | Override: target a single VM by URL |
 | `VM_USER` | `test` | Login username |
 | `VM_PASSWORD` | `test` | Login password |
+
+---
+
+## Visual Regression Testing (internal only)
+
+This repo has its own lightweight visual regression suite for shared UI components — a spike covering `ConfirmDialog`, `ToastProvider`, `StatusBadge`, and `ServiceStatusBadge`. This is **internal to `cockpit-plugin-base-react` itself** — not exported to consumers, and unrelated to `playwright.config.base.js` (the VM/live-plugin e2e config consumers use).
+
+### How it works
+
+- `src/visual/fixtures.tsx` renders exactly one component state per page load, selected via `?view=<name>` (e.g. `?view=confirm-dialog`). One fixture per view avoids interference between portal-rendered components (PatternFly `Modal` renders to `document.body`, not wherever it's mounted).
+- `src/visual/vite.config.ts` serves that page directly via Vite's dev server (TSX transformed on the fly — no separate build step).
+- `playwright.config.visual.ts` starts that dev server as a Playwright `webServer` and points Chromium at it.
+- `src/visual/visual.spec.ts` navigates to each view and calls `toHaveScreenshot()` — full-page for things that fill the viewport (dialogs, toast stacks), or a `data-testid="fixture-root"` locator for small elements like badges (a full-page screenshot dilutes the diff ratio enough that a real change to a small element can go undetected).
+
+### Running locally
+
+```bash
+npm run test:visual           # compare against committed baselines in src/visual/__screenshots__/
+npm run test:visual:update    # regenerate baselines after an intentional visual change
+```
+
+Review regenerated baseline images in the diff before committing — don't blindly accept `--update-snapshots` output.
+
+### A real flakiness pitfall found during the spike
+
+Playwright's default `toHaveScreenshot()` per-pixel `threshold` (0.2) uses a perceptual/luminance-based comparison (pixelmatch's YIQ algorithm). Two PatternFly pastel label colors (e.g. `green` vs `purple` background fills) can have similar luminance despite being a different hue, and the default threshold let a deliberately-wrong color pass undetected. `playwright.config.visual.ts` lowers `threshold` to `0.05` to catch hue-only changes — this is safe here because these fixtures are flat-color PatternFly components with no photographic content, so it shouldn't introduce anti-aliasing false positives. If you add a fixture with real gradients/photos, re-evaluate this threshold.
+
+### CI
+
+`.github/workflows/visual-regression.yml` runs only on PRs touching `src/components/**`, `src/systemd/**`, or `src/visual/**` — not on every PR. It uploads the Playwright HTML report (with diff images) as an artifact on failure. This job is **not required to merge** — a maintainer should look at the diff report and manually re-run `test:visual:update` if the change is intentional.
+
+### Adding more components
+
+This is a first-wave spike (2–3 components), not full coverage. Before expanding broadly, watch this suite's stability across a few real CI runs (font rendering/anti-aliasing can differ between local and CI environments in ways a local run won't catch).
