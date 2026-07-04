@@ -1,5 +1,7 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { useState } from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import { axe } from "jest-axe";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import { ConfirmDialog } from "./ConfirmDialog";
@@ -69,5 +71,56 @@ describe("ConfirmDialog", () => {
     });
     setup();
     expect(screen.getByRole("button", { name: "Abbrechen" })).toBeInTheDocument();
+  });
+
+  it("has no accessibility violations", async () => {
+    setup({ body: <p>Are you sure?</p> });
+    // PatternFly's Modal renders via a portal to document.body, not into the render container.
+    expect(await axe(document.body)).toHaveNoViolations();
+  });
+
+  it("has no accessibility violations with the error alert shown", async () => {
+    setup({ error: "Something went wrong" });
+    expect(await axe(document.body)).toHaveNoViolations();
+  });
+
+  it("calls onClose when Escape is pressed", () => {
+    const { onClose } = setup();
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape", code: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("moves focus into the dialog on open", async () => {
+    setup();
+    // focus-trap defers its initial focus via setTimeout(fn, 0).
+    await waitFor(() => {
+      expect(screen.getByRole("dialog")).toContainElement(document.activeElement as HTMLElement);
+    });
+  });
+
+  it("returns focus to the trigger element on close", () => {
+    function Wrapper() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button onClick={() => setOpen(true)}>open dialog</button>
+          {open && (
+            <ConfirmDialog
+              isOpen
+              title="Delete item?"
+              confirmLabel="Delete"
+              onConfirm={() => {}}
+              onClose={() => setOpen(false)}
+            />
+          )}
+        </>
+      );
+    }
+    render(<Wrapper />);
+    const trigger = screen.getByRole("button", { name: "open dialog" });
+    trigger.focus();
+    fireEvent.click(trigger);
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape", code: "Escape" });
+    expect(document.activeElement).toBe(trigger);
   });
 });

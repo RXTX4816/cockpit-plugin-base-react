@@ -92,6 +92,7 @@ Translation completeness for `src/i18n/locales/`, checked on every push by `scri
 - [Components](docs/wiki/Components.md)
 - [Systemd Layer](docs/wiki/Systemd.md)
 - [Testing](docs/wiki/Testing.md)
+- [Accessibility](docs/wiki/Accessibility.md)
 - [VM Testing](docs/wiki/VM-Testing.md)
 - [CI/CD Workflows](docs/wiki/CI-CD.md)
 

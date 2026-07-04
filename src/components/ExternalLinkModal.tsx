@@ -41,7 +41,7 @@ export function ExternalLinkModal({ url, onClose, labels = {} }: Props) {
     <Modal isOpen onClose={onClose} variant="small" aria-label={ariaLabel}>
       <ModalHeader title={title} />
       <ModalBody>
-        <Alert variant="warning" isInline isPlain title={warningTitle} />
+        <Alert variant="warning" isInline isPlain title={warningTitle} component="h2" />
         <p style={{ marginTop: "var(--pf-t--global--spacer--md)", wordBreak: "break-all" }}>
           {url}
         </p>
