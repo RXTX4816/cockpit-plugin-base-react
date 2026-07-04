@@ -70,7 +70,9 @@ jobs:
 
       # ── RPM ─────────────────────────────────────────────────────────────
       - name: Install RPM build tools
-        run: sudo apt-get install -y rpm
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
 
       - name: Build RPM
         run: |
@@ -84,7 +86,9 @@ jobs:
 
       # ── DEB ─────────────────────────────────────────────────────────────
       - name: Install DEB build tools
-        run: sudo apt-get install -y devscripts debhelper dpkg-dev build-essential
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y devscripts debhelper dpkg-dev build-essential
 
       - name: Build DEB
         run: |

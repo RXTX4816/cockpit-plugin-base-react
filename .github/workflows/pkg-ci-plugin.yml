@@ -33,7 +33,9 @@ jobs:
           cp src/main.js src/main.css src/manifest.json src/index.html README.md ${{ inputs.plugin-name }}/
           tar -czf ${{ inputs.plugin-name }}-0.0.0.tar.gz ${{ inputs.plugin-name }}/
       - name: Install RPM tools
-        run: sudo apt-get install -y rpm
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
       - name: Build RPM
         run: |
           mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
@@ -66,7 +68,9 @@ jobs:
           cp src/main.js src/main.css src/manifest.json src/index.html README.md ${{ inputs.plugin-name }}/
           tar -czf ${{ inputs.plugin-name }}-0.0.0.tar.gz ${{ inputs.plugin-name }}/
       - name: Install DEB tools
-        run: sudo apt-get install -y devscripts debhelper dpkg-dev build-essential
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y devscripts debhelper dpkg-dev build-essential
       - name: Build DEB
         run: |
           mkdir -p ${{ inputs.plugin-name }}-0.0.0
