@@ -1,0 +1,36 @@
+name: Pack Smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "src/index.ts"
+      - "src/components/index.ts"
+      - "src/systemd/index.ts"
+      - "src/i18n.ts"
+      - "src/dark-theme.ts"
+      - "src/bootstrap.tsx"
+      - "src/hooks/**"
+      - "src/lib/**"
+      - "src/testing/**"
+      - "fixtures/pack-smoke/**"
+      - "scripts/run-pack-smoke.mjs"
+      - "*.config.base.js"
+
+jobs:
+  pack-smoke:
+    name: Pack Smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run pack smoke test
+        run: npm run test:pack

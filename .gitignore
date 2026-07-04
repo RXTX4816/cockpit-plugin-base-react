@@ -4,3 +4,6 @@ node_modules/
 docs/api/
 test-results/
 playwright-report/
+*.tgz
+fixtures/pack-smoke/package-lock.json
+fixtures/pack-smoke/smoke.bundle.mjs

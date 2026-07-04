@@ -1,0 +1,9 @@
+{
+  "extends": "@rxtx4816/cockpit-plugin-base-react/tsconfig.base.json",
+  "include": ["smoke.tsx", "type-check-only.ts"],
+  "files": [
+    "node_modules/@rxtx4816/cockpit-plugin-base-react/src/cockpit.d.ts",
+    "node_modules/@rxtx4816/cockpit-plugin-base-react/src/css.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}
