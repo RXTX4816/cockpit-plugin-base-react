@@ -16,3 +16,4 @@ This wiki covers everything you need to build, test, and ship Cockpit plugins us
 - [CI/CD Workflows](CI-CD.md) — reusable GitHub Actions for builds, packages, and releases
 - [Compatibility](Compatibility.md) — version matrix and upgrade policy across base, compose, and caddy
 - [Export Audit](Export-Audit.md) — classification of every public export against real consumer usage
+- [Architecture Decision Records](https://github.com/RXTX4816/cockpit-plugin-base-react/tree/main/docs/adr) — recorded scope/architecture decisions (lives in-repo, not synced to this wiki)
