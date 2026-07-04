@@ -15,3 +15,4 @@ This wiki covers everything you need to build, test, and ship Cockpit plugins us
 - [VM Testing](VM-Testing.md) — end-to-end testing with real QEMU VMs
 - [CI/CD Workflows](CI-CD.md) — reusable GitHub Actions for builds, packages, and releases
 - [Compatibility](Compatibility.md) — version matrix and upgrade policy across base, compose, and caddy
+- [Export Audit](Export-Audit.md) — classification of every public export against real consumer usage

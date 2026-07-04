@@ -96,6 +96,7 @@ Translation completeness for `src/i18n/locales/`, checked on every push by `scri
 - [VM Testing](docs/wiki/VM-Testing.md)
 - [CI/CD Workflows](docs/wiki/CI-CD.md)
 - [Compatibility](docs/wiki/Compatibility.md)
+- [Export Audit](docs/wiki/Export-Audit.md)
 
 ## Security
 
