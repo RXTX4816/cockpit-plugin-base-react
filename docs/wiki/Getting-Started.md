@@ -34,15 +34,19 @@ bootstrapPlugin(App);
 
 ## i18n setup
 
-Create `src/i18n.ts` in your plugin:
+Create `src/i18n/index.ts` in your plugin:
 
 ```ts
-import { initCockpitI18n } from "@rxtx4816/cockpit-plugin-base-react/i18n";
+import { initCockpitI18n, buildLocaleResources } from "@rxtx4816/cockpit-plugin-base-react/i18n";
+import en from "./locales/en.json";
+import de from "./locales/de.json";
 
-initCockpitI18n();
+initCockpitI18n(buildLocaleResources({ en, de }));
+
+export { i18n } from "@rxtx4816/cockpit-plugin-base-react/i18n";
 ```
 
-This sets up i18next with Cockpit's locale loading conventions so `useTranslation()` works throughout your plugin.
+`buildLocaleResources` wraps each locale's plain translation object in the `{ translation: ... }` shape `initCockpitI18n` expects, so you don't have to hand-wrap every locale yourself. This sets up i18next with Cockpit's locale loading conventions so `useTranslation()` works throughout your plugin.
 
 ---
 
