@@ -115,3 +115,29 @@ Importing the `dark-theme` side-effect module is all that's needed. It listens f
 - The OS-level `prefers-color-scheme` media query
 
 No configuration required.
+
+---
+
+## Testing an unreleased base change locally (`yalc`)
+
+Before a base change is published, link it into a consumer plugin locally with [`yalc`](https://github.com/wclr/yalc) instead of waiting for a release:
+
+```bash
+# In cockpit-plugin-base-react:
+npm run yalc          # runs `yalc push` — publishes the local build to yalc's store
+                       # and pushes updates to every project that has it linked
+
+# In the consumer plugin (cockpit-compose / cockpit-caddy), one-time setup:
+npm run base:add      # runs `yalc add @rxtx4816/cockpit-plugin-base-react && npm install`
+```
+
+Both consumer repos already have `base:add` and `base:reset` npm scripts wired up for this. After `base:add`, the consumer's `node_modules/@rxtx4816/cockpit-plugin-base-react` points at your local base checkout — run the consumer's own tests/typecheck/build against it as usual. When you're done:
+
+```bash
+npm run base:reset     # runs `yalc retreat --all && npm install` — restores the
+                        # consumer's real published dependency
+```
+
+Every time you change base source, re-run `npm run yalc` in base to push the update to any linked consumers.
+
+**Note:** since base ships raw TypeScript source (no build step), `yalc add` links the source directly — no separate "build the package" step is needed before pushing.
