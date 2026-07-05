@@ -26,6 +26,8 @@ jobs:
 
       - run: npm ci
 
+      - run: mkdir -p /tmp/base-tarball
+
       - run: npm pack --pack-destination /tmp/base-tarball
 
       - uses: actions/upload-artifact@v4

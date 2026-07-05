@@ -10,8 +10,6 @@ import {
 } from "@patternfly/react-core";
 import type { MenuToggleElement } from "@patternfly/react-core";
 
-const BUILTIN_SCHEMES = ["http", "https", "h2", "h2c", "h3"];
-
 export interface ExternalAddressInputProps {
   /** Current protocol string, e.g. `"https"`. Empty string means no protocol. */
   scheme: string;
@@ -23,8 +21,15 @@ export interface ExternalAddressInputProps {
   port: string;
   onPortChange: (port: string) => void;
   /**
-   * Extra protocol options shown in addition to the built-in list
-   * (http, https, h2, h2c, h3). Duplicates are ignored.
+   * Protocol presets shown in the dropdown, e.g. `["http", "https"]`.
+   * This component has no built-in protocol list of its own — callers own
+   * the preset list for their domain (HTTP schemes, gRPC, etc). Defaults to
+   * an empty list.
+   */
+  builtinSchemes?: string[];
+  /**
+   * Extra protocol options shown in addition to `builtinSchemes`.
+   * Duplicates are ignored.
    */
   suggestedSchemes?: string[];
   isDisabled?: boolean;
@@ -51,6 +56,7 @@ export function ExternalAddressInput({
   onHostChange,
   port,
   onPortChange,
+  builtinSchemes = [],
   suggestedSchemes = [],
   isDisabled = false,
   hostValidated = "default",
@@ -62,10 +68,10 @@ export function ExternalAddressInput({
 }: ExternalAddressInputProps) {
   const [selectOpen, setSelectOpen] = useState(false);
   const [customMode, setCustomMode] = useState(
-    () => scheme !== "" && !BUILTIN_SCHEMES.includes(scheme) && !suggestedSchemes.includes(scheme),
+    () => scheme !== "" && !builtinSchemes.includes(scheme) && !suggestedSchemes.includes(scheme),
   );
 
-  const allPresets = [...BUILTIN_SCHEMES, ...suggestedSchemes.filter(s => !BUILTIN_SCHEMES.includes(s))];
+  const allPresets = [...builtinSchemes, ...suggestedSchemes.filter(s => !builtinSchemes.includes(s))];
 
   function handleSelectPick(_: unknown, val: string | number | undefined) {
     const v = String(val ?? "");
