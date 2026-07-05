@@ -5,6 +5,11 @@ import { ToastProvider } from "./ToastProvider";
 
 interface PluginPageProps {
   children: ReactNode;
+  /**
+   * Rendered as a Page sibling after PageSection (not inside it), so content
+   * relying on being a direct Page child — e.g. a sticky footer — keeps working.
+   */
+  footer?: ReactNode;
   /** Title shown in the ErrorBoundary fallback. Defaults to "Error loading plugin". */
   fallbackTitle?: string;
   /** Additional className applied to the outer Page element. */
@@ -28,7 +33,7 @@ interface PluginPageProps {
  * }
  * ```
  */
-export function PluginPage({ children, fallbackTitle, className }: PluginPageProps) {
+export function PluginPage({ children, footer, fallbackTitle, className }: PluginPageProps) {
   return (
     <ErrorBoundary fallbackTitle={fallbackTitle ?? "Error loading plugin"}>
       <ToastProvider>
@@ -36,6 +41,7 @@ export function PluginPage({ children, fallbackTitle, className }: PluginPagePro
           <PageSection hasBodyWrapper={false} isFilled>
             {children}
           </PageSection>
+          {footer}
         </Page>
       </ToastProvider>
     </ErrorBoundary>

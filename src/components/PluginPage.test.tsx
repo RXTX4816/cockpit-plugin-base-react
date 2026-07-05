@@ -32,4 +32,18 @@ describe("PluginPage", () => {
     );
     expect(screen.getByText("Plugin crashed")).toBeInTheDocument();
   });
+
+  it("renders footer as a Page sibling after PageSection, not inside it", () => {
+    render(
+      <PluginPage footer={<footer data-testid="footer">footer content</footer>}>
+        <p data-testid="content">content</p>
+      </PluginPage>,
+    );
+    const footerEl = screen.getByTestId("footer");
+    const contentEl = screen.getByTestId("content");
+    const pageSection = contentEl.closest(".pf-v6-c-page__main-section");
+    expect(pageSection).not.toBeNull();
+    expect(pageSection?.contains(footerEl)).toBe(false);
+    expect(footerEl.previousElementSibling).toBe(pageSection);
+  });
 });
