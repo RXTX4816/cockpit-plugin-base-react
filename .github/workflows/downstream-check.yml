@@ -30,7 +30,7 @@ jobs:
 
       - run: npm pack --pack-destination /tmp/base-tarball
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: base-tarball
           path: /tmp/base-tarball/*.tgz
