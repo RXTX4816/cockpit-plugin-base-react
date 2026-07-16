@@ -64,6 +64,7 @@ jobs:
         run: |
           mkdir -p ${{ inputs.plugin-name }}
           cp src/main.js src/main.css src/manifest.json src/index.html README.md ${{ inputs.plugin-name }}/
+          if [ -d src/assets ]; then cp -r src/assets ${{ inputs.plugin-name }}/; fi
           tar -czf "${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz" ${{ inputs.plugin-name }}/
           sha256sum "${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz" > "${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz.sha256"
           rm -rf ${{ inputs.plugin-name }}
