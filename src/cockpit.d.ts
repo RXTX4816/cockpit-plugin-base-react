@@ -91,7 +91,12 @@ declare const cockpit: {
     args: string[],
     options?: { superuser?: "try" | "require"; err?: string; environ?: string[] }
   ): CockpitProcess;
-  http(options: { port?: number; address?: string }): CockpitHttpClient;
+  // `endpoint` is either a TCP port/address pair, or a filesystem path starting with "/" to
+  // connect to a Unix domain socket (e.g. "/var/run/docker.sock").
+  http(
+    endpoint: { port?: number; address?: string } | string,
+    options?: { superuser?: "try" | "require" }
+  ): CockpitHttpClient;
   file(
     path: string,
     options?: { superuser?: "try" | "require"; syntax?: unknown }
