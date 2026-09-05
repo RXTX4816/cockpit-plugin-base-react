@@ -15,6 +15,14 @@ Shared foundation for building [Cockpit](https://cockpit-project.org/) plugins w
 - `useAsyncStream` — consumes a Cockpit channel as a line-buffered async stream
 - `useConfirmAction` — multi-step confirmation flow with typed state transitions
 - `usePollingFetch` — fetch with automatic polling, refresh, and loading state
+- `useAdminMode` — reactively tracks whether the Cockpit session has administrative (superuser) access
+- `useDialogState` — manages open/close state and associated data for a fixed set of named dialogs
+- `useLayout` — persists a "current layout" choice (e.g. table vs grid) to `localStorage`, validated against allowed values, with optional cross-tab sync
+- `useLocalStorage` / `useSessionStorage` — typed, JSON-serialized read/write hooks for `localStorage`/`sessionStorage`
+- `usePersistedSet` — a `localStorage`-backed `Set<string>` with `toggle`/`clear` and optional cross-tab sync
+- `useDarkMode` — reactively tracks PatternFly's dark theme class on `<html>` via a `MutationObserver`
+- `useOperationCounter` — tracks active in-flight operations via `increment()`/`decrement()`; useful to suppress auto-refresh during mutations
+- `useKeyboardShortcuts` — binds global single-key shortcuts, skipping form fields and open modals
 
 **Components**
 - `ConfirmDialog` — confirmation modal driven by `useConfirmAction`, supports multi-step flows
@@ -23,10 +31,24 @@ Shared foundation for building [Cockpit](https://cockpit-project.org/) plugins w
 - `LogViewer` — scrollable terminal-style log display backed by an async stream
 - `StatusBadge` — color-coded badge for service or resource states
 - `ToastProvider` + hook — global toast notification system
+- `PluginPage` — root layout wrapper composing `ErrorBoundary` + `ToastProvider` + PatternFly `Page`/`PageSection`
+- `ExternalLinkModal` — confirmation modal shown before navigating to an external URL
+- `Tooltip` — thin wrapper around PatternFly's `Tooltip` with `exitDelay` defaulted to `0`
+- `CollapsibleSearch` — search input that collapses to an icon-only button when empty and unfocused
+- `LayoutSelector` — PatternFly `ToggleGroup` for switching between named layout options
+- `PluginFooter` — footer bar showing the plugin's version string and a row of links
+- `CodeEditor` — CodeMirror 6-based code editor with dark/light theme following `useDarkMode`
+- `DiffEditor` — side-by-side/unified diff view built on CodeMirror's merge extension
+- `EnvEditor` — `CodeEditor` preconfigured with a linter for `.env`-file syntax
+- `EnvTable` — structured key/value table editor for environment variables with secret masking
+- `ExternalAddressInput` — two-row input for an external listener address (protocol/host + port)
+
+`CodeEditor`, `DiffEditor`, `EnvEditor`, and `EnvTable` require the optional `codemirror` and `@codemirror/*` peer dependencies (see `package.json`'s `peerDependenciesMeta`) — only needed if you import them.
 
 **Systemd layer**
 - `useServiceStatus` — reactive hook for a systemd service state (active, failed, inactive…)
 - `ServiceControl` — start/stop/restart/enable control component
+- `ServiceStatusBadge` — `StatusBadge` preconfigured for the five systemd unit states, with built-in colors and i18n labels
 - `api` — typed wrappers around `cockpit.spawn` for systemctl operations
 
 **Shared tooling config**
