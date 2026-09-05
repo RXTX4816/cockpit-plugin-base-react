@@ -18,10 +18,14 @@ on:
       - "scripts/run-pack-smoke.mjs"
       - "*.config.base.js"
 
+permissions:
+  contents: read
+
 jobs:
   pack-smoke:
     name: Pack Smoke
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 

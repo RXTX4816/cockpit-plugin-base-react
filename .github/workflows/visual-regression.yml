@@ -9,10 +9,14 @@ on:
       - "src/visual/**"
       - "playwright.config.visual.ts"
 
+permissions:
+  contents: read
+
 jobs:
   visual-regression:
     name: Visual Regression
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # Pinned to the same Playwright Docker image used to generate the committed
     # baselines (src/visual/__screenshots__/) — font rendering/anti-aliasing
     # differs enough between environments (even different Linux distros) that
