@@ -1,0 +1,14 @@
+{
+  "Red Hat Text, Display & Mono (web fonts)": {
+    "license": "OFL-1.1",
+    "file": "OFL-1.1.txt",
+    "always": true,
+    "publisher": "Copyright 2019 Red Hat, Inc. (Reserved Font Name 'Red Hat')",
+    "note": "Bundled as .woff2 via @patternfly/react-core's CSS assets (copyPatternFlyAssets). Copyright 2019 Red Hat, Inc. with Reserved Font Name 'Red Hat'. The npm package ships the font files but not the license text, so it is vendored here."
+  },
+  "html-parse-stringify": {
+    "license": "MIT",
+    "file": "html-parse-stringify.MIT.txt",
+    "note": "MIT (Copyright 2016 Henrik Joreteg). The published npm tarball omits the LICENSE file; text vendored from the project's GitHub repository. Pulled in transitively by react-i18next."
+  }
+}
