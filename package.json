@@ -4,7 +4,7 @@
   "description": "Shared infrastructure for Cockpit plugins: i18n, dark theme, test setup, config presets, CI/CD workflows, and QEMU VM harness",
   "type": "module",
   "author": "RXTX4816",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "homepage": "https://github.com/RXTX4816/cockpit-plugin-base-react",
   "repository": {
     "type": "git",
@@ -132,6 +132,7 @@
   },
   "files": [
     "LICENSE",
+    "LICENSE-HISTORY.md",
     "README.md",
     "docs/",
     "src/",
