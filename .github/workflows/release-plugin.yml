@@ -38,6 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v7
         with:
@@ -63,7 +65,10 @@ jobs:
       - name: Package release tarball
         run: |
           mkdir -p ${{ inputs.plugin-name }}
-          cp src/main.js src/main.css src/manifest.json src/index.html README.md ${{ inputs.plugin-name }}/
+          cp src/main.js src/main.css src/manifest.json src/index.html README.md LICENSE ${{ inputs.plugin-name }}/
+          for f in THIRD-PARTY-NOTICES.txt third-party-notices.json; do
+            [ -f "$f" ] && cp "$f" ${{ inputs.plugin-name }}/ || true
+          done
           if [ -d src/assets ]; then cp -r src/assets ${{ inputs.plugin-name }}/; fi
           tar -czf "${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz" ${{ inputs.plugin-name }}/
           sha256sum "${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz" > "${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz.sha256"
@@ -137,13 +142,22 @@ jobs:
           echo "LATEST_TAR=${LATEST_TAR}" >> "$GITHUB_ENV"
 
       # ── Upload ──────────────────────────────────────────────────────────
+      - name: Generate grouped release notes
+        run: |
+          npx --no-install cockpit-release-notes --to "${VERSION}" > RELEASE_NOTES.md \
+            || gh api "repos/${{ github.repository }}/releases/generate-notes" \
+                 -f tag_name="${VERSION}" --jq '.body' > RELEASE_NOTES.md
+          cat RELEASE_NOTES.md
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
       - name: Upload release assets
         run: |
           TARBALL="${{ inputs.plugin-name }}-${VERSION_CLEAN}.tar.gz"
           CHECKSUM="${TARBALL}.sha256"
           gh release create "${VERSION}" \
             --title "${VERSION}" \
-            --generate-notes \
+            --notes-file RELEASE_NOTES.md \
             "${TARBALL}"            "${CHECKSUM}" \
             "${RPM}"                "${RPM}.sha256" \
             "${DEB}"                "${DEB}.sha256" \

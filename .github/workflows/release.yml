@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v7
         with:
@@ -41,9 +43,10 @@ jobs:
           VERSION="${{ github.ref_name }}"
           VERSION_CLEAN="${VERSION#v}"
 
-          CHANGELOG=$(gh api repos/${{ github.repository }}/releases/generate-notes \
-            -f tag_name="${VERSION}" \
-            --jq '.body' 2>/dev/null || echo "")
+          CHANGELOG=$(node scripts/release-notes.mjs --to "${VERSION}" 2>/dev/null \
+            || gh api repos/${{ github.repository }}/releases/generate-notes \
+                 -f tag_name="${VERSION}" --jq '.body' 2>/dev/null \
+            || echo "")
 
           {
             echo "## Install / Upgrade"

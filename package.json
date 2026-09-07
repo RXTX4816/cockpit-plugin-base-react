@@ -149,7 +149,8 @@
   ],
   "bin": {
     "cockpit-test-vm": "./scripts/test-vm.sh",
-    "cockpit-i18n-check": "./scripts/i18n-coverage.mjs"
+    "cockpit-i18n-check": "./scripts/i18n-coverage.mjs",
+    "cockpit-release-notes": "./scripts/release-notes.mjs"
   },
   "scripts": {
     "lint": "eslint src/",

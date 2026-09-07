@@ -30,7 +30,10 @@ jobs:
       - name: Build tarball
         run: |
           mkdir -p ${{ inputs.plugin-name }}
-          cp src/main.js src/main.css src/manifest.json src/index.html README.md ${{ inputs.plugin-name }}/
+          cp src/main.js src/main.css src/manifest.json src/index.html README.md LICENSE ${{ inputs.plugin-name }}/
+          for f in THIRD-PARTY-NOTICES.txt third-party-notices.json; do
+            [ -f "$f" ] && cp "$f" ${{ inputs.plugin-name }}/ || true
+          done
           if [ -d src/assets ]; then cp -r src/assets ${{ inputs.plugin-name }}/; fi
           tar -czf ${{ inputs.plugin-name }}-0.0.0.tar.gz ${{ inputs.plugin-name }}/
       - name: Install RPM tools
@@ -51,6 +54,8 @@ jobs:
           RPM=$(find rpmbuild/RPMS -name "*.rpm" | head -1)
           rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/main.js"
           rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/manifest.json"
+          rpm -qlp "$RPM" | grep -qE "(licenses/${{ inputs.plugin-name }}|${{ inputs.plugin-name }})/LICENSE" \
+            || echo "::warning::LICENSE not found in RPM — add '%license LICENSE' to the spec"
           if [ -d src/assets ]; then rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/assets/"; fi
 
   deb:
@@ -67,7 +72,10 @@ jobs:
       - name: Build tarball
         run: |
           mkdir -p ${{ inputs.plugin-name }}
-          cp src/main.js src/main.css src/manifest.json src/index.html README.md ${{ inputs.plugin-name }}/
+          cp src/main.js src/main.css src/manifest.json src/index.html README.md LICENSE ${{ inputs.plugin-name }}/
+          for f in THIRD-PARTY-NOTICES.txt third-party-notices.json; do
+            [ -f "$f" ] && cp "$f" ${{ inputs.plugin-name }}/ || true
+          done
           if [ -d src/assets ]; then cp -r src/assets ${{ inputs.plugin-name }}/; fi
           tar -czf ${{ inputs.plugin-name }}-0.0.0.tar.gz ${{ inputs.plugin-name }}/
       - name: Install DEB tools
@@ -88,6 +96,7 @@ jobs:
           DEB=$(find . -maxdepth 1 -name "*.deb" | head -1)
           dpkg-deb -c "$DEB" | grep -q "${{ inputs.plugin-name }}/main.js"
           dpkg-deb -c "$DEB" | grep -q "${{ inputs.plugin-name }}/manifest.json"
+          dpkg-deb -c "$DEB" | grep -q "/usr/share/doc/${{ inputs.plugin-name }}/copyright"
           if [ -d src/assets ]; then dpkg-deb -c "$DEB" | grep -q "${{ inputs.plugin-name }}/assets/"; fi
 
   arch:
@@ -103,7 +112,10 @@ jobs:
           npm ci
           npm run build
           mkdir -p ${{ inputs.plugin-name }}
-          cp src/main.js src/main.css src/manifest.json src/index.html README.md ${{ inputs.plugin-name }}/
+          cp src/main.js src/main.css src/manifest.json src/index.html README.md LICENSE ${{ inputs.plugin-name }}/
+          for f in THIRD-PARTY-NOTICES.txt third-party-notices.json; do
+            [ -f "$f" ] && cp "$f" ${{ inputs.plugin-name }}/ || true
+          done
           if [ -d src/assets ]; then cp -r src/assets ${{ inputs.plugin-name }}/; fi
           tar -czf ${{ inputs.plugin-name }}-0.0.0.tar.gz ${{ inputs.plugin-name }}/
       - name: Patch PKGBUILD for local build
@@ -120,4 +132,6 @@ jobs:
         run: |
           PKG=$(find . -name "*.pkg.tar.*" | head -1)
           tar -tf "$PKG" | grep -q "usr/share/cockpit/${{ inputs.plugin-name }}/main.js"
+          tar -tf "$PKG" | grep -q "usr/share/licenses/${{ inputs.plugin-name }}/LICENSE" \
+            || echo "::warning::LICENSE not found in Arch package — add an install -Dm644 LICENSE line to package()"
           if [ -d src/assets ]; then tar -tf "$PKG" | grep -q "usr/share/cockpit/${{ inputs.plugin-name }}/assets/"; fi
