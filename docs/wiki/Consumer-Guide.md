@@ -49,6 +49,45 @@ export default createPlaywrightConfig("your-plugin-name", [{ name: "arch", port:
 
 See [Testing](Testing.md) and [VM Testing](VM-Testing.md) for the full setup of each.
 
+## Generating THIRD-PARTY-NOTICES
+
+`esbuild.config.base` bundles React, PatternFly, CodeMirror and everything else
+into your `main.js`. The MIT / BSD / ISC / Apache licenses of those packages
+require their copyright and license text to travel with the distributed
+artifact, so each plugin must ship a `THIRD-PARTY-NOTICES.txt` next to `main.js`.
+
+Build with `metafile: true` and call `writeThirdPartyNotices` with the result:
+
+```js
+// scripts/build.mjs
+import {
+  createEsbuildConfig,
+  copyPatternFlyAssets,
+  writeThirdPartyNotices,
+} from "@rxtx4816/cockpit-plugin-base-react/esbuild.config.base";
+import * as esbuild from "esbuild";
+
+await copyPatternFlyAssets("src/assets");
+const result = await esbuild.build(
+  createEsbuildConfig({ entryPoint: "src/index.tsx", metafile: true }),
+);
+await writeThirdPartyNotices({
+  metafile: result.metafile,
+  product: "cockpit-<your-plugin>",
+  strict: true, // fail the build if any bundled package is missing license text
+});
+```
+
+This writes `THIRD-PARTY-NOTICES.txt` (full license texts) and
+`third-party-notices.json` (a machine-readable sidecar for `debian/copyright`,
+RPM `%license`, and Fedora/Debian `bundled(...)` provides). Commit both, and add
+them to `debian/install`, the spec `%files`, and the PKGBUILD `package()`.
+
+The bundled Red Hat web fonts (OFL-1.1) are included automatically. If a package
+ships no license file in its tarball, the build fails in `strict` mode — vendor
+the text under `scripts/vendored-licenses/` in base and add a `manifest.json`
+entry.
+
 ## Testing an unreleased base change before it's published
 
 See [Getting Started § Testing an unreleased base change locally](Getting-Started.md#testing-an-unreleased-base-change-locally-yalc) for the `yalc`-based workflow (`npm run yalc` in base, `npm run base:add`/`base:reset` in your plugin).

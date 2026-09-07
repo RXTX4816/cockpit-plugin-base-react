@@ -143,6 +143,7 @@
     "esbuild.config.base.js",
     "!src/**/*.test.ts",
     "!src/**/*.test.tsx",
+    "!scripts/**/*.test.mjs",
     "!src/__contract__/**",
     "!src/visual/**"
   ],
