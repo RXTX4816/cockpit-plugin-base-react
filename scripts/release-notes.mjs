@@ -12,7 +12,10 @@
 //   --repo   owner/name, for the compare link (default: from `git remote`)
 //
 // Reads history via `git log`, so the checkout must be unshallow with tags
-// (actions/checkout with fetch-depth: 0).
+// (actions/checkout with fetch-depth: 0). A commit counts as breaking if its
+// header has a "!" (feat!:, chore(scope)!:) or its body carries a
+// "BREAKING CHANGE:" footer — matching the version bumper in
+// semantic-release-plugin.yml.
 
 import { execFileSync } from "node:child_process";
 
@@ -63,8 +66,32 @@ export function authorTag(email, name) {
   return name || "";
 }
 
+// git log field / record separators (US / RS control chars) so commit bodies,
+// which are multi-line, survive parsing.
+export const GIT_FORMAT = "%s%x1f%h%x1f%an%x1f%ae%x1f%b%x1e";
+
 /**
- * @param {string} raw  output of `git log --format=%s|%h|%an|%ae`
+ * Pull the description out of a `BREAKING CHANGE:` / `BREAKING-CHANGE:` footer,
+ * per Conventional Commits: everything from the token to the next blank line or
+ * end of message, newlines collapsed to spaces.
+ * @param {string} body
+ * @returns {string | null}
+ */
+export function breakingFooter(body) {
+  // Must start a line and be a real footer token (colon then space or newline) —
+  // a mid-sentence mention of the phrase is not a breaking change.
+  const m = body.match(/^BREAKING[ -]CHANGE:(?:[ \t]+|[ \t]*$)/im);
+  if (!m || m.index === undefined) return null;
+  const rest = body.slice(m.index + m[0].length);
+  const end = rest.search(/\n[ \t]*\n/); // stop at the next blank line
+  const text = (end === -1 ? rest : rest.slice(0, end))
+    .trim()
+    .replace(/\s*\n\s*/g, " ");
+  return text || null;
+}
+
+/**
+ * @param {string} raw  output of `git log --format=<GIT_FORMAT>`
  * @returns {{ sections: Record<string, string[]>, breaking: string[] }}
  */
 export function groupCommits(raw) {
@@ -73,8 +100,13 @@ export function groupCommits(raw) {
   /** @type {string[]} */
   const breaking = [];
 
-  for (const line of raw.split("\n").filter(Boolean)) {
-    const [subject, hash, name = "", email = ""] = line.split("|");
+  const records = raw
+    .split("\x1e")
+    .map((r) => r.replace(/^\s+/, ""))
+    .filter(Boolean);
+
+  for (const record of records) {
+    const [subject, hash, name = "", email = "", body = ""] = record.split("\x1f");
     const m = subject.match(CONVENTIONAL);
     const type = m?.groups?.type ?? "";
     const scope = m?.groups?.scope;
@@ -90,14 +122,19 @@ export function groupCommits(raw) {
     const text = m?.groups?.subject ?? subject;
     const scopePrefix = scope && key !== "build" ? `**${scope}:** ` : "";
     const who = authorTag(email, name);
-    // Squash merges already carry "(#NN)" in the subject; keep the short hash
-    // only when there's no PR reference to link back to.
-    const ref = /\(#\d+\)\s*$/.test(text) ? "" : ` (${hash})`;
-    const entry = `- ${scopePrefix}${text}${ref}${who ? ` by ${who}` : ""}`;
+    const prRef = (subject.match(/\(#\d+\)\s*$/) || [""])[0].trim();
+    // Squash merges carry "(#NN)" in the subject; fall back to the short hash.
+    const link = prRef ? ` ${prRef}` : ` (${hash})`;
+    const suffix = `${link}${who ? ` by ${who}` : ""}`;
 
-    (sections[key] ??= []).push(entry);
-    if (m?.groups?.bang || /BREAKING[ -]CHANGE/.test(subject)) {
-      breaking.push(entry);
+    (sections[key] ??= []).push(`- ${scopePrefix}${text.replace(/\s*\(#\d+\)\s*$/, "")}${suffix}`);
+
+    // Breaking iff the header has "!" or the body carries a real footer — never
+    // from a substring match, so prose mentioning the phrase is safe.
+    const footer = breakingFooter(body);
+    if (m?.groups?.bang || footer) {
+      const desc = footer || `${scopePrefix}${text.replace(/\s*\(#\d+\)\s*$/, "")}`;
+      breaking.push(`- ${desc}${suffix}`);
     }
   }
 
@@ -146,7 +183,7 @@ function main() {
   }
 
   const range = from ? `${from}..${to}` : to;
-  const raw = git(["log", range, "--no-merges", "--format=%s|%h|%an|%ae"]);
+  const raw = git(["log", range, "--no-merges", `--format=${GIT_FORMAT}`]);
   const { sections, breaking } = groupCommits(raw);
   process.stdout.write(render({ from, to, repo, sections, breaking }) + "\n");
 }

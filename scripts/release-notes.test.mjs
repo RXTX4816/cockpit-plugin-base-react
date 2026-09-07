@@ -1,5 +1,21 @@
 import { describe, it, expect } from "vitest";
-import { parseArgs, authorTag, groupCommits, render } from "./release-notes.mjs";
+import {
+  parseArgs,
+  authorTag,
+  breakingFooter,
+  groupCommits,
+  render,
+} from "./release-notes.mjs";
+
+const US = "\x1f";
+const RS = "\x1e";
+
+/** Build one `git log` record: subject, hash, name, email, body. */
+const rec = (
+  subject,
+  hash,
+  { name = "RXTX4816", email = "44304083+RXTX4816@users.noreply.github.com", body = "" } = {},
+) => [subject, hash, name, email, body].join(US) + RS;
 
 describe("parseArgs", () => {
   it("reads --flag value pairs", () => {
@@ -23,22 +39,44 @@ describe("authorTag", () => {
   });
 });
 
+describe("breakingFooter", () => {
+  it("returns null when there is no footer", () => {
+    expect(breakingFooter("just a normal body\n\nwith paragraphs")).toBeNull();
+  });
+  it("captures a single-line footer", () => {
+    expect(breakingFooter("body text\n\nBREAKING CHANGE: the API is gone")).toBe("the API is gone");
+  });
+  it("captures a multi-line footer up to the next blank line", () => {
+    const body = "intro\n\nBREAKING CHANGE: first line\nsecond line\n\nCloses #12";
+    expect(breakingFooter(body)).toBe("first line second line");
+  });
+  it("accepts the BREAKING-CHANGE spelling", () => {
+    expect(breakingFooter("BREAKING-CHANGE: hyphenated")).toBe("hyphenated");
+  });
+  it("ignores a mid-sentence mention of the phrase", () => {
+    expect(
+      breakingFooter("this commit teaches the script to detect BREAKING CHANGE: footers"),
+    ).toBeNull();
+  });
+});
+
 describe("groupCommits", () => {
-  const L = (subject, hash, name = "RXTX4816", email = "44304083+RXTX4816@users.noreply.github.com") =>
-    `${subject}|${hash}|${name}|${email}`;
   const log = [
-    L("feat(footer): add source-code link", "aaa1111"),
-    L("feat: brand new thing", "aaa2222", "Jane Doe", "jane@example.com"),
-    L("fix(api): stop double fetch", "bbb3333"),
-    L("fix: typo", "bbb4444"),
-    L("docs: update readme", "ccc5555"),
-    L("chore(deps): bump react", "ddd6666", "dependabot[bot]", "49699333+dependabot[bot]@users.noreply.github.com"),
-    L("build: switch bundler", "ddd7777"),
-    L("ci: cache node_modules", "eee8888"),
-    L("chore: tidy", "fff9999"),
-    L("chore(release): 1.2.0", "999aaaa"),
-    L("wip something", "000bbbb"),
-  ].join("\n");
+    rec("feat(footer): add source-code link", "aaa1111"),
+    rec("feat: brand new thing", "aaa2222", { name: "Jane Doe", email: "jane@example.com" }),
+    rec("fix(api): stop double fetch", "bbb3333"),
+    rec("fix: typo", "bbb4444"),
+    rec("docs: update readme", "ccc5555"),
+    rec("chore(deps): bump react", "ddd6666", {
+      name: "dependabot[bot]",
+      email: "49699333+dependabot[bot]@users.noreply.github.com",
+    }),
+    rec("build: switch bundler", "ddd7777"),
+    rec("ci: cache node_modules", "eee8888"),
+    rec("chore: tidy", "fff9999"),
+    rec("chore(release): 1.2.0", "999aaaa"),
+    rec("wip something", "000bbbb"),
+  ].join("");
 
   it("buckets by conventional-commit type", () => {
     const { sections } = groupCommits(log);
@@ -73,17 +111,22 @@ describe("groupCommits", () => {
     expect(sections.other).toEqual(["- wip something (000bbbb) by @RXTX4816"]);
   });
 
-  it("collects breaking changes from ! and BREAKING CHANGE", () => {
-    const { breaking } = groupCommits(
-      [
-        L("feat(x)!: drop node 20", "1111111"),
-        L("fix: y", "2222222"),
-        L("refactor: z BREAKING CHANGE: gone", "3333333"),
-      ].join("\n"),
+  it("collects breaking changes from a ! header", () => {
+    const { breaking } = groupCommits(rec("feat(x)!: drop node 20", "1111111"));
+    expect(breaking).toEqual(["- **x:** drop node 20 (1111111) by @RXTX4816"]);
+  });
+
+  it("collects breaking changes from a body footer, using the footer text", () => {
+    const { sections, breaking } = groupCommits(
+      rec("fix(release): detect breaking changes", "2222222", {
+        body: "some explanation\n\nBREAKING CHANGE: base 1.2.0 was mis-numbered; use ^2.0.0",
+      }),
     );
+    // still listed under its own type...
+    expect(sections.fix).toEqual(["- **release:** detect breaking changes (2222222) by @RXTX4816"]);
+    // ...and surfaced in Breaking changes with the footer's wording
     expect(breaking).toEqual([
-      "- **x:** drop node 20 (1111111) by @RXTX4816",
-      "- z BREAKING CHANGE: gone (3333333) by @RXTX4816",
+      "- base 1.2.0 was mis-numbered; use ^2.0.0 (2222222) by @RXTX4816",
     ]);
   });
 });
@@ -91,10 +134,7 @@ describe("groupCommits", () => {
 describe("render", () => {
   it("emits sections in order with a breaking block and compare link", () => {
     const { sections, breaking } = groupCommits(
-      [
-        "feat!: big|1111111|RXTX4816|44304083+RXTX4816@users.noreply.github.com",
-        "fix: small|2222222|RXTX4816|44304083+RXTX4816@users.noreply.github.com",
-      ].join("\n"),
+      rec("feat!: big", "1111111") + rec("fix: small", "2222222"),
     );
     const md = render({
       from: "v1.0.0",

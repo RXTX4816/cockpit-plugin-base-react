@@ -48,8 +48,10 @@ jobs:
           else
             # Subjects only, for the feat/fix classification.
             SUBJECTS=$(git log "${LAST_TAG}..HEAD" --format='%s')
-            # Full messages (subject + body + trailers), for BREAKING CHANGE.
-            FULL=$(git log "${LAST_TAG}..HEAD" --format='%B')
+            # Commit bodies (no subject), for the breaking-change footer. Matched
+            # only when it starts a line, per Conventional Commits — a prose
+            # mention of the phrase mid-sentence must NOT trigger a major bump.
+            BODIES=$(git log "${LAST_TAG}..HEAD" --format='%b')
 
             if [ -z "$SUBJECTS" ]; then
               echo "No commits since last tag. Nothing to release."
@@ -65,11 +67,11 @@ jobs:
             MINOR=$(echo "$LAST_TAG" | cut -d. -f2)
             PATCH=$(echo "$LAST_TAG" | cut -d. -f3 | cut -d- -f1)
 
-            # Breaking: a "BREAKING CHANGE" / "BREAKING-CHANGE" trailer anywhere in
-            # a commit message, OR a "!" before the ":" in a Conventional Commit
-            # header (e.g. "feat!:", "chore(scope)!:").
-            if echo "$FULL" | grep -qiE "BREAKING[ -]CHANGE" \
-               || echo "$SUBJECTS" | grep -qE "^[a-z]+(\([^)]+\))?!:"; then
+            # Breaking: a "!" before the ":" in a Conventional Commit header
+            # (feat!:, chore(scope)!:), OR a "BREAKING CHANGE:" / "BREAKING-CHANGE:"
+            # footer at the start of a body line.
+            if echo "$SUBJECTS" | grep -qE "^[a-z]+(\([^)]+\))?!:" \
+               || echo "$BODIES" | grep -qE "^BREAKING[ -]CHANGE: "; then
               NEXT_VERSION="v$((MAJOR + 1)).0.0"
               CHANGE_TYPE="major"
             elif echo "$SUBJECTS" | grep -qE "^feat(\([^)]+\))?:"; then
