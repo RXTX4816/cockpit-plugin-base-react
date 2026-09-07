@@ -128,4 +128,13 @@ Secrets must never be committed to this repository. GitHub Secret Scanning and P
 
 ## License
 
-MIT © 2026 RXTX4816
+[AGPL-3.0-only](LICENSE) © 2026 RXTX4816.
+
+This is free and open-source software (copyleft): use it, study it, modify it,
+and redistribute it. If you distribute a modified version — or run one as a
+service that users interact with over a network — you must make your modified
+source available under the same license (AGPL §13). A plugin that bundles this
+package into its build is a combined work and must also be AGPL-3.0 / GPL-3.0.
+
+**npm versions `1.x` and earlier remain under the MIT License** — the change to
+AGPL-3.0 takes effect from `2.0.0`. See [LICENSE-HISTORY.md](LICENSE-HISTORY.md).
