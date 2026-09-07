@@ -46,9 +46,12 @@ jobs:
             CHANGE_TYPE="initial"
             echo "No prior tag — using initial version $NEXT_VERSION"
           else
-            COMMITS=$(git log "${LAST_TAG}..HEAD" --format='%s')
+            # Subjects only, for the feat/fix classification.
+            SUBJECTS=$(git log "${LAST_TAG}..HEAD" --format='%s')
+            # Full messages (subject + body + trailers), for BREAKING CHANGE.
+            FULL=$(git log "${LAST_TAG}..HEAD" --format='%B')
 
-            if [ -z "$COMMITS" ]; then
+            if [ -z "$SUBJECTS" ]; then
               echo "No commits since last tag. Nothing to release."
               echo "next_version=" >> "$GITHUB_OUTPUT"
               echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -56,16 +59,20 @@ jobs:
             fi
 
             echo "Commits since last tag:"
-            echo "$COMMITS"
+            echo "$SUBJECTS"
 
             MAJOR=$(echo "$LAST_TAG" | cut -d. -f1 | sed 's/v//')
             MINOR=$(echo "$LAST_TAG" | cut -d. -f2)
             PATCH=$(echo "$LAST_TAG" | cut -d. -f3 | cut -d- -f1)
 
-            if echo "$COMMITS" | grep -qi "BREAKING CHANGE"; then
+            # Breaking: a "BREAKING CHANGE" / "BREAKING-CHANGE" trailer anywhere in
+            # a commit message, OR a "!" before the ":" in a Conventional Commit
+            # header (e.g. "feat!:", "chore(scope)!:").
+            if echo "$FULL" | grep -qiE "BREAKING[ -]CHANGE" \
+               || echo "$SUBJECTS" | grep -qE "^[a-z]+(\([^)]+\))?!:"; then
               NEXT_VERSION="v$((MAJOR + 1)).0.0"
               CHANGE_TYPE="major"
-            elif echo "$COMMITS" | grep -qi "^feat"; then
+            elif echo "$SUBJECTS" | grep -qE "^feat(\([^)]+\))?:"; then
               NEXT_VERSION="v${MAJOR}.$((MINOR + 1)).0"
               CHANGE_TYPE="minor"
             else
