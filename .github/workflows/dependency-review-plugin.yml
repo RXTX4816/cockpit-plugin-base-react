@@ -12,7 +12,21 @@ on:
         description: "Comma-separated list of allowed SPDX license identifiers"
         required: false
         type: string
-        default: "MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0"
+        # Permissive licenses, plus two categories that are present in the
+        # dependency tree today but only ever at build/dev time and therefore
+        # never redistributed in a plugin artifact:
+        #
+        #   CC-BY-4.0  caniuse-lite — browser-support *data* used by browserslist
+        #   MPL-2.0    lightningcss (+ platform binaries), axe-core
+        #
+        # Dependency Review only inspects dependencies that *changed* in a PR, so
+        # both were already in the tree without ever tripping this gate; they only
+        # surface on a version bump. MIT-0, BlueOak-1.0.0 and Python-2.0 are listed
+        # for the same reason.
+        #
+        # Attribution for what actually ships is handled separately, by the
+        # generated THIRD-PARTY-NOTICES.txt — see scripts/third-party-notices.mjs.
+        default: "MIT, MIT-0, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0, BlueOak-1.0.0, Python-2.0, CC-BY-4.0, MPL-2.0"
       allow-dependencies-licenses:
         description: "Comma-separated list of packages (in purl format) excluded from license checks"
         required: false
