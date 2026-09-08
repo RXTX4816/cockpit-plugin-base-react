@@ -31,7 +31,12 @@ on:
         description: "Comma-separated list of packages (in purl format) excluded from license checks"
         required: false
         type: string
-        default: ""
+        # @rxtx4816/cockpit-plugin-base-react is first-party and AGPL-3.0-only
+        # (from 2.0.0), which is intentionally not in allow-licenses — that list
+        # is for *third-party* dependencies. The plugins are themselves AGPL, so
+        # bundling it is fine; exempt it from the license gate explicitly rather
+        # than opening the allow-list to copyleft.
+        default: "pkg:npm/%40rxtx4816/cockpit-plugin-base-react"
 
 jobs:
   dependency-review:
