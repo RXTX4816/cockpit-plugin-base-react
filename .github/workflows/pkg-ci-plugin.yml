@@ -54,8 +54,8 @@ jobs:
           RPM=$(find rpmbuild/RPMS -name "*.rpm" | head -1)
           rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/main.js"
           rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/manifest.json"
-          rpm -qlp "$RPM" | grep -qE "(licenses/${{ inputs.plugin-name }}|${{ inputs.plugin-name }})/LICENSE" \
-            || echo "::warning::LICENSE not found in RPM — add '%license LICENSE' to the spec"
+          rpm -qlp "$RPM" | grep -qE "(licenses/${{ inputs.plugin-name }}|${{ inputs.plugin-name }})/LICENSE"
+          rpm -qlp "$RPM" | grep -q "THIRD-PARTY-NOTICES.txt"
           if [ -d src/assets ]; then rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/assets/"; fi
 
   deb:
@@ -97,6 +97,8 @@ jobs:
           dpkg-deb -c "$DEB" | grep -q "${{ inputs.plugin-name }}/main.js"
           dpkg-deb -c "$DEB" | grep -q "${{ inputs.plugin-name }}/manifest.json"
           dpkg-deb -c "$DEB" | grep -q "/usr/share/doc/${{ inputs.plugin-name }}/copyright"
+          dpkg-deb -c "$DEB" | grep -q "/usr/share/doc/${{ inputs.plugin-name }}/LICENSE"
+          dpkg-deb -c "$DEB" | grep -q "/usr/share/doc/${{ inputs.plugin-name }}/THIRD-PARTY-NOTICES.txt"
           if [ -d src/assets ]; then dpkg-deb -c "$DEB" | grep -q "${{ inputs.plugin-name }}/assets/"; fi
 
   arch:
@@ -132,6 +134,6 @@ jobs:
         run: |
           PKG=$(find . -name "*.pkg.tar.*" | head -1)
           tar -tf "$PKG" | grep -q "usr/share/cockpit/${{ inputs.plugin-name }}/main.js"
-          tar -tf "$PKG" | grep -q "usr/share/licenses/${{ inputs.plugin-name }}/LICENSE" \
-            || echo "::warning::LICENSE not found in Arch package — add an install -Dm644 LICENSE line to package()"
+          tar -tf "$PKG" | grep -q "usr/share/licenses/${{ inputs.plugin-name }}/LICENSE"
+          tar -tf "$PKG" | grep -q "usr/share/licenses/${{ inputs.plugin-name }}/THIRD-PARTY-NOTICES.txt"
           if [ -d src/assets ]; then tar -tf "$PKG" | grep -q "usr/share/cockpit/${{ inputs.plugin-name }}/assets/"; fi
