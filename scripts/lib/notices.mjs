@@ -232,13 +232,23 @@ export function renderNoticesText(entries, { product = "This product" } = {}) {
 }
 
 /**
- * Render the machine-readable sidecar (no full license text — that lives in the
- * .txt). Consumed by packaging tooling (debian/copyright, RPM, bundled-provides).
+ * Render the machine-readable sidecar. Consumed by packaging tooling
+ * (debian/copyright, RPM, bundled-provides).
+ *
+ * By default the full license text is omitted — it lives in the .txt, and the
+ * packaging consumers don't need it. Pass `includeText` to add a `licenseText`
+ * field per package, for a plugin that imports this JSON into its bundle to show
+ * the notices in its own UI (see ThirdPartyNoticesModal). That roughly tenfolds
+ * the file, so it is opt-in.
+ *
  * @param {NoticeEntry[]} entries
- * @param {{ bundle?: string, now?: string }} [opts]
+ * @param {{ bundle?: string, now?: string, includeText?: boolean }} [opts]
  * @returns {object}
  */
-export function renderNoticesJson(entries, { bundle = "main.js", now } = {}) {
+export function renderNoticesJson(
+  entries,
+  { bundle = "main.js", now, includeText = false } = {},
+) {
   return {
     generatedAt: now || new Date().toISOString(),
     bundle,
@@ -251,6 +261,7 @@ export function renderNoticesJson(entries, { bundle = "main.js", now } = {}) {
       licenseFile: e.licenseFile,
       publisher: e.publisher,
       url: e.url,
+      ...(includeText ? { licenseText: e.licenseText } : {}),
     })),
   };
 }

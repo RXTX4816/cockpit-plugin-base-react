@@ -254,4 +254,25 @@ describe("renderNoticesJson", () => {
     });
     expect(json.packages[0]).not.toHaveProperty("licenseText");
   });
+
+  it("includes the full license text when asked", () => {
+    const json = renderNoticesJson(
+      [
+        { name: "react", version: "19.2.8", license: "MIT", licenseText: "MIT License\n\nCopyright…", licenseFile: "LICENSE", publisher: "Meta", url: "u" },
+      ],
+      { bundle: "main.js", now: "2026-01-01T00:00:00.000Z", includeText: true },
+    );
+    expect(json.packages[0]).toMatchObject({
+      name: "react",
+      licenseText: "MIT License\n\nCopyright…",
+    });
+  });
+
+  it("still emits licenseText for a package whose text could not be found", () => {
+    const json = renderNoticesJson(
+      [{ name: "mystery", version: "1.0.0", license: "MIT", licenseText: "", licenseFile: "", publisher: "", url: "" }],
+      { includeText: true },
+    );
+    expect(json.packages[0].licenseText).toBe("");
+  });
 });
