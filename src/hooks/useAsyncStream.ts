@@ -41,9 +41,15 @@ export function useAsyncStream(
   const [errorMsg, setErrorMsg] = useState("");
   const bufRef = useRef("");
   const procRef = useRef<CockpitProcess | null>(null);
+  // A ref, not an effect-local variable, so cancel() can reach it. `startProcess` is
+  // free to await before it calls `launch` (resolving superuser access, say), which
+  // leaves a window where there is no process to close yet: cancel() during it used to
+  // do nothing at all, and the launch that followed went ahead unsupervised. The user
+  // cancelled and the work ran anyway.
+  const cancelledRef = useRef(false);
 
   useEffect(() => {
-    let cancelled = false;
+    cancelledRef.current = false;
     bufRef.current = "";
     setLines([]);
     setDone(false);
@@ -51,7 +57,7 @@ export function useAsyncStream(
     setErrorMsg("");
 
     const launch = (proc: CockpitProcess) => {
-      if (cancelled) { proc.close(); return; }
+      if (cancelledRef.current) { proc.close(); return; }
       procRef.current = proc;
 
       proc.stream(data => {
@@ -68,11 +74,11 @@ export function useAsyncStream(
 
       proc
         .then(() => {
-          if (!cancelled) { setDone(true); setFailed(false); }
+          if (!cancelledRef.current) { setDone(true); setFailed(false); }
           procRef.current = null;
         })
         .catch((ex: unknown) => {
-          if (!cancelled) {
+          if (!cancelledRef.current) {
             setDone(true);
             setFailed(true);
             setErrorMsg(ex instanceof Error ? ex.message : String(ex));
@@ -82,7 +88,7 @@ export function useAsyncStream(
     };
 
     startProcess(launch).catch((ex: unknown) => {
-      if (!cancelled) {
+      if (!cancelledRef.current) {
         setDone(true);
         setFailed(true);
         setErrorMsg(ex instanceof Error ? ex.message : String(ex));
@@ -90,13 +96,16 @@ export function useAsyncStream(
     });
 
     return () => {
-      cancelled = true;
+      cancelledRef.current = true;
       procRef.current?.close();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
   const cancel = useCallback(() => {
+    // Set first: if startProcess hasn't called launch yet there is nothing to close,
+    // and this flag is what stops the pending launch from starting the work anyway.
+    cancelledRef.current = true;
     procRef.current?.close();
     procRef.current = null;
   }, []);
