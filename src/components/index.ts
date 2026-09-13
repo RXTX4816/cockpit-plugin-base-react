@@ -16,6 +16,8 @@ export type { CodeEditorProps } from "./CodeEditor";
 export { EnvEditor } from "./EnvEditor";
 export { EnvTable } from "./EnvTable";
 export { ExternalLinkModal } from "./ExternalLinkModal";
+export { ThirdPartyNoticesModal } from "./ThirdPartyNoticesModal";
+export type { NoticesData, NoticePackage } from "./ThirdPartyNoticesModal";
 export { DiffEditor } from "./DiffEditor";
 export type { DiffEditorProps } from "./DiffEditor";
 export { ExternalAddressInput } from "./ExternalAddressInput";

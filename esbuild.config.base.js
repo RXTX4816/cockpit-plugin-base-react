@@ -1,6 +1,6 @@
 // @ts-check
 import { cp, mkdir, writeFile } from "fs/promises";
-import { join } from "path";
+import { dirname, join } from "path";
 import { buildNotices } from "./scripts/third-party-notices.mjs";
 
 /**
@@ -83,6 +83,10 @@ export function createWatchConfig(options = {}) {
  * @param {string[]} [opts.extraNames]  extra package names to include (e.g. bundled web fonts)
  * @param {string} [opts.product]   product name for the header
  * @param {string} [opts.bundle]    bundle filename recorded in the JSON sidecar
+ * @param {boolean} [opts.includeText]  also put each package's full license text in the
+ *   JSON, so the plugin can import it and show the notices in its own UI (see
+ *   ThirdPartyNoticesModal). Off by default — it roughly tenfolds the JSON, and the
+ *   packaging consumers of the sidecar don't need the text.
  * @param {boolean} [opts.strict]   throw if any package is missing license text
  * @returns {Promise<{ problems: string[] }>}
  */
@@ -93,9 +97,12 @@ export async function writeThirdPartyNotices({
   extraNames = [],
   product = "This Cockpit plugin",
   bundle = "main.js",
+  includeText = false,
   strict = false,
 }) {
-  const { text, json, problems } = buildNotices({ metafile, extraNames, product, bundle });
+  const { text, json, problems } = buildNotices({ metafile, extraNames, product, bundle, includeText });
+  await mkdir(dirname(textOut), { recursive: true });
+  await mkdir(dirname(jsonOut), { recursive: true });
   await writeFile(textOut, text);
   await writeFile(jsonOut, JSON.stringify(json, null, 2) + "\n");
   if (problems.length) {

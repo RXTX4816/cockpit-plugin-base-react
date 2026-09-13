@@ -16,6 +16,8 @@
 //   --modules <dir>     node_modules to resolve   (default: <cwd>/node_modules)
 //   --extra <a,b,c>     extra package names to include (e.g. bundled web fonts)
 //   --product <text>    product name for the header
+//   --include-text      also put each package's full license text in the JSON,
+//                       for a plugin that shows the notices in its own UI
 //   --strict            exit non-zero if any package is missing license text
 //
 // Consumers normally call writeThirdPartyNotices() from esbuild.config.base
@@ -66,6 +68,7 @@ export function loadVendored(vendoredDir = VENDORED_DIR) {
  * @param {string} [opts.product]
  * @param {string} [opts.bundle]
  * @param {Record<string, { license?: string, text: string, note?: string }>} [opts.vendored]
+ * @param {boolean} [opts.includeText] include each package's full license text in the JSON
  * @returns {{ text: string, json: object, problems: string[] }}
  */
 export function buildNotices({
@@ -75,6 +78,7 @@ export function buildNotices({
   product = "This product",
   bundle = "main.js",
   vendored,
+  includeText = false,
 }) {
   const pkgDir = (/** @type {string} */ name) => join(modulesDir, name);
   const vend = vendored ?? loadVendored();
@@ -102,7 +106,7 @@ export function buildNotices({
 
   return {
     text: renderNoticesText(entries, { product }),
-    json: renderNoticesJson(entries, { bundle }),
+    json: renderNoticesJson(entries, { bundle, includeText }),
     problems,
   };
 }
@@ -148,6 +152,7 @@ function main() {
     modulesDir,
     extraNames,
     product: args.product ? String(args.product) : "This product",
+    includeText: Boolean(args["include-text"]),
   });
 
   writeFileSync(outPath, text);
