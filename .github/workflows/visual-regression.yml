@@ -23,6 +23,10 @@ jobs:
     # baselines generated outside this exact image will fail here. When
     # bumping the @playwright/test version, update this tag to match and
     # regenerate baselines via the same image (see docs/wiki/Testing.md).
+    #
+    # @playwright/test is pinned to this exact version in package.json (no ^) so
+    # a dependency bump can't quietly move ahead of the image; the guard step
+    # below fails loudly with instructions if the two ever diverge.
     container:
       image: mcr.microsoft.com/playwright:v1.61.1-noble
       options: --ipc=host
@@ -35,6 +39,20 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Check Playwright matches the container image
+        run: |
+          image_version=1.61.1
+          installed=$(node -p "require('@playwright/test/package.json').version")
+          if [ "$installed" != "$image_version" ]; then
+            echo "::error::@playwright/test is $installed but this job runs in the" \
+                 "mcr.microsoft.com/playwright:v${image_version}-noble image."
+            echo "The baselines in src/visual/__screenshots__/ were generated in that image."
+            echo "To bump: update the container image tag here, pin the same exact version"
+            echo "in package.json, and regenerate the baselines in the new image"
+            echo "(npm run test:visual:update). See docs/wiki/Testing.md."
+            exit 1
+          fi
 
       - name: Run visual regression tests
         run: npm run test:visual
