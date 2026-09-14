@@ -99,6 +99,55 @@ describe("useAsyncStream", () => {
     expect(capturedProc.close).toHaveBeenCalled();
   });
 
+  // startProcess is free to await before it calls launch (resolving superuser access,
+  // say). Cancelling inside that window used to do nothing: there was no process to
+  // close yet, and the pending launch went ahead regardless — the user cancelled and
+  // the work ran anyway.
+  it("cancel() before launch stops the process from starting", async () => {
+    let release!: () => void;
+    const gate = new Promise<void>(r => { release = r; });
+    let capturedProc!: CockpitProcess;
+
+    const { result } = renderHook(() =>
+      useAsyncStream(async launch => {
+        await gate;
+        capturedProc = mockRunningProcess("line1\n");
+        launch(capturedProc);
+      }, []),
+    );
+
+    // Cancel while startProcess is still awaiting — nothing has launched yet.
+    act(() => { result.current.cancel(); });
+
+    release();
+    await act(async () => { await gate; });
+
+    // The late launch must close the process it was handed instead of streaming it.
+    await waitFor(() => expect(capturedProc.close).toHaveBeenCalled());
+    expect(result.current.lines).toEqual([]);
+  });
+
+  it("cancel() stops a late completion from flipping done", async () => {
+    let resolveProc!: (v: string) => void;
+    const { result } = renderHook(() =>
+      useAsyncStream(async launch => {
+        const p = new Promise<string>(r => { resolveProc = r; });
+        launch(Object.assign(p, {
+          stream: () => p as CockpitProcess,
+          close: vi.fn(),
+          input: vi.fn(),
+          wait: () => p,
+        }) as CockpitProcess);
+      }, []),
+    );
+
+    await waitFor(() => expect(result.current.done).toBe(false));
+    act(() => { result.current.cancel(); });
+    await act(async () => { resolveProc("done"); });
+
+    expect(result.current.done).toBe(false);
+  });
+
   it("resets state when deps change", async () => {
     let dep = 1;
     const { result, rerender } = renderHook(() =>
