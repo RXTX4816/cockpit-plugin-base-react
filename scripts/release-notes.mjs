@@ -18,6 +18,28 @@
 // semantic-release-plugin.yml.
 
 import { execFileSync } from "node:child_process";
+import { realpathSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+
+/**
+ * True when this file is the program being run.
+ *
+ * Compares *resolved* paths: run through a bin symlink (node_modules/.bin/
+ * cockpit-release-notes), process.argv[1] is the symlink while import.meta.url is
+ * the real file, so a naive string compare is false and main() silently never
+ * runs — the script then exits 0 having printed nothing. That is exactly how a
+ * release shipped with empty notes: the caller's `||` fallback never fired,
+ * because there was no failure to fall back from.
+ */
+function isMain() {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return pathToFileURL(realpathSync(entry)).href === import.meta.url;
+  } catch {
+    return false;
+  }
+}
 
 /** @param {string[]} args */
 function git(args) {
@@ -188,6 +210,6 @@ function main() {
   process.stdout.write(render({ from, to, repo, sections, breaking }) + "\n");
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isMain()) {
   main();
 }
