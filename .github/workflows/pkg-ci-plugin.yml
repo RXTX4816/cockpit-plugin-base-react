@@ -54,7 +54,12 @@ jobs:
           RPM=$(find rpmbuild/RPMS -name "*.rpm" | head -1)
           rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/main.js"
           rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/manifest.json"
-          rpm -qlp "$RPM" | grep -qE "(licenses/${{ inputs.plugin-name }}|${{ inputs.plugin-name }})/LICENSE"
+          # Where %license lands depends on the rpm build doing the packaging, not on
+          # the spec: Fedora's rpm gives /usr/share/licenses/<name>/LICENSE, while the
+          # Ubuntu rpm this job runs on gives a *version-suffixed* directory,
+          # /usr/share/licenses/<name>-<version>/LICENSE. Allow the suffix — the point
+          # of this check is that LICENSE ships, not which layout rpm chose.
+          rpm -qlp "$RPM" | grep -qE "(licenses/${{ inputs.plugin-name }}(-[^/]+)?|${{ inputs.plugin-name }})/LICENSE$"
           rpm -qlp "$RPM" | grep -q "THIRD-PARTY-NOTICES.txt"
           if [ -d src/assets ]; then rpm -qlp "$RPM" | grep -q "${{ inputs.plugin-name }}/assets/"; fi
 
