@@ -1,4 +1,8 @@
 import { describe, it, expect } from "vitest";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, symlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   parseArgs,
   authorTag,
@@ -153,5 +157,37 @@ describe("render", () => {
     expect(render({ from: "", to: "HEAD", repo: "", sections: {}, breaking: [] })).toContain(
       "_No notable changes._",
     );
+  });
+});
+
+// Regression test for the empty-release-notes bug: the CLI is exposed as a bin
+// (cockpit-release-notes), so consumers invoke it through a node_modules/.bin
+// symlink. The entrypoint guard used to compare import.meta.url against a
+// `file://` + process.argv[1] string — which never matches through a symlink,
+// because Node resolves the module URL to the real path while argv[1] stays the
+// symlink. main() then silently never ran and the process exited 0 having printed
+// nothing, so the release workflow's `||` fallback never fired and a release
+// shipped with an empty body.
+describe("CLI entrypoint", () => {
+  // vitest runs from the repo root, so resolve from cwd rather than import.meta.url
+  // (which vitest does not always expose as a file: URL).
+  const REPO_ROOT = process.cwd();
+  const SCRIPT = join(REPO_ROOT, "scripts", "release-notes.mjs");
+
+  function runNotes(entry) {
+    return execFileSync(process.execPath, [entry, "--to", "HEAD", "--from", "HEAD~1"], {
+      encoding: "utf8",
+      cwd: REPO_ROOT,
+    });
+  }
+
+  it("prints notes when run by its real path", () => {
+    expect(runNotes(SCRIPT).trim()).not.toBe("");
+  });
+
+  it("prints notes when run through a bin symlink", () => {
+    const link = join(mkdtempSync(join(tmpdir(), "cockpit-notes-")), "cockpit-release-notes");
+    symlinkSync(SCRIPT, link);
+    expect(runNotes(link).trim()).not.toBe("");
   });
 });

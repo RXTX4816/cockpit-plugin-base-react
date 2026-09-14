@@ -23,9 +23,9 @@
 // Consumers normally call writeThirdPartyNotices() from esbuild.config.base
 // instead of shelling out to this script; it exists for manual runs and CI.
 
-import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, existsSync, realpathSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   packageNamesFromMetafile,
   collectNotices,
@@ -168,6 +168,18 @@ function main() {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Resolved-path compare, not a string compare — see release-notes.mjs's isMain()
+// for why a symlinked bin otherwise makes this silently false.
+function isMain() {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return pathToFileURL(realpathSync(entry)).href === import.meta.url;
+  } catch {
+    return false;
+  }
+}
+
+if (isMain()) {
   main();
 }

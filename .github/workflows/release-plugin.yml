@@ -144,9 +144,20 @@ jobs:
       # ── Upload ──────────────────────────────────────────────────────────
       - name: Generate grouped release notes
         run: |
-          npx --no-install cockpit-release-notes --to "${VERSION}" > RELEASE_NOTES.md \
-            || gh api "repos/${{ github.repository }}/releases/generate-notes" \
-                 -f tag_name="${VERSION}" --jq '.body' > RELEASE_NOTES.md
+          # Fall back on an *empty* file too, not just a non-zero exit. The notes
+          # generator once exited 0 while printing nothing (its entrypoint guard
+          # failed through the bin symlink), so `||` never fired and a release
+          # shipped with an empty body while this step reported success.
+          npx --no-install cockpit-release-notes --to "${VERSION}" > RELEASE_NOTES.md || true
+          if [ ! -s RELEASE_NOTES.md ]; then
+            echo "::warning::cockpit-release-notes produced no output — falling back to GitHub's generated notes"
+            gh api "repos/${{ github.repository }}/releases/generate-notes" \
+              -f tag_name="${VERSION}" --jq '.body' > RELEASE_NOTES.md
+          fi
+          if [ ! -s RELEASE_NOTES.md ]; then
+            echo "::error::Release notes are empty and the fallback produced nothing"
+            exit 1
+          fi
           cat RELEASE_NOTES.md
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
