@@ -175,7 +175,11 @@ describe("CLI entrypoint", () => {
   const SCRIPT = join(REPO_ROOT, "scripts", "release-notes.mjs");
 
   function runNotes(entry) {
-    return execFileSync(process.execPath, [entry, "--to", "HEAD", "--from", "HEAD~1"], {
+    // An empty HEAD..HEAD range, deliberately: CI checks out shallow (depth 1), so
+    // anything like HEAD~1 doesn't exist there. The render still prints
+    // "_No notable changes._", and non-empty output is all this needs to prove —
+    // that main() ran at all.
+    return execFileSync(process.execPath, [entry, "--to", "HEAD", "--from", "HEAD"], {
       encoding: "utf8",
       cwd: REPO_ROOT,
     });
