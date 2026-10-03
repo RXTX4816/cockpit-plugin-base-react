@@ -44,19 +44,74 @@ Required inputs:
 
 ### semantic-release-plugin.yml
 
-Determines the next version from conventional commits since the last git tag and creates the tag. Does not build or publish anything — it only tags. The tag then triggers whatever release workflow you have listening on `push.tags`.
+Determines the next version from conventional commits since the last git tag and creates the tag, **after a manual approval**. Does not build or publish anything — it only tags. The tag then triggers whatever release workflow you have listening on `push.tags`.
+
+Flow: every push to main whose CI passes starts a run. The `verify` job checks that the commit is on main and has a successful CI run, computes the next version and writes it to the run summary. The `release` job then waits on the `release` environment until the maintainer approves it — in the Actions tab, open the run and click **Review deployments → Approve**. A newer commit on main cancels the previous pending run, so only the tip of main is ever offered. If nothing changed since the last tag, no approval is requested.
 
 Version bump rules:
-- `BREAKING CHANGE` anywhere in a commit body → major
+- `!` before the `:` in a commit header, or a `BREAKING CHANGE:` footer in a commit body → major
 - `feat:` prefix → minor
 - anything else → patch
 - no commits since last tag → skip (exits 0, no tag created)
+- no tag at all yet → `v0.1.0`
+
+Caller (`.github/workflows/semantic-release.yml` in the plugin repo):
+
+```yaml
+name: Semantic Release
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: semantic-release
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  semantic-release:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    uses: RXTX4816/cockpit-plugin-base-react/.github/workflows/semantic-release-plugin.yml@main
+    with:
+      sha: ${{ github.event.workflow_run.head_sha || github.sha }}
+    secrets: inherit
+```
+
+`workflow_dispatch` re-offers the current tip of main, e.g. after a pending approval expired (GitHub drops them after 30 days).
+
+Required repository setup — **create this before the caller workflow lands**, because GitHub silently creates an unprotected environment on first use (the verify job refuses to run against one, but it is still a mess to clean up):
+
+- Environment `release` (Settings → Environments) with:
+  - **Required reviewers**: the maintainer, with "Prevent self-review" off
+  - **Deployment branches**: selected branches → `main`
+
+  Or with the API (`<user-id>` from `gh api user --jq .id`):
+
+  ```sh
+  gh api -X PUT repos/<owner>/<repo>/environments/release --input - <<'JSON'
+  {"prevent_self_review": false,
+   "reviewers": [{"type": "User", "id": <user-id>}],
+   "deployment_branch_policy": {"protected_branches": false, "custom_branch_policies": true}}
+  JSON
+  gh api -X POST repos/<owner>/<repo>/environments/release/deployment-branch-policies -f name=main -f type=branch
+  ```
 
 Required secrets:
-- `RELEASE_TOKEN` — a GitHub token with `contents: write` permission
+- `RELEASE_TOKEN` — a GitHub token with `contents: write` permission. A PAT, so the tag it creates triggers the release workflow.
 
-Optional inputs:
-- `initial_version` — version to use when no prior tag exists (default: `v1.0.0`)
+Inputs:
+- `sha` (required) — the commit to tag
+- `ci-workflow` — workflow file that must have succeeded on `sha` (default: `ci.yml`)
+- `environment` — environment holding the approval rule (default: `release`)
 
 ### release-plugin.yml
 
