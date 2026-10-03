@@ -166,4 +166,5 @@ See [Pack smoke tests](Testing.md#pack-smoke-tests) and [Visual Regression Testi
 |---|---|---|
 | `RELEASE_TOKEN` | semantic-release, release | GitHub PAT with `contents: write` |
 | `AUR_SSH_KEY` | release | SSH private key for AUR pushes |
-| `NPM_TOKEN` | (base package only) | npm automation token for publishing |
+
+The base package publishes to npm without a token, via [npm trusted publishing](https://docs.npmjs.com/trusted-publishers): npmjs.com trusts this repository's `release.yml` workflow, and the job authenticates with its GitHub OIDC identity. Token-based publishing stopped being viable: write tokens expire after at most 90 days, and npm is removing direct publishing for 2FA-bypass tokens. The trusted publisher is tied to the workflow *file name*, so renaming `release.yml` requires updating it on npmjs.com (package → Settings → Trusted Publisher).
