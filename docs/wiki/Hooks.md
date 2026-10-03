@@ -38,6 +38,9 @@ Consumes a Cockpit channel as a line-buffered async stream. Returns the accumula
 
 Used internally by `LogViewer` and useful anywhere you need to display or process real-time output from a spawned process.
 
+- `cancel()` — closes the process and stops accumulating output
+- `detach()` — releases a still-running process *without* closing it, returning `{ proc, pending }` (or `null` if nothing is running), so another owner can keep it alive past the component, e.g. a background task queue taking over a run the user no longer wants to watch. `pending` is output after the last newline that hasn't reached `lines` yet.
+
 ---
 
 ## useConfirmAction
