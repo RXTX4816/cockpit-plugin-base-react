@@ -14,6 +14,25 @@ export interface AsyncStreamResult {
   errorMsg: string;
   /** Closes the underlying process and stops accumulating output. */
   cancel: () => void;
+  /**
+   * Stops tracking the running process *without* closing it, so another owner (a
+   * background task queue, say) can take it over: register your own `stream()`
+   * callback and `then()`/`catch()` on the returned process. The hook will no longer
+   * update its state for it, nor close it on unmount.
+   *
+   * `pending` is output received after the last newline, which has not reached
+   * `lines` yet — prepend it to the new owner's buffer so no output is lost.
+   *
+   * Returns `null` when there is nothing to hand over: the process has not been
+   * launched yet, or has already finished, or was cancelled or detached before.
+   */
+  detach: () => DetachedStream | null;
+}
+
+/** A still-running process released by {@link AsyncStreamResult.detach}. */
+export interface DetachedStream {
+  proc: CockpitProcess;
+  pending: string;
 }
 
 /**
@@ -61,6 +80,8 @@ export function useAsyncStream(
       procRef.current = proc;
 
       proc.stream(data => {
+        // Cancelled or detached: the output is no longer this hook's to show.
+        if (cancelledRef.current) return;
         bufRef.current += data;
         const parts = bufRef.current.split("\n");
         bufRef.current = parts.pop() ?? "";
@@ -110,5 +131,17 @@ export function useAsyncStream(
     procRef.current = null;
   }, []);
 
-  return { lines, done, failed, errorMsg, cancel };
+  const detach = useCallback((): DetachedStream | null => {
+    const proc = procRef.current;
+    if (!proc || cancelledRef.current) return null;
+    // Same flag cancel() uses, so the settle handlers above leave state alone; the
+    // ref is cleared so neither cancel() nor unmount can close the process.
+    cancelledRef.current = true;
+    procRef.current = null;
+    const pending = bufRef.current;
+    bufRef.current = "";
+    return { proc, pending };
+  }, []);
+
+  return { lines, done, failed, errorMsg, cancel, detach };
 }

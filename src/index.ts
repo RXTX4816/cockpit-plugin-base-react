@@ -4,7 +4,7 @@ export { bootstrapPlugin } from "./bootstrap";
 export { useAsyncAction } from "./hooks/useAsyncAction";
 export { useAutoRefresh } from "./hooks/useAutoRefresh";
 export { useAsyncStream } from "./hooks/useAsyncStream";
-export type { AsyncStreamResult } from "./hooks/useAsyncStream";
+export type { AsyncStreamResult, DetachedStream } from "./hooks/useAsyncStream";
 export { useConfirmAction } from "./hooks/useConfirmAction";
 export type { ConfirmStep, ConfirmActionState } from "./hooks/useConfirmAction";
 export { usePollingFetch } from "./hooks/usePollingFetch";

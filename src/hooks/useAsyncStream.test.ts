@@ -148,6 +148,66 @@ describe("useAsyncStream", () => {
     expect(result.current.done).toBe(false);
   });
 
+  it("detach() hands over the running process without closing it, even on unmount", async () => {
+    let capturedProc!: CockpitProcess;
+    const { result, unmount } = renderHook(() =>
+      useAsyncStream(async launch => {
+        capturedProc = mockRunningProcess("line1\npartial");
+        launch(capturedProc);
+      }, []),
+    );
+
+    await waitFor(() => expect(result.current.lines).toEqual(["line1"]));
+    let detached!: ReturnType<typeof result.current.detach>;
+    act(() => { detached = result.current.detach(); });
+
+    expect(detached?.proc).toBe(capturedProc);
+    expect(detached?.pending).toBe("partial");
+    result.current.cancel();
+    unmount();
+    expect(capturedProc.close).not.toHaveBeenCalled();
+  });
+
+  it("detach() stops the hook reacting to the process settling", async () => {
+    let resolveProc!: (v: string) => void;
+    const { result } = renderHook(() =>
+      useAsyncStream(async launch => {
+        const p = new Promise<string>(r => { resolveProc = r; });
+        launch(Object.assign(p, {
+          stream: () => p as CockpitProcess,
+          close: vi.fn(),
+          input: vi.fn(),
+          wait: () => p,
+        }) as CockpitProcess);
+      }, []),
+    );
+
+    await waitFor(() => expect(result.current.done).toBe(false));
+    act(() => { expect(result.current.detach()).not.toBeNull(); });
+    await act(async () => { resolveProc("done"); });
+
+    expect(result.current.done).toBe(false);
+  });
+
+  it("detach() returns null when there is no running process to hand over", async () => {
+    let release!: () => void;
+    const gate = new Promise<void>(r => { release = r; });
+    const { result } = renderHook(() =>
+      useAsyncStream(async launch => {
+        await gate;
+        launch(mockProcess("line\n"));
+      }, []),
+    );
+
+    // Not launched yet.
+    expect(result.current.detach()).toBeNull();
+
+    release();
+    await waitFor(() => expect(result.current.done).toBe(true));
+    // Already finished.
+    expect(result.current.detach()).toBeNull();
+  });
+
   it("resets state when deps change", async () => {
     let dep = 1;
     const { result, rerender } = renderHook(() =>
