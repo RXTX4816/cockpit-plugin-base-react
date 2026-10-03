@@ -257,7 +257,7 @@ Font rendering and anti-aliasing differ enough between environments — even dif
 
 ```bash
 docker run --rm -v "$(pwd)":/work -w /work --ipc=host \
-  mcr.microsoft.com/playwright:v1.61.1-noble \
+  mcr.microsoft.com/playwright:v1.63.0-noble \
   npm run test:visual:update
 ```
 
