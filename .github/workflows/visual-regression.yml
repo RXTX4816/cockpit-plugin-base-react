@@ -8,6 +8,11 @@ on:
       - "src/systemd/**"
       - "src/visual/**"
       - "playwright.config.visual.ts"
+      # Dependency bumps (Playwright, PatternFly) change rendering without touching any
+      # path above, so drift used to surface later on an unrelated component PR.
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/visual-regression.yml"
 
 permissions:
   contents: read
@@ -28,7 +33,7 @@ jobs:
     # a dependency bump can't quietly move ahead of the image; the guard step
     # below fails loudly with instructions if the two ever diverge.
     container:
-      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
       options: --ipc=host
     steps:
       - uses: actions/checkout@v7
@@ -42,7 +47,7 @@ jobs:
 
       - name: Check Playwright matches the container image
         run: |
-          image_version=1.61.1
+          image_version=1.63.0
           installed=$(node -p "require('@playwright/test/package.json').version")
           if [ "$installed" != "$image_version" ]; then
             echo "::error::@playwright/test is $installed but this job runs in the" \
