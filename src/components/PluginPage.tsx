@@ -2,6 +2,9 @@ import type { ReactNode } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { ToastProvider } from "./ToastProvider";
+import { i18n } from "../i18n";
+
+const DEFAULT_FALLBACK_TITLE = "Error loading plugin";
 
 interface PluginPageProps {
   children: ReactNode;
@@ -35,7 +38,7 @@ interface PluginPageProps {
  */
 export function PluginPage({ children, footer, fallbackTitle, className }: PluginPageProps) {
   return (
-    <ErrorBoundary fallbackTitle={fallbackTitle ?? "Error loading plugin"}>
+    <ErrorBoundary fallbackTitle={fallbackTitle ?? (i18n.isInitialized ? i18n.t("pluginPage.errorTitle", DEFAULT_FALLBACK_TITLE) : DEFAULT_FALLBACK_TITLE)}>
       <ToastProvider>
         <Page className={`pf-m-no-sidebar${className ? ` ${className}` : ""}`}>
           <PageSection hasBodyWrapper={false} isFilled>

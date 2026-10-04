@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Något gick fel"
+  },
+  "pluginPage": {
+    "errorTitle": "Fel vid inläsning av insticksmodulen"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Sök i loggar…",
+    "emptyMessage": "Inga loggposter.",
+    "noMatchesMessage": "Inga matchande poster.",
+    "errorTitle": "Kunde inte läsa in loggar",
+    "refreshAriaLabel": "Uppdatera",
+    "retry": "Försök igen",
+    "linesSuffix": "rader",
+    "regexToggle": "Växla regex-sökning",
+    "prettyPrint": "Formatera JSON",
+    "jumpTop": "Hoppa till toppen",
+    "jumpBottom": "Hoppa till botten",
+    "pause": "Pausa",
+    "resume": "Återuppta",
+    "download": "Ladda ner loggar",
+    "savedTo": "Sparad i {{path}}",
+    "textFiles": "Textfiler"
+  },
+  "externalLinkModal": {
+    "title": "Öppna extern länk",
+    "ariaLabel": "Bekräftelse av extern länk",
+    "warningTitle": "Du är på väg att lämna det här programmet",
+    "continueButton": "Fortsätt"
+  },
+  "common": {
+    "cancel": "Avbryt",
+    "close": "Stäng"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Byt layout",
+    "groupLabel": "Layout",
+    "tooltip": "Layout: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Variabelnamn",
+    "valueAria": "Variabelvärde",
+    "markSensitive": "Markera som känslig",
+    "markNotSensitive": "Markera som inte känslig",
+    "showValue": "Visa värde",
+    "hideValue": "Dölj värde",
+    "deleteRow": "Ta bort rad"
+  },
+  "notices": {
+    "title": "Licenser för öppen källkod",
+    "aria_label": "Licenser för öppen källkod",
+    "intro": "{{product}} licensieras under {{license}}.",
+    "source_link": "Hämta källkoden",
+    "summary": "Det paketerar följande {{count}} paket med öppen källkod. Varje pakets licens och upphovsrättsmeddelande återges i sin helhet nedan.",
+    "licenses_used": "Licenser",
+    "filter_placeholder": "Filtrera efter namn, licens eller utgivare",
+    "no_matches": "Inga paket matchar det här filtret",
+    "no_text": "Ingen licenstext levererades med det här paketet — se paketets webbplats ovan."
+  },
+  "service": {
+    "start": "Starta",
+    "stop": "Stoppa",
+    "restart": "Starta om",
+    "reload": "Läs in igen",
+    "running": "Körs",
+    "stopped": "Stoppad",
+    "failed": "Misslyckad",
+    "not_installed": "Inte installerad",
+    "unknown": "Okänd",
+    "confirm_action": "Bekräfta",
+    "confirm_start_title": "Starta tjänsten?",
+    "confirm_start_body": "Tjänsten startas.",
+    "confirm_stop_title": "Stoppa tjänsten?",
+    "confirm_stop_body": "Tjänsten stoppas.",
+    "confirm_restart_title": "Starta om tjänsten?",
+    "confirm_restart_body": "Tjänsten startas om.",
+    "confirm_reload_title": "Läsa in tjänsten igen?",
+    "confirm_reload_body": "Tjänstens konfiguration läses in igen."
+  },
+  "toast": {
+    "service_started": "Tjänsten startad",
+    "service_stopped": "Tjänsten stoppad",
+    "service_restarted": "Tjänsten omstartad",
+    "service_reloaded": "Konfigurationen inläst igen"
+  }
+}

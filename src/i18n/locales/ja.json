@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "問題が発生しました"
+  },
+  "pluginPage": {
+    "errorTitle": "プラグインの読み込みエラー"
+  },
+  "logViewer": {
+    "searchPlaceholder": "ログを検索…",
+    "emptyMessage": "ログエントリーはありません。",
+    "noMatchesMessage": "一致するエントリーはありません。",
+    "errorTitle": "ログの読み込みに失敗しました",
+    "refreshAriaLabel": "更新",
+    "retry": "再試行",
+    "linesSuffix": "行",
+    "regexToggle": "正規表現検索を切り替え",
+    "prettyPrint": "JSON を整形",
+    "jumpTop": "先頭に移動",
+    "jumpBottom": "末尾に移動",
+    "pause": "一時停止",
+    "resume": "再開",
+    "download": "ログをダウンロード",
+    "savedTo": "{{path}} に保存しました",
+    "textFiles": "テキストファイル"
+  },
+  "externalLinkModal": {
+    "title": "外部リンクを開く",
+    "ariaLabel": "外部リンクの確認",
+    "warningTitle": "このアプリケーションから移動しようとしています",
+    "continueButton": "続ける"
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "close": "閉じる"
+  },
+  "layoutSelector": {
+    "ariaLabel": "レイアウトを変更",
+    "groupLabel": "レイアウト",
+    "tooltip": "レイアウト：{{layout}}"
+  },
+  "envTable": {
+    "keyAria": "変数名",
+    "valueAria": "変数の値",
+    "markSensitive": "機密としてマーク",
+    "markNotSensitive": "機密のマークを解除",
+    "showValue": "値を表示",
+    "hideValue": "値を隠す",
+    "deleteRow": "行を削除"
+  },
+  "notices": {
+    "title": "オープンソースライセンス",
+    "aria_label": "オープンソースライセンス",
+    "intro": "{{product}} は {{license}} の下でライセンスされています。",
+    "source_link": "ソースコードを取得",
+    "summary": "以下の {{count}} 個のオープンソースパッケージを同梱しています。各パッケージのライセンスと著作権表示の全文を以下に掲載します。",
+    "licenses_used": "ライセンス",
+    "filter_placeholder": "名前、ライセンス、発行者で絞り込み",
+    "no_matches": "このフィルターに一致するパッケージはありません",
+    "no_text": "このパッケージにはライセンス本文が同梱されていません — 上記のパッケージのホームページを参照してください。"
+  },
+  "service": {
+    "start": "開始",
+    "stop": "ストップ",
+    "restart": "再起動",
+    "reload": "再読み込み",
+    "running": "実行中",
+    "stopped": "停止",
+    "failed": "失敗",
+    "not_installed": "未インストール",
+    "unknown": "不明",
+    "confirm_action": "確認",
+    "confirm_start_title": "サービスを起動しますか？",
+    "confirm_start_body": "サービスが起動されます。",
+    "confirm_stop_title": "サービスを停止しますか？",
+    "confirm_stop_body": "サービスが停止されます。",
+    "confirm_restart_title": "サービスを再起動しますか？",
+    "confirm_restart_body": "サービスが再起動されます。",
+    "confirm_reload_title": "サービスを再読み込みしますか？",
+    "confirm_reload_body": "サービスの設定が再読み込みされます。"
+  },
+  "toast": {
+    "service_started": "サービスを起動しました",
+    "service_stopped": "サービスを停止しました",
+    "service_restarted": "サービスを再起動しました",
+    "service_reloaded": "設定を再読み込みしました"
+  }
+}

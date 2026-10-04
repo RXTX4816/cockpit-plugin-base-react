@@ -2,6 +2,9 @@
   "errorBoundary": {
     "title": "Something went wrong"
   },
+  "pluginPage": {
+    "errorTitle": "Error loading plugin"
+  },
   "logViewer": {
     "searchPlaceholder": "Search logs…",
     "emptyMessage": "No log entries.",
@@ -9,7 +12,16 @@
     "errorTitle": "Failed to load logs",
     "refreshAriaLabel": "Refresh",
     "retry": "Retry",
-    "linesSuffix": "lines"
+    "linesSuffix": "lines",
+    "regexToggle": "Toggle regex filter",
+    "prettyPrint": "Pretty print JSON",
+    "jumpTop": "Jump to top",
+    "jumpBottom": "Jump to bottom",
+    "pause": "Pause",
+    "resume": "Resume",
+    "download": "Download logs",
+    "savedTo": "Saved to {{path}}",
+    "textFiles": "Text files"
   },
   "externalLinkModal": {
     "title": "Open external link",
@@ -18,7 +30,33 @@
     "continueButton": "Continue"
   },
   "common": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Change layout",
+    "groupLabel": "Layout",
+    "tooltip": "Layout: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Variable key",
+    "valueAria": "Variable value",
+    "markSensitive": "Mark as sensitive",
+    "markNotSensitive": "Mark as not sensitive",
+    "showValue": "Show value",
+    "hideValue": "Hide value",
+    "deleteRow": "Delete row"
+  },
+  "notices": {
+    "title": "Open source licenses",
+    "aria_label": "Open source licenses",
+    "intro": "{{product}} is licensed under {{license}}.",
+    "source_link": "Get the source code",
+    "summary": "It bundles the following {{count}} open source packages. Each package's own license and copyright notice is reproduced in full below.",
+    "licenses_used": "Licenses",
+    "filter_placeholder": "Filter by name, license or publisher",
+    "no_matches": "No packages match this filter",
+    "no_text": "No license text shipped with this package — see the package homepage above."
   },
   "service": {
     "start": "Start",

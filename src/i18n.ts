@@ -1,8 +1,29 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import baseEn from "./i18n/locales/en.json";
+import baseAr from "./i18n/locales/ar.json";
+import baseCs from "./i18n/locales/cs.json";
 import baseDe from "./i18n/locales/de.json";
+import baseEn from "./i18n/locales/en.json";
+import baseEs from "./i18n/locales/es.json";
+import baseFi from "./i18n/locales/fi.json";
+import baseFr from "./i18n/locales/fr.json";
+import baseHe from "./i18n/locales/he.json";
+import baseId from "./i18n/locales/id.json";
+import baseIt from "./i18n/locales/it.json";
+import baseJa from "./i18n/locales/ja.json";
+import baseKa from "./i18n/locales/ka.json";
+import baseKo from "./i18n/locales/ko.json";
+import baseNl from "./i18n/locales/nl.json";
 import basePl from "./i18n/locales/pl.json";
+import basePtBR from "./i18n/locales/pt-BR.json";
+import baseRo from "./i18n/locales/ro.json";
+import baseRu from "./i18n/locales/ru.json";
+import baseSk from "./i18n/locales/sk.json";
+import baseSv from "./i18n/locales/sv.json";
+import baseTr from "./i18n/locales/tr.json";
+import baseUk from "./i18n/locales/uk.json";
+import baseZhCN from "./i18n/locales/zh-CN.json";
+import baseZhTW from "./i18n/locales/zh-TW.json";
 
 /**
  * i18next `resources` map keyed by locale (e.g. `"en"`, `"de"`), each with a
@@ -11,29 +32,71 @@ import basePl from "./i18n/locales/pl.json";
 export type LocaleResources = Record<string, { translation: Record<string, unknown> }>;
 
 /**
- * English, German, and Polish translations for shared base components
+ * Translations for shared base components in every supported locale
  * (`ErrorBoundary`, `LogViewer`, `ExternalLinkModal`, `ConfirmDialog`, `ServiceControl`, ...).
  *
- * Spread into your own resources before passing them to {@link initCockpitI18n} so
- * consumers only need to define strings for their own plugin-specific UI:
- *
- * @example
- * ```ts
- * initCockpitI18n({
- *   en: { translation: { ...baseTranslations.en, ...myEn } },
- *   de: { translation: { ...baseTranslations.de, ...myDe } },
- * });
- * ```
+ * Merge them under your own strings with {@link withBaseTranslations} so consumers only
+ * need to define strings for their own plugin-specific UI.
  *
  * Even without spreading this in, shared components still render sensible English
  * defaults — every base string lookup supplies its own fallback — so adopting this
  * is an enhancement (real translations for non-English locales), not a requirement.
  */
 export const baseTranslations: Record<string, Record<string, unknown>> = {
-  en: baseEn,
+  ar: baseAr,
+  cs: baseCs,
   de: baseDe,
+  en: baseEn,
+  es: baseEs,
+  fi: baseFi,
+  fr: baseFr,
+  he: baseHe,
+  id: baseId,
+  it: baseIt,
+  ja: baseJa,
+  ka: baseKa,
+  ko: baseKo,
+  nl: baseNl,
   pl: basePl,
+  "pt-BR": basePtBR,
+  ro: baseRo,
+  ru: baseRu,
+  sk: baseSk,
+  sv: baseSv,
+  tr: baseTr,
+  uk: baseUk,
+  "zh-CN": baseZhCN,
+  "zh-TW": baseZhTW,
 };
+
+type Tree = Record<string, unknown>;
+
+function deepMerge(base: Tree, own: Tree): Tree {
+  const out: Tree = { ...base };
+  for (const [k, v] of Object.entries(own)) {
+    const b = out[k];
+    out[k] = v && typeof v === "object" && b && typeof b === "object"
+      ? deepMerge(b as Tree, v as Tree)
+      : v;
+  }
+  return out;
+}
+
+/**
+ * Deep-merges {@link baseTranslations} under each of your locales, so shared
+ * components are translated too. Your strings win on collision, and sections you
+ * share with the base (e.g. `common`) are merged key by key rather than replaced.
+ *
+ * @example
+ * ```ts
+ * initCockpitI18n(buildLocaleResources(withBaseTranslations({ en, de })));
+ * ```
+ */
+export function withBaseTranslations(locales: Record<string, Tree>): Record<string, Tree> {
+  return Object.fromEntries(
+    Object.entries(locales).map(([code, own]) => [code, deepMerge(baseTranslations[code] ?? {}, own)]),
+  );
+}
 
 /**
  * Wraps a plain `{ locale: translationObject }` map in the `{ translation: X }`

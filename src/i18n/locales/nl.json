@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Er is iets misgegaan"
+  },
+  "pluginPage": {
+    "errorTitle": "Fout bij het laden van de plugin"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Logboeken doorzoeken…",
+    "emptyMessage": "Geen logboekregels.",
+    "noMatchesMessage": "Geen overeenkomende regels.",
+    "errorTitle": "Logboeken laden mislukt",
+    "refreshAriaLabel": "Vernieuwen",
+    "retry": "Opnieuw proberen",
+    "linesSuffix": "regels",
+    "regexToggle": "Regex-zoeken in-/uitschakelen",
+    "prettyPrint": "JSON opmaken",
+    "jumpTop": "Naar boven springen",
+    "jumpBottom": "Naar beneden springen",
+    "pause": "Pauzeren",
+    "resume": "Hervatten",
+    "download": "Logboeken downloaden",
+    "savedTo": "Opgeslagen in {{path}}",
+    "textFiles": "Tekstbestanden"
+  },
+  "externalLinkModal": {
+    "title": "Externe link openen",
+    "ariaLabel": "Bevestiging externe link",
+    "warningTitle": "U staat op het punt deze applicatie te verlaten",
+    "continueButton": "Doorgaan"
+  },
+  "common": {
+    "cancel": "Annuleren",
+    "close": "Sluiten"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Indeling wijzigen",
+    "groupLabel": "Indeling",
+    "tooltip": "Indeling: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Naam van variabele",
+    "valueAria": "Waarde van variabele",
+    "markSensitive": "Markeren als gevoelig",
+    "markNotSensitive": "Markeren als niet gevoelig",
+    "showValue": "Waarde tonen",
+    "hideValue": "Waarde verbergen",
+    "deleteRow": "Rij verwijderen"
+  },
+  "notices": {
+    "title": "Opensourcelicenties",
+    "aria_label": "Opensourcelicenties",
+    "intro": "{{product}} is gelicentieerd onder {{license}}.",
+    "source_link": "Broncode ophalen",
+    "summary": "Het bundelt de volgende {{count}} opensourcepakketten. De licentie en copyrightvermelding van elk pakket zijn hieronder volledig weergegeven.",
+    "licenses_used": "Licenties",
+    "filter_placeholder": "Filteren op naam, licentie of uitgever",
+    "no_matches": "Geen pakketten komen overeen met dit filter",
+    "no_text": "Bij dit pakket is geen licentietekst meegeleverd — zie de pakketpagina hierboven."
+  },
+  "service": {
+    "start": "Starten",
+    "stop": "Stoppen",
+    "restart": "Opnieuw starten",
+    "reload": "Herladen",
+    "running": "Actief",
+    "stopped": "Gestopt",
+    "failed": "Mislukt",
+    "not_installed": "Niet geïnstalleerd",
+    "unknown": "Onbekend",
+    "confirm_action": "Bevestigen",
+    "confirm_start_title": "Service starten?",
+    "confirm_start_body": "De service wordt gestart.",
+    "confirm_stop_title": "Service stoppen?",
+    "confirm_stop_body": "De service wordt gestopt.",
+    "confirm_restart_title": "Service opnieuw starten?",
+    "confirm_restart_body": "De service wordt opnieuw gestart.",
+    "confirm_reload_title": "Service herladen?",
+    "confirm_reload_body": "De serviceconfiguratie wordt opnieuw geladen."
+  },
+  "toast": {
+    "service_started": "Service gestart",
+    "service_stopped": "Service gestopt",
+    "service_restarted": "Service opnieuw gestart",
+    "service_reloaded": "Configuratie herladen"
+  }
+}

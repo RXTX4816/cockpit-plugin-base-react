@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Niečo sa pokazilo"
+  },
+  "pluginPage": {
+    "errorTitle": "Chyba pri načítaní zásuvného modulu"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Hľadať v záznamoch…",
+    "emptyMessage": "Žiadne záznamy.",
+    "noMatchesMessage": "Žiadne zodpovedajúce záznamy.",
+    "errorTitle": "Záznamy sa nepodarilo načítať",
+    "refreshAriaLabel": "Obnoviť",
+    "retry": "Skúsiť znova",
+    "linesSuffix": "riadkov",
+    "regexToggle": "Prepnúť vyhľadávanie regulárnymi výrazmi",
+    "prettyPrint": "Formátovať JSON",
+    "jumpTop": "Prejsť na začiatok",
+    "jumpBottom": "Prejsť na koniec",
+    "pause": "Pozastaviť",
+    "resume": "Pokračovať",
+    "download": "Stiahnuť záznamy",
+    "savedTo": "Uložené do {{path}}",
+    "textFiles": "Textové súbory"
+  },
+  "externalLinkModal": {
+    "title": "Otvoriť externý odkaz",
+    "ariaLabel": "Potvrdenie externého odkazu",
+    "warningTitle": "Chystáte sa opustiť túto aplikáciu",
+    "continueButton": "Pokračovať"
+  },
+  "common": {
+    "cancel": "Zrušiť",
+    "close": "Zatvoriť"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Zmeniť rozloženie",
+    "groupLabel": "Rozloženie",
+    "tooltip": "Rozloženie: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Názov premennej",
+    "valueAria": "Hodnota premennej",
+    "markSensitive": "Označiť ako citlivé",
+    "markNotSensitive": "Označiť ako necitlivé",
+    "showValue": "Zobraziť hodnotu",
+    "hideValue": "Skryť hodnotu",
+    "deleteRow": "Odstrániť riadok"
+  },
+  "notices": {
+    "title": "Licencie open source",
+    "aria_label": "Licencie open source",
+    "intro": "{{product}} je licencovaný pod {{license}}.",
+    "source_link": "Získať zdrojový kód",
+    "summary": "Obsahuje nasledujúce balíky open source ({{count}}). Licencia a upozornenie o autorských právach každého balíka sú v plnom znení uvedené nižšie.",
+    "licenses_used": "Licencie",
+    "filter_placeholder": "Filtrovať podľa názvu, licencie alebo vydavateľa",
+    "no_matches": "Tomuto filtru nezodpovedajú žiadne balíky",
+    "no_text": "S týmto balíkom nebol dodaný text licencie — pozrite si domovskú stránku balíka vyššie."
+  },
+  "service": {
+    "start": "Spustiť",
+    "stop": "Zastaviť",
+    "restart": "Reštartovať",
+    "reload": "Znova načítať",
+    "running": "Beží",
+    "stopped": "Zastavené",
+    "failed": "Zlyhalo",
+    "not_installed": "Nenainštalované",
+    "unknown": "Neznámy",
+    "confirm_action": "Potvrdiť",
+    "confirm_start_title": "Spustiť službu?",
+    "confirm_start_body": "Služba sa spustí.",
+    "confirm_stop_title": "Zastaviť službu?",
+    "confirm_stop_body": "Služba sa zastaví.",
+    "confirm_restart_title": "Reštartovať službu?",
+    "confirm_restart_body": "Služba sa reštartuje.",
+    "confirm_reload_title": "Znova načítať službu?",
+    "confirm_reload_body": "Konfigurácia služby sa znova načíta."
+  },
+  "toast": {
+    "service_started": "Služba spustená",
+    "service_stopped": "Služba zastavená",
+    "service_restarted": "Služba reštartovaná",
+    "service_reloaded": "Konfigurácia znova načítaná"
+  }
+}

@@ -2,6 +2,9 @@
   "errorBoundary": {
     "title": "Etwas ist schiefgelaufen"
   },
+  "pluginPage": {
+    "errorTitle": "Fehler beim Laden des Plugins"
+  },
   "logViewer": {
     "searchPlaceholder": "Protokolle durchsuchen…",
     "emptyMessage": "Keine Protokolleinträge.",
@@ -9,7 +12,16 @@
     "errorTitle": "Protokolle konnten nicht geladen werden",
     "refreshAriaLabel": "Aktualisieren",
     "retry": "Erneut versuchen",
-    "linesSuffix": "Zeilen"
+    "linesSuffix": "Zeilen",
+    "regexToggle": "Regex-Suche umschalten",
+    "prettyPrint": "JSON formatiert anzeigen",
+    "jumpTop": "Zum Anfang springen",
+    "jumpBottom": "Zum Ende springen",
+    "pause": "Pausieren",
+    "resume": "Fortsetzen",
+    "download": "Protokolle herunterladen",
+    "savedTo": "Gespeichert unter {{path}}",
+    "textFiles": "Textdateien"
   },
   "externalLinkModal": {
     "title": "Externen Link öffnen",
@@ -18,7 +30,33 @@
     "continueButton": "Fortfahren"
   },
   "common": {
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "close": "Schließen"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Layout ändern",
+    "groupLabel": "Layout",
+    "tooltip": "Layout: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Variablenname",
+    "valueAria": "Variablenwert",
+    "markSensitive": "Als vertraulich markieren",
+    "markNotSensitive": "Nicht mehr als vertraulich markieren",
+    "showValue": "Wert anzeigen",
+    "hideValue": "Wert ausblenden",
+    "deleteRow": "Zeile löschen"
+  },
+  "notices": {
+    "title": "Open-Source-Lizenzen",
+    "aria_label": "Open-Source-Lizenzen",
+    "intro": "{{product}} ist unter {{license}} lizenziert.",
+    "source_link": "Quellcode abrufen",
+    "summary": "Es bündelt die folgenden {{count}} Open-Source-Pakete. Die Lizenz und der Copyright-Hinweis jedes Pakets sind unten vollständig wiedergegeben.",
+    "licenses_used": "Lizenzen",
+    "filter_placeholder": "Nach Name, Lizenz oder Herausgeber filtern",
+    "no_matches": "Keine Pakete entsprechen diesem Filter",
+    "no_text": "Mit diesem Paket wurde kein Lizenztext ausgeliefert — siehe die Paket-Homepage oben."
   },
   "service": {
     "start": "Starten",

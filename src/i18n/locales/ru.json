@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Что-то пошло не так"
+  },
+  "pluginPage": {
+    "errorTitle": "Ошибка загрузки плагина"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Поиск в логах…",
+    "emptyMessage": "Нет записей в журнале.",
+    "noMatchesMessage": "Нет подходящих записей.",
+    "errorTitle": "Не удалось загрузить логи",
+    "refreshAriaLabel": "Обновить",
+    "retry": "Повторить",
+    "linesSuffix": "строк",
+    "regexToggle": "Переключить поиск по регулярным выражениям",
+    "prettyPrint": "Форматировать JSON",
+    "jumpTop": "Перейти в начало",
+    "jumpBottom": "Перейти в конец",
+    "pause": "Пауза",
+    "resume": "Продолжить",
+    "download": "Скачать логи",
+    "savedTo": "Сохранено в {{path}}",
+    "textFiles": "Текстовые файлы"
+  },
+  "externalLinkModal": {
+    "title": "Открыть внешнюю ссылку",
+    "ariaLabel": "Подтверждение внешней ссылки",
+    "warningTitle": "Вы собираетесь покинуть это приложение",
+    "continueButton": "Продолжить"
+  },
+  "common": {
+    "cancel": "Отмена",
+    "close": "Закрыть"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Изменить макет",
+    "groupLabel": "Макет",
+    "tooltip": "Макет: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Имя переменной",
+    "valueAria": "Значение переменной",
+    "markSensitive": "Отметить как секретное",
+    "markNotSensitive": "Снять отметку секретного",
+    "showValue": "Показать значение",
+    "hideValue": "Скрыть значение",
+    "deleteRow": "Удалить строку"
+  },
+  "notices": {
+    "title": "Лицензии открытого исходного кода",
+    "aria_label": "Лицензии открытого исходного кода",
+    "intro": "{{product}} распространяется по лицензии {{license}}.",
+    "source_link": "Получить исходный код",
+    "summary": "В сборку входят следующие пакеты с открытым исходным кодом ({{count}}). Лицензия и уведомление об авторских правах каждого пакета приведены ниже полностью.",
+    "licenses_used": "Лицензии",
+    "filter_placeholder": "Фильтр по имени, лицензии или издателю",
+    "no_matches": "Ни один пакет не соответствует этому фильтру",
+    "no_text": "Текст лицензии с этим пакетом не поставляется — см. домашнюю страницу пакета выше."
+  },
+  "service": {
+    "start": "Старт",
+    "stop": "Стоп",
+    "restart": "Перезапустить",
+    "reload": "Перезагрузить",
+    "running": "Работает",
+    "stopped": "Остановлен",
+    "failed": "Сбой",
+    "not_installed": "Не установлен",
+    "unknown": "Неизвестно",
+    "confirm_action": "Подтвердить",
+    "confirm_start_title": "Запустить сервис?",
+    "confirm_start_body": "Сервис будет запущен.",
+    "confirm_stop_title": "Остановить сервис?",
+    "confirm_stop_body": "Сервис будет остановлен.",
+    "confirm_restart_title": "Перезапустить сервис?",
+    "confirm_restart_body": "Сервис будет перезапущен.",
+    "confirm_reload_title": "Перезагрузить сервис?",
+    "confirm_reload_body": "Конфигурация сервиса будет перезагружена."
+  },
+  "toast": {
+    "service_started": "Сервис запущен",
+    "service_stopped": "Сервис остановлен",
+    "service_restarted": "Сервис перезапущен",
+    "service_reloaded": "Конфигурация перезагружена"
+  }
+}

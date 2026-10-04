@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Une erreur s'est produite"
+  },
+  "pluginPage": {
+    "errorTitle": "Erreur lors du chargement du plugin"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Rechercher dans les journaux…",
+    "emptyMessage": "Aucune entrée de journal.",
+    "noMatchesMessage": "Aucune entrée correspondante.",
+    "errorTitle": "Échec du chargement des journaux",
+    "refreshAriaLabel": "Actualiser",
+    "retry": "Réessayer",
+    "linesSuffix": "lignes",
+    "regexToggle": "Activer la recherche par expression régulière",
+    "prettyPrint": "Formater le JSON",
+    "jumpTop": "Aller en haut",
+    "jumpBottom": "Aller en bas",
+    "pause": "Mettre en pause",
+    "resume": "Reprendre",
+    "download": "Télécharger les journaux",
+    "savedTo": "Enregistré dans {{path}}",
+    "textFiles": "Fichiers texte"
+  },
+  "externalLinkModal": {
+    "title": "Ouvrir un lien externe",
+    "ariaLabel": "Confirmation de lien externe",
+    "warningTitle": "Vous êtes sur le point de quitter cette application",
+    "continueButton": "Continuer"
+  },
+  "common": {
+    "cancel": "Annuler",
+    "close": "Fermer"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Changer de disposition",
+    "groupLabel": "Disposition",
+    "tooltip": "Disposition : {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Nom de la variable",
+    "valueAria": "Valeur de la variable",
+    "markSensitive": "Marquer comme sensible",
+    "markNotSensitive": "Marquer comme non sensible",
+    "showValue": "Afficher la valeur",
+    "hideValue": "Masquer la valeur",
+    "deleteRow": "Supprimer la ligne"
+  },
+  "notices": {
+    "title": "Licences open source",
+    "aria_label": "Licences open source",
+    "intro": "{{product}} est distribué sous licence {{license}}.",
+    "source_link": "Obtenir le code source",
+    "summary": "Il regroupe les {{count}} paquets open source suivants. La licence et la mention de copyright de chaque paquet sont reproduites intégralement ci-dessous.",
+    "licenses_used": "Licences",
+    "filter_placeholder": "Filtrer par nom, licence ou éditeur",
+    "no_matches": "Aucun paquet ne correspond à ce filtre",
+    "no_text": "Aucun texte de licence n'est fourni avec ce paquet — voir la page du paquet ci-dessus."
+  },
+  "service": {
+    "start": "Démarrer",
+    "stop": "Stopper",
+    "restart": "Redémarrer",
+    "reload": "Recharger",
+    "running": "En cours",
+    "stopped": "Arrêté",
+    "failed": "Échec",
+    "not_installed": "Non installé",
+    "unknown": "Inconnu",
+    "confirm_action": "Confirmer",
+    "confirm_start_title": "Démarrer le service ?",
+    "confirm_start_body": "Le service va être démarré.",
+    "confirm_stop_title": "Arrêter le service ?",
+    "confirm_stop_body": "Le service va être arrêté.",
+    "confirm_restart_title": "Redémarrer le service ?",
+    "confirm_restart_body": "Le service va être redémarré.",
+    "confirm_reload_title": "Recharger le service ?",
+    "confirm_reload_body": "La configuration du service va être rechargée."
+  },
+  "toast": {
+    "service_started": "Service démarré",
+    "service_stopped": "Service arrêté",
+    "service_restarted": "Service redémarré",
+    "service_reloaded": "Configuration rechargée"
+  }
+}
