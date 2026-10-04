@@ -50,24 +50,19 @@ export { i18n } from "@rxtx4816/cockpit-plugin-base-react/i18n";
 
 ### Inheriting base component translations
 
-Shared components (`ErrorBoundary`, `LogViewer`, `ExternalLinkModal`, `ConfirmDialog`, ...) render sensible English text out of the box even if you do nothing further. To get real translations for those strings in your other locales, spread `baseTranslations` into your own resources:
+Shared components (`ErrorBoundary`, `LogViewer`, `ExternalLinkModal`, `ThirdPartyNoticesModal`, `ServiceControl`, ...) render sensible English text out of the box even if you do nothing further. `baseTranslations` ships their strings in all 24 locales the plugins use (`ar`, `cs`, `de`, `en`, `es`, `fi`, `fr`, `he`, `id`, `it`, `ja`, `ka`, `ko`, `nl`, `pl`, `pt-BR`, `ro`, `ru`, `sk`, `sv`, `tr`, `uk`, `zh-CN`, `zh-TW`). Merge them under your own resources with `withBaseTranslations`:
 
 ```ts
-import { initCockpitI18n, buildLocaleResources, baseTranslations } from "@rxtx4816/cockpit-plugin-base-react/i18n";
+import { initCockpitI18n, buildLocaleResources, withBaseTranslations } from "@rxtx4816/cockpit-plugin-base-react/i18n";
 import en from "./locales/en.json";
 import de from "./locales/de.json";
 
-initCockpitI18n(
-  buildLocaleResources({
-    en: { ...baseTranslations.en, ...en },
-    de: { ...baseTranslations.de, ...de },
-  }),
-);
+initCockpitI18n(buildLocaleResources(withBaseTranslations({ en, de })));
 
 export { i18n } from "@rxtx4816/cockpit-plugin-base-react/i18n";
 ```
 
-Your own keys always win on collision — put them last in the spread. Locales `baseTranslations` doesn't cover simply fall back to the English base strings via i18next's `fallbackLng`.
+Your own keys win on collision. The merge is deep, so a `common` section of your own keeps the base's `common.cancel` and `common.close`. Don't spread `baseTranslations` by hand: `{ ...baseTranslations.de, ...de }` is shallow and replaces whole sections. Locales the base doesn't ship fall back to English via i18next's `fallbackLng`.
 
 ---
 

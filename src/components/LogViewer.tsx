@@ -131,6 +131,14 @@ export function LogViewer({
   const resolvedRefreshAriaLabel = refreshAriaLabel ?? tf("logViewer.refreshAriaLabel", "Refresh");
   const retryLabel = tf("logViewer.retry", "Retry");
   const linesSuffix = tf("logViewer.linesSuffix", "lines");
+  const regexLabel = tf("logViewer.regexToggle", "Toggle regex filter");
+  const prettyLabel = tf("logViewer.prettyPrint", "Pretty print JSON");
+  const jumpTopLabel = tf("logViewer.jumpTop", "Jump to top");
+  const jumpBottomLabel = tf("logViewer.jumpBottom", "Jump to bottom");
+  const pauseLabel = tf("logViewer.pause", "Pause");
+  const resumeLabel = tf("logViewer.resume", "Resume");
+  const downloadLabel = tf("logViewer.download", "Download logs");
+  const textFilesLabel = tf("logViewer.textFiles", "Text files");
 
   const [internalSearch, setInternalSearch] = useState(filterValue ?? "");
   const [debouncedSearch, setDebouncedSearch] = useState(filterValue ?? "");
@@ -184,7 +192,7 @@ export function LogViewer({
           }>;
         }).showSaveFilePicker({
           suggestedName: `${downloadFileName}.txt`,
-          types: [{ description: "Text files", accept: { "text/plain": [".txt"] } }],
+          types: [{ description: textFilesLabel, accept: { "text/plain": [".txt"] } }],
         });
         const w = await handle.createWritable();
         await w.write(text);
@@ -205,7 +213,7 @@ export function LogViewer({
     } catch (err) {
       setDownloadError((err as { message?: string })?.message ?? String(err));
     }
-  }, [filtered, downloadFileName]);
+  }, [filtered, downloadFileName, textFilesLabel]);
 
   const lineCount = filtered.length !== lines.length
     ? `${filtered.length} / ${lines.length}`
@@ -245,7 +253,7 @@ export function LogViewer({
       )}
       {downloadNote && (
         <StackItem>
-          <Alert variant="info" isInline title={`Saved to ${downloadNote}`}
+          <Alert variant="info" isInline title={i18n.isInitialized ? t("logViewer.savedTo", { path: downloadNote, defaultValue: "Saved to {{path}}" }) : `Saved to ${downloadNote}`}
             actionClose={<AlertActionCloseButton onClose={() => setDownloadNote(null)} />}
           />
         </StackItem>
@@ -271,12 +279,12 @@ export function LogViewer({
                     onClear={() => setSearch("")}
                     style={{ width: 220 }}
                   />
-                  <button type="button" aria-label="Toggle regex" aria-pressed={isRegex}
-                    title="Toggle regex filter" onClick={() => setIsRegex(r => !r)}
+                  <button type="button" aria-label={regexLabel} aria-pressed={isRegex}
+                    title={regexLabel} onClick={() => setIsRegex(r => !r)}
                     style={toggleBtnStyle(isRegex)}
                   >.*</button>
-                  <button type="button" aria-label="Toggle pretty print" aria-pressed={isPretty}
-                    title="Pretty print JSON" onClick={() => setIsPretty(p => !p)}
+                  <button type="button" aria-label={prettyLabel} aria-pressed={isPretty}
+                    title={prettyLabel} onClick={() => setIsPretty(p => !p)}
                     style={toggleBtnStyle(isPretty)}
                   >{"{}"}</button>
                 </div>
@@ -294,22 +302,22 @@ export function LogViewer({
 
             <ToolbarGroup variant="action-group-plain" align={{ default: "alignEnd" }}>
               <ToolbarItem>
-                <Button variant="plain" size="sm" onClick={scrollToTop} aria-label="Jump to top" title="Jump to top">⇑</Button>
+                <Button variant="plain" size="sm" onClick={scrollToTop} aria-label={jumpTopLabel} title={jumpTopLabel}>⇑</Button>
               </ToolbarItem>
               <ToolbarItem>
-                <Button variant="plain" size="sm" onClick={scrollToBottom} aria-label="Jump to bottom" title="Jump to bottom">⇓</Button>
+                <Button variant="plain" size="sm" onClick={scrollToBottom} aria-label={jumpBottomLabel} title={jumpBottomLabel}>⇓</Button>
               </ToolbarItem>
               {hasPauseControl && (
                 <ToolbarItem>
                   {paused
-                    ? <Button variant="primary" size="sm" onClick={onResume}>▶ Resume</Button>
-                    : <Button variant="secondary" size="sm" onClick={onPause}>⏸ Pause</Button>
+                    ? <Button variant="primary" size="sm" onClick={onResume}>▶ {resumeLabel}</Button>
+                    : <Button variant="secondary" size="sm" onClick={onPause}>⏸ {pauseLabel}</Button>
                   }
                 </ToolbarItem>
               )}
               {downloadFileName && filtered.length > 0 && (
                 <ToolbarItem>
-                  <Button variant="plain" size="sm" onClick={() => void handleDownload()} aria-label="Download logs" title="Download logs">⬇</Button>
+                  <Button variant="plain" size="sm" onClick={() => void handleDownload()} aria-label={downloadLabel} title={downloadLabel}>⬇</Button>
                 </ToolbarItem>
               )}
               {onRefresh && (

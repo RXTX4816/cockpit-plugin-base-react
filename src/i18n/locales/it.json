@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Qualcosa è andato storto"
+  },
+  "pluginPage": {
+    "errorTitle": "Errore durante il caricamento del plugin"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Cerca nei log…",
+    "emptyMessage": "Nessuna voce di log.",
+    "noMatchesMessage": "Nessuna voce corrispondente.",
+    "errorTitle": "Impossibile caricare i log",
+    "refreshAriaLabel": "Aggiorna",
+    "retry": "Riprova",
+    "linesSuffix": "righe",
+    "regexToggle": "Attiva ricerca regex",
+    "prettyPrint": "Formatta JSON",
+    "jumpTop": "Vai all'inizio",
+    "jumpBottom": "Vai alla fine",
+    "pause": "Pausa",
+    "resume": "Riprendi",
+    "download": "Scarica log",
+    "savedTo": "Salvato in {{path}}",
+    "textFiles": "File di testo"
+  },
+  "externalLinkModal": {
+    "title": "Apri link esterno",
+    "ariaLabel": "Conferma link esterno",
+    "warningTitle": "Stai per lasciare questa applicazione",
+    "continueButton": "Continua"
+  },
+  "common": {
+    "cancel": "Annulla",
+    "close": "Chiudi"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Cambia layout",
+    "groupLabel": "Layout",
+    "tooltip": "Layout: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Nome della variabile",
+    "valueAria": "Valore della variabile",
+    "markSensitive": "Segna come sensibile",
+    "markNotSensitive": "Segna come non sensibile",
+    "showValue": "Mostra valore",
+    "hideValue": "Nascondi valore",
+    "deleteRow": "Elimina riga"
+  },
+  "notices": {
+    "title": "Licenze open source",
+    "aria_label": "Licenze open source",
+    "intro": "{{product}} è concesso in licenza con {{license}}.",
+    "source_link": "Ottieni il codice sorgente",
+    "summary": "Include i seguenti {{count}} pacchetti open source. La licenza e l'avviso di copyright di ogni pacchetto sono riportati integralmente di seguito.",
+    "licenses_used": "Licenze",
+    "filter_placeholder": "Filtra per nome, licenza o editore",
+    "no_matches": "Nessun pacchetto corrisponde a questo filtro",
+    "no_text": "Nessun testo di licenza fornito con questo pacchetto — vedi la home page del pacchetto qui sopra."
+  },
+  "service": {
+    "start": "Avvia",
+    "stop": "Ferma",
+    "restart": "Riavvia",
+    "reload": "Ricarica",
+    "running": "In esecuzione",
+    "stopped": "Arrestato",
+    "failed": "Non riuscito",
+    "not_installed": "Non installato",
+    "unknown": "Sconosciuto",
+    "confirm_action": "Conferma",
+    "confirm_start_title": "Avviare il servizio?",
+    "confirm_start_body": "Il servizio verrà avviato.",
+    "confirm_stop_title": "Arrestare il servizio?",
+    "confirm_stop_body": "Il servizio verrà arrestato.",
+    "confirm_restart_title": "Riavviare il servizio?",
+    "confirm_restart_body": "Il servizio verrà riavviato.",
+    "confirm_reload_title": "Ricaricare il servizio?",
+    "confirm_reload_body": "La configurazione del servizio verrà ricaricata."
+  },
+  "toast": {
+    "service_started": "Servizio avviato",
+    "service_stopped": "Servizio arrestato",
+    "service_restarted": "Servizio riavviato",
+    "service_reloaded": "Configurazione ricaricata"
+  }
+}

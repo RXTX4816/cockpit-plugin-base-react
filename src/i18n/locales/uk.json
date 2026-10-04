@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Щось пішло не так"
+  },
+  "pluginPage": {
+    "errorTitle": "Помилка завантаження плагіна"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Пошук у журналах…",
+    "emptyMessage": "Немає записів журналу.",
+    "noMatchesMessage": "Немає відповідних записів.",
+    "errorTitle": "Не вдалося завантажити журнали",
+    "refreshAriaLabel": "Оновити",
+    "retry": "Повторити",
+    "linesSuffix": "рядків",
+    "regexToggle": "Переключити пошук за регулярними виразами",
+    "prettyPrint": "Форматувати JSON",
+    "jumpTop": "Перейти на початок",
+    "jumpBottom": "Перейти в кінець",
+    "pause": "Пауза",
+    "resume": "Продовжити",
+    "download": "Завантажити журнали",
+    "savedTo": "Збережено в {{path}}",
+    "textFiles": "Текстові файли"
+  },
+  "externalLinkModal": {
+    "title": "Відкрити зовнішнє посилання",
+    "ariaLabel": "Підтвердження зовнішнього посилання",
+    "warningTitle": "Ви збираєтеся залишити цю програму",
+    "continueButton": "Продовжити"
+  },
+  "common": {
+    "cancel": "Скасувати",
+    "close": "Закрити"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Змінити макет",
+    "groupLabel": "Макет",
+    "tooltip": "Макет: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Ім'я змінної",
+    "valueAria": "Значення змінної",
+    "markSensitive": "Позначити як секретне",
+    "markNotSensitive": "Зняти позначку секретного",
+    "showValue": "Показати значення",
+    "hideValue": "Приховати значення",
+    "deleteRow": "Видалити рядок"
+  },
+  "notices": {
+    "title": "Ліцензії відкритого коду",
+    "aria_label": "Ліцензії відкритого коду",
+    "intro": "{{product}} ліцензовано за умовами {{license}}.",
+    "source_link": "Отримати вихідний код",
+    "summary": "До збірки входять такі пакунки з відкритим кодом ({{count}}). Ліцензію та повідомлення про авторські права кожного пакунка наведено нижче повністю.",
+    "licenses_used": "Ліцензії",
+    "filter_placeholder": "Фільтрувати за назвою, ліцензією або видавцем",
+    "no_matches": "Жоден пакунок не відповідає цьому фільтру",
+    "no_text": "Текст ліцензії з цим пакунком не постачається — див. домашню сторінку пакунка вище."
+  },
+  "service": {
+    "start": "Старт",
+    "stop": "Стоп",
+    "restart": "Перезапустити",
+    "reload": "Перезавантажити",
+    "running": "Працює",
+    "stopped": "Зупинено",
+    "failed": "Збій",
+    "not_installed": "Не встановлено",
+    "unknown": "Невідомо",
+    "confirm_action": "Підтвердити",
+    "confirm_start_title": "Запустити сервіс?",
+    "confirm_start_body": "Сервіс буде запущено.",
+    "confirm_stop_title": "Зупинити сервіс?",
+    "confirm_stop_body": "Сервіс буде зупинено.",
+    "confirm_restart_title": "Перезапустити сервіс?",
+    "confirm_restart_body": "Сервіс буде перезапущено.",
+    "confirm_reload_title": "Перезавантажити сервіс?",
+    "confirm_reload_body": "Конфігурацію сервісу буде перезавантажено."
+  },
+  "toast": {
+    "service_started": "Сервіс запущено",
+    "service_stopped": "Сервіс зупинено",
+    "service_restarted": "Сервіс перезапущено",
+    "service_reloaded": "Конфігурацію перезавантажено"
+  }
+}

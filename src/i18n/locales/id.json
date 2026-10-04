@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Terjadi kesalahan"
+  },
+  "pluginPage": {
+    "errorTitle": "Gagal memuat plugin"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Cari log…",
+    "emptyMessage": "Tidak ada entri log.",
+    "noMatchesMessage": "Tidak ada entri yang cocok.",
+    "errorTitle": "Gagal memuat log",
+    "refreshAriaLabel": "Muat ulang",
+    "retry": "Coba lagi",
+    "linesSuffix": "baris",
+    "regexToggle": "Aktifkan pencarian regex",
+    "prettyPrint": "Format JSON",
+    "jumpTop": "Loncat ke atas",
+    "jumpBottom": "Loncat ke bawah",
+    "pause": "Jeda",
+    "resume": "Lanjutkan",
+    "download": "Unduh log",
+    "savedTo": "Disimpan ke {{path}}",
+    "textFiles": "Berkas teks"
+  },
+  "externalLinkModal": {
+    "title": "Buka tautan eksternal",
+    "ariaLabel": "Konfirmasi tautan eksternal",
+    "warningTitle": "Anda akan meninggalkan aplikasi ini",
+    "continueButton": "Lanjutkan"
+  },
+  "common": {
+    "cancel": "Batal",
+    "close": "Tutup"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Ubah tata letak",
+    "groupLabel": "Tata letak",
+    "tooltip": "Tata letak: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Nama variabel",
+    "valueAria": "Nilai variabel",
+    "markSensitive": "Tandai sebagai sensitif",
+    "markNotSensitive": "Tandai sebagai tidak sensitif",
+    "showValue": "Tampilkan nilai",
+    "hideValue": "Sembunyikan nilai",
+    "deleteRow": "Hapus baris"
+  },
+  "notices": {
+    "title": "Lisensi sumber terbuka",
+    "aria_label": "Lisensi sumber terbuka",
+    "intro": "{{product}} dilisensikan di bawah {{license}}.",
+    "source_link": "Dapatkan kode sumber",
+    "summary": "Aplikasi ini memaketkan {{count}} paket sumber terbuka berikut. Lisensi dan pemberitahuan hak cipta setiap paket direproduksi selengkapnya di bawah ini.",
+    "licenses_used": "Lisensi",
+    "filter_placeholder": "Saring menurut nama, lisensi, atau penerbit",
+    "no_matches": "Tidak ada paket yang cocok dengan filter ini",
+    "no_text": "Tidak ada teks lisensi yang disertakan dengan paket ini — lihat beranda paket di atas."
+  },
+  "service": {
+    "start": "Mulai",
+    "stop": "Hentikan",
+    "restart": "Mulai ulang",
+    "reload": "Muat ulang",
+    "running": "Berjalan",
+    "stopped": "Berhenti",
+    "failed": "Gagal",
+    "not_installed": "Tidak terpasang",
+    "unknown": "Tidak diketahui",
+    "confirm_action": "Konfirmasi",
+    "confirm_start_title": "Mulai layanan?",
+    "confirm_start_body": "Layanan akan dimulai.",
+    "confirm_stop_title": "Hentikan layanan?",
+    "confirm_stop_body": "Layanan akan dihentikan.",
+    "confirm_restart_title": "Mulai ulang layanan?",
+    "confirm_restart_body": "Layanan akan dimulai ulang.",
+    "confirm_reload_title": "Muat ulang layanan?",
+    "confirm_reload_body": "Konfigurasi layanan akan dimuat ulang."
+  },
+  "toast": {
+    "service_started": "Layanan dimulai",
+    "service_stopped": "Layanan dihentikan",
+    "service_restarted": "Layanan dimulai ulang",
+    "service_reloaded": "Konfigurasi dimuat ulang"
+  }
+}

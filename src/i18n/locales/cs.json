@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Něco se pokazilo"
+  },
+  "pluginPage": {
+    "errorTitle": "Chyba při načítání zásuvného modulu"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Hledat v protokolech…",
+    "emptyMessage": "Žádné záznamy protokolu.",
+    "noMatchesMessage": "Žádné odpovídající záznamy.",
+    "errorTitle": "Protokoly se nepodařilo načíst",
+    "refreshAriaLabel": "Obnovit",
+    "retry": "Zkusit znovu",
+    "linesSuffix": "řádků",
+    "regexToggle": "Přepnout vyhledávání regulárními výrazy",
+    "prettyPrint": "Formátovat JSON",
+    "jumpTop": "Přejít na začátek",
+    "jumpBottom": "Přejít na konec",
+    "pause": "Pozastavit",
+    "resume": "Pokračovat",
+    "download": "Stáhnout protokoly",
+    "savedTo": "Uloženo do {{path}}",
+    "textFiles": "Textové soubory"
+  },
+  "externalLinkModal": {
+    "title": "Otevřít externí odkaz",
+    "ariaLabel": "Potvrzení externího odkazu",
+    "warningTitle": "Chystáte se opustit tuto aplikaci",
+    "continueButton": "Pokračovat"
+  },
+  "common": {
+    "cancel": "Zrušit",
+    "close": "Zavřít"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Změnit rozvržení",
+    "groupLabel": "Rozvržení",
+    "tooltip": "Rozvržení: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Název proměnné",
+    "valueAria": "Hodnota proměnné",
+    "markSensitive": "Označit jako citlivé",
+    "markNotSensitive": "Označit jako necitlivé",
+    "showValue": "Zobrazit hodnotu",
+    "hideValue": "Skrýt hodnotu",
+    "deleteRow": "Smazat řádek"
+  },
+  "notices": {
+    "title": "Licence open source",
+    "aria_label": "Licence open source",
+    "intro": "{{product}} je licencován pod {{license}}.",
+    "source_link": "Získat zdrojový kód",
+    "summary": "Obsahuje následující open source balíčky ({{count}}). Licence a copyrightové upozornění každého balíčku jsou v plném znění uvedeny níže.",
+    "licenses_used": "Licence",
+    "filter_placeholder": "Filtrovat podle názvu, licence nebo vydavatele",
+    "no_matches": "Tomuto filtru neodpovídají žádné balíčky",
+    "no_text": "S tímto balíčkem nebyl dodán text licence — viz domovská stránka balíčku výše."
+  },
+  "service": {
+    "start": "Spustit",
+    "stop": "Zastavit",
+    "restart": "Restartovat",
+    "reload": "Znovu načíst",
+    "running": "Běží",
+    "stopped": "Zastaveno",
+    "failed": "Selhalo",
+    "not_installed": "Nenainstalováno",
+    "unknown": "Neznámý",
+    "confirm_action": "Potvrdit",
+    "confirm_start_title": "Spustit službu?",
+    "confirm_start_body": "Služba bude spuštěna.",
+    "confirm_stop_title": "Zastavit službu?",
+    "confirm_stop_body": "Služba bude zastavena.",
+    "confirm_restart_title": "Restartovat službu?",
+    "confirm_restart_body": "Služba bude restartována.",
+    "confirm_reload_title": "Znovu načíst službu?",
+    "confirm_reload_body": "Konfigurace služby bude znovu načtena."
+  },
+  "toast": {
+    "service_started": "Služba spuštěna",
+    "service_stopped": "Služba zastavena",
+    "service_restarted": "Služba restartována",
+    "service_reloaded": "Konfigurace znovu načtena"
+  }
+}

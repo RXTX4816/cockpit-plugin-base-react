@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Algo salió mal"
+  },
+  "pluginPage": {
+    "errorTitle": "Error al cargar el complemento"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Buscar en registros…",
+    "emptyMessage": "No hay entradas de registro.",
+    "noMatchesMessage": "No hay entradas coincidentes.",
+    "errorTitle": "No se pudieron cargar los registros",
+    "refreshAriaLabel": "Actualizar",
+    "retry": "Reintentar",
+    "linesSuffix": "líneas",
+    "regexToggle": "Activar búsqueda por expresión regular",
+    "prettyPrint": "Formatear JSON",
+    "jumpTop": "Ir al principio",
+    "jumpBottom": "Ir al final",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "download": "Descargar registros",
+    "savedTo": "Guardado en {{path}}",
+    "textFiles": "Archivos de texto"
+  },
+  "externalLinkModal": {
+    "title": "Abrir enlace externo",
+    "ariaLabel": "Confirmación de enlace externo",
+    "warningTitle": "Estás a punto de salir de esta aplicación",
+    "continueButton": "Continuar"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "close": "Cerrar"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Cambiar diseño",
+    "groupLabel": "Diseño",
+    "tooltip": "Diseño: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Nombre de la variable",
+    "valueAria": "Valor de la variable",
+    "markSensitive": "Marcar como confidencial",
+    "markNotSensitive": "Marcar como no confidencial",
+    "showValue": "Mostrar valor",
+    "hideValue": "Ocultar valor",
+    "deleteRow": "Eliminar fila"
+  },
+  "notices": {
+    "title": "Licencias de código abierto",
+    "aria_label": "Licencias de código abierto",
+    "intro": "{{product}} se distribuye bajo la licencia {{license}}.",
+    "source_link": "Obtener el código fuente",
+    "summary": "Incluye los siguientes {{count}} paquetes de código abierto. La licencia y el aviso de copyright de cada paquete se reproducen íntegramente a continuación.",
+    "licenses_used": "Licencias",
+    "filter_placeholder": "Filtrar por nombre, licencia o editor",
+    "no_matches": "Ningún paquete coincide con este filtro",
+    "no_text": "Este paquete no incluye el texto de la licencia — consulta la página del paquete más arriba."
+  },
+  "service": {
+    "start": "Iniciar",
+    "stop": "Parar",
+    "restart": "Reiniciar",
+    "reload": "Recargar",
+    "running": "En ejecución",
+    "stopped": "Detenido",
+    "failed": "Fallido",
+    "not_installed": "No instalado",
+    "unknown": "Desconocido",
+    "confirm_action": "Confirmar",
+    "confirm_start_title": "¿Iniciar el servicio?",
+    "confirm_start_body": "Se iniciará el servicio.",
+    "confirm_stop_title": "¿Detener el servicio?",
+    "confirm_stop_body": "Se detendrá el servicio.",
+    "confirm_restart_title": "¿Reiniciar el servicio?",
+    "confirm_restart_body": "Se reiniciará el servicio.",
+    "confirm_reload_title": "¿Recargar el servicio?",
+    "confirm_reload_body": "Se recargará la configuración del servicio."
+  },
+  "toast": {
+    "service_started": "Servicio iniciado",
+    "service_stopped": "Servicio detenido",
+    "service_restarted": "Servicio reiniciado",
+    "service_reloaded": "Configuración recargada"
+  }
+}

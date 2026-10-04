@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "משהו השתבש"
+  },
+  "pluginPage": {
+    "errorTitle": "שגיאה בטעינת התוסף"
+  },
+  "logViewer": {
+    "searchPlaceholder": "חפש ביומנים…",
+    "emptyMessage": "אין רשומות ביומן.",
+    "noMatchesMessage": "אין רשומות תואמות.",
+    "errorTitle": "טעינת היומנים נכשלה",
+    "refreshAriaLabel": "רענון",
+    "retry": "ניסיון חוזר",
+    "linesSuffix": "שורות",
+    "regexToggle": "הפעל חיפוש ביטויים רגולריים",
+    "prettyPrint": "עיצוב JSON",
+    "jumpTop": "עבור לראש",
+    "jumpBottom": "עבור לתחתית",
+    "pause": "השהה",
+    "resume": "המשך",
+    "download": "הורד יומנים",
+    "savedTo": "נשמר ב-{{path}}",
+    "textFiles": "קובצי טקסט"
+  },
+  "externalLinkModal": {
+    "title": "פתיחת קישור חיצוני",
+    "ariaLabel": "אישור קישור חיצוני",
+    "warningTitle": "אתה עומד לעזוב את היישום",
+    "continueButton": "המשך"
+  },
+  "common": {
+    "cancel": "ביטול",
+    "close": "סגירה"
+  },
+  "layoutSelector": {
+    "ariaLabel": "שינוי פריסה",
+    "groupLabel": "פריסה",
+    "tooltip": "פריסה: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "שם המשתנה",
+    "valueAria": "ערך המשתנה",
+    "markSensitive": "סמן כרגיש",
+    "markNotSensitive": "בטל סימון כרגיש",
+    "showValue": "הצג ערך",
+    "hideValue": "הסתר ערך",
+    "deleteRow": "מחק שורה"
+  },
+  "notices": {
+    "title": "רישיונות קוד פתוח",
+    "aria_label": "רישיונות קוד פתוח",
+    "intro": "{{product}} מורשה תחת {{license}}.",
+    "source_link": "קבלת קוד המקור",
+    "summary": "הוא כולל את {{count}} חבילות הקוד הפתוח הבאות. הרישיון והודעת זכויות היוצרים של כל חבילה מובאים במלואם להלן.",
+    "licenses_used": "רישיונות",
+    "filter_placeholder": "סינון לפי שם, רישיון או מפרסם",
+    "no_matches": "אין חבילות התואמות לסינון זה",
+    "no_text": "לא סופק טקסט רישיון עם חבילה זו — ראו את דף החבילה למעלה."
+  },
+  "service": {
+    "start": "הפעלה",
+    "stop": "עצירה",
+    "restart": "הפעלה מחדש",
+    "reload": "טען מחדש",
+    "running": "פועל",
+    "stopped": "נעצר",
+    "failed": "נכשל",
+    "not_installed": "לא מותקן",
+    "unknown": "לא ידוע",
+    "confirm_action": "אישור",
+    "confirm_start_title": "להפעיל את השירות?",
+    "confirm_start_body": "השירות יופעל.",
+    "confirm_stop_title": "לעצור את השירות?",
+    "confirm_stop_body": "השירות ייעצר.",
+    "confirm_restart_title": "להפעיל מחדש את השירות?",
+    "confirm_restart_body": "השירות יופעל מחדש.",
+    "confirm_reload_title": "לטעון מחדש את השירות?",
+    "confirm_reload_body": "תצורת השירות תיטען מחדש."
+  },
+  "toast": {
+    "service_started": "השירות הופעל",
+    "service_stopped": "השירות נעצר",
+    "service_restarted": "השירות הופעל מחדש",
+    "service_reloaded": "התצורה נטענה מחדש"
+  }
+}

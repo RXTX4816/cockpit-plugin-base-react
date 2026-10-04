@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "რაღაც შეცდომა მოხდა"
+  },
+  "pluginPage": {
+    "errorTitle": "მოდულის ჩატვირთვის შეცდომა"
+  },
+  "logViewer": {
+    "searchPlaceholder": "ლოგებში ძიება…",
+    "emptyMessage": "ლოგის ჩანაწერები არ არის.",
+    "noMatchesMessage": "შესაბამისი ჩანაწერები არ არის.",
+    "errorTitle": "ლოგების ჩატვირთვა ვერ მოხერხდა",
+    "refreshAriaLabel": "განახლება",
+    "retry": "ხელახლა ცდა",
+    "linesSuffix": "ხაზი",
+    "regexToggle": "რეგულარული გამოთქმის ძებნის ჩართვა/გამორთვა",
+    "prettyPrint": "JSON-ის ფორმატირება",
+    "jumpTop": "თავში გადასვლა",
+    "jumpBottom": "ბოლოში გადასვლა",
+    "pause": "პაუზა",
+    "resume": "გაგრძელება",
+    "download": "ლოგების ჩამოტვირთვა",
+    "savedTo": "შენახულია: {{path}}",
+    "textFiles": "ტექსტური ფაილები"
+  },
+  "externalLinkModal": {
+    "title": "გარე ბმულის გახსნა",
+    "ariaLabel": "გარე ბმულის დადასტურება",
+    "warningTitle": "თქვენ ტოვებთ ამ აპლიკაციას",
+    "continueButton": "გაგრძელება"
+  },
+  "common": {
+    "cancel": "გაუქმება",
+    "close": "დახურვა"
+  },
+  "layoutSelector": {
+    "ariaLabel": "განლაგების შეცვლა",
+    "groupLabel": "განლაგება",
+    "tooltip": "განლაგება: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "ცვლადის სახელი",
+    "valueAria": "ცვლადის მნიშვნელობა",
+    "markSensitive": "მგრძნობიარედ მონიშვნა",
+    "markNotSensitive": "მგრძნობიარე მონიშვნის მოხსნა",
+    "showValue": "მნიშვნელობის ჩვენება",
+    "hideValue": "მნიშვნელობის დამალვა",
+    "deleteRow": "მწკრივის წაშლა"
+  },
+  "notices": {
+    "title": "ღია კოდის ლიცენზიები",
+    "aria_label": "ღია კოდის ლიცენზიები",
+    "intro": "{{product}} ლიცენზირებულია {{license}}-ით.",
+    "source_link": "საწყისი კოდის მიღება",
+    "summary": "ის შეიცავს შემდეგ {{count}} ღია კოდის პაკეტს. თითოეული პაკეტის ლიცენზია და საავტორო უფლებების შეტყობინება სრულად მოცემულია ქვემოთ.",
+    "licenses_used": "ლიცენზიები",
+    "filter_placeholder": "გაფილტვრა სახელით, ლიცენზიით ან გამომცემლით",
+    "no_matches": "ამ ფილტრს პაკეტები არ ემთხვევა",
+    "no_text": "ამ პაკეტს ლიცენზიის ტექსტი არ ახლავს — იხილეთ პაკეტის მთავარი გვერდი ზემოთ."
+  },
+  "service": {
+    "start": "გაშვება",
+    "stop": "შეჩერება",
+    "restart": "გადატვირთვა",
+    "reload": "ხელახლა ჩატვირთვა",
+    "running": "მუშაობს",
+    "stopped": "შეჩერებულია",
+    "failed": "ვერ მოხერხდა",
+    "not_installed": "არ არის დაყენებული",
+    "unknown": "უცნობი",
+    "confirm_action": "დადასტურება",
+    "confirm_start_title": "გაეშვას სერვისი?",
+    "confirm_start_body": "სერვისი გაეშვება.",
+    "confirm_stop_title": "შეჩერდეს სერვისი?",
+    "confirm_stop_body": "სერვისი შეჩერდება.",
+    "confirm_restart_title": "გადაიტვირთოს სერვისი?",
+    "confirm_restart_body": "სერვისი გადაიტვირთება.",
+    "confirm_reload_title": "ხელახლა ჩაიტვირთოს სერვისი?",
+    "confirm_reload_body": "სერვისის კონფიგურაცია ხელახლა ჩაიტვირთება."
+  },
+  "toast": {
+    "service_started": "სერვისი გაეშვა",
+    "service_stopped": "სერვისი შეჩერდა",
+    "service_restarted": "სერვისი გადაიტვირთა",
+    "service_reloaded": "კონფიგურაცია ხელახლა ჩაიტვირთა"
+  }
+}

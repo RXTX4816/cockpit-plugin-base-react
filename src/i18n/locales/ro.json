@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Ceva nu a mers bine"
+  },
+  "pluginPage": {
+    "errorTitle": "Eroare la încărcarea pluginului"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Căutare jurnale…",
+    "emptyMessage": "Nicio intrare în jurnal.",
+    "noMatchesMessage": "Nicio intrare potrivită.",
+    "errorTitle": "Încărcarea jurnalelor a eșuat",
+    "refreshAriaLabel": "Reîmprospătare",
+    "retry": "Reîncercați",
+    "linesSuffix": "linii",
+    "regexToggle": "Comutare căutare regex",
+    "prettyPrint": "Formatare JSON",
+    "jumpTop": "Salt la început",
+    "jumpBottom": "Salt la final",
+    "pause": "Pauză",
+    "resume": "Reluare",
+    "download": "Descărcare jurnale",
+    "savedTo": "Salvat în {{path}}",
+    "textFiles": "Fișiere text"
+  },
+  "externalLinkModal": {
+    "title": "Deschidere link extern",
+    "ariaLabel": "Confirmare link extern",
+    "warningTitle": "Sunteți pe cale să părăsiți această aplicație",
+    "continueButton": "Continuare"
+  },
+  "common": {
+    "cancel": "Anulare",
+    "close": "Închidere"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Schimbare aspect",
+    "groupLabel": "Aspect",
+    "tooltip": "Aspect: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Numele variabilei",
+    "valueAria": "Valoarea variabilei",
+    "markSensitive": "Marcare ca sensibil",
+    "markNotSensitive": "Marcare ca nesensibil",
+    "showValue": "Afișare valoare",
+    "hideValue": "Ascundere valoare",
+    "deleteRow": "Ștergere rând"
+  },
+  "notices": {
+    "title": "Licențe open source",
+    "aria_label": "Licențe open source",
+    "intro": "{{product}} este licențiat sub {{license}}.",
+    "source_link": "Obține codul sursă",
+    "summary": "Include următoarele {{count}} pachete open source. Licența și nota de copyright ale fiecărui pachet sunt reproduse integral mai jos.",
+    "licenses_used": "Licențe",
+    "filter_placeholder": "Filtrează după nume, licență sau editor",
+    "no_matches": "Niciun pachet nu corespunde acestui filtru",
+    "no_text": "Acest pachet nu include textul licenței — vezi pagina pachetului de mai sus."
+  },
+  "service": {
+    "start": "Pornire",
+    "stop": "Oprire",
+    "restart": "Repornire",
+    "reload": "Reîncărcare",
+    "running": "Rulează",
+    "stopped": "Oprit",
+    "failed": "Eșuat",
+    "not_installed": "Neinstalat",
+    "unknown": "Necunoscut",
+    "confirm_action": "Confirmare",
+    "confirm_start_title": "Porniți serviciul?",
+    "confirm_start_body": "Serviciul va fi pornit.",
+    "confirm_stop_title": "Opriți serviciul?",
+    "confirm_stop_body": "Serviciul va fi oprit.",
+    "confirm_restart_title": "Reporniți serviciul?",
+    "confirm_restart_body": "Serviciul va fi repornit.",
+    "confirm_reload_title": "Reîncărcați serviciul?",
+    "confirm_reload_body": "Configurația serviciului va fi reîncărcată."
+  },
+  "toast": {
+    "service_started": "Serviciu pornit",
+    "service_stopped": "Serviciu oprit",
+    "service_restarted": "Serviciu repornit",
+    "service_reloaded": "Configurație reîncărcată"
+  }
+}

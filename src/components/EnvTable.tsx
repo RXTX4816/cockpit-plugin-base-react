@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Button, TextInput } from "@patternfly/react-core";
 import { EyeIcon, EyeSlashIcon, TrashAltIcon, PlusIcon, LockIcon, LockOpenIcon } from "@patternfly/react-icons";
+import { useTranslation } from "react-i18next";
 import "./EnvTable.css";
 
 type EnvRow =
@@ -46,6 +47,8 @@ interface Props {
 }
 
 export function EnvTable({ content, onChange, onDuplicatesChange }: Props) {
+  const { t, i18n } = useTranslation();
+  const tf = (key: string, fallback: string) => (i18n.isInitialized ? t(key, fallback) : fallback);
   const [rows, setRows] = useState<EnvRow[]>(() => parseContent(content));
   const lastEmittedRef = useRef<string>(content);
 
@@ -130,7 +133,7 @@ export function EnvTable({ content, onChange, onDuplicatesChange }: Props) {
                   <TextInput
                     value={row.key}
                     onChange={(_e, v) => updateEntry(idx, "key", v)}
-                    aria-label="Variable key"
+                    aria-label={tf("envTable.keyAria", "Variable key")}
                     validated={isDuplicate ? "error" : "default"}
                     placeholder="KEY"
                   />
@@ -139,7 +142,7 @@ export function EnvTable({ content, onChange, onDuplicatesChange }: Props) {
                   <TextInput
                     value={row.value}
                     onChange={(_e, v) => updateEntry(idx, "value", v)}
-                    aria-label="Variable value"
+                    aria-label={tf("envTable.valueAria", "Variable value")}
                     type={masked ? "password" : "text"}
                     placeholder="value"
                   />
@@ -147,7 +150,7 @@ export function EnvTable({ content, onChange, onDuplicatesChange }: Props) {
                 <td className="env-col-actions">
                   <Button
                     variant="plain"
-                    aria-label={row.sensitive ? "Mark as not sensitive" : "Mark as sensitive"}
+                    aria-label={row.sensitive ? tf("envTable.markNotSensitive", "Mark as not sensitive") : tf("envTable.markSensitive", "Mark as sensitive")}
                     onClick={() => toggleSensitive(idx)}
                   >
                     {row.sensitive ? <LockIcon /> : <LockOpenIcon />}
@@ -155,7 +158,7 @@ export function EnvTable({ content, onChange, onDuplicatesChange }: Props) {
                   {row.sensitive && (
                     <Button
                       variant="plain"
-                      aria-label={row.revealed ? "Hide value" : "Show value"}
+                      aria-label={row.revealed ? tf("envTable.hideValue", "Hide value") : tf("envTable.showValue", "Show value")}
                       onClick={() => toggleReveal(idx)}
                     >
                       {row.revealed ? <EyeSlashIcon /> : <EyeIcon />}
@@ -163,7 +166,7 @@ export function EnvTable({ content, onChange, onDuplicatesChange }: Props) {
                   )}
                   <Button
                     variant="plain"
-                    aria-label="Delete row"
+                    aria-label={tf("envTable.deleteRow", "Delete row")}
                     onClick={() => deleteRow(idx)}
                   >
                     <TrashAltIcon />

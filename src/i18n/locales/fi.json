@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Jokin meni pieleen"
+  },
+  "pluginPage": {
+    "errorTitle": "Laajennuksen lataaminen epäonnistui"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Hae lokeista…",
+    "emptyMessage": "Ei lokimerkintöjä.",
+    "noMatchesMessage": "Ei vastaavia merkintöjä.",
+    "errorTitle": "Lokien lataaminen epäonnistui",
+    "refreshAriaLabel": "Päivitä",
+    "retry": "Yritä uudelleen",
+    "linesSuffix": "riviä",
+    "regexToggle": "Vaihda regex-haku",
+    "prettyPrint": "Muotoile JSON",
+    "jumpTop": "Hyppää alkuun",
+    "jumpBottom": "Hyppää loppuun",
+    "pause": "Keskeytä",
+    "resume": "Jatka",
+    "download": "Lataa lokit",
+    "savedTo": "Tallennettu sijaintiin {{path}}",
+    "textFiles": "Tekstitiedostot"
+  },
+  "externalLinkModal": {
+    "title": "Avaa ulkoinen linkki",
+    "ariaLabel": "Ulkoisen linkin vahvistus",
+    "warningTitle": "Olet poistumassa tästä sovelluksesta",
+    "continueButton": "Jatka"
+  },
+  "common": {
+    "cancel": "Peruuta",
+    "close": "Sulje"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Vaihda asettelua",
+    "groupLabel": "Asettelu",
+    "tooltip": "Asettelu: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Muuttujan nimi",
+    "valueAria": "Muuttujan arvo",
+    "markSensitive": "Merkitse arkaluonteiseksi",
+    "markNotSensitive": "Poista arkaluonteisuusmerkintä",
+    "showValue": "Näytä arvo",
+    "hideValue": "Piilota arvo",
+    "deleteRow": "Poista rivi"
+  },
+  "notices": {
+    "title": "Avoimen lähdekoodin lisenssit",
+    "aria_label": "Avoimen lähdekoodin lisenssit",
+    "intro": "{{product}} on lisensoitu lisenssillä {{license}}.",
+    "source_link": "Hae lähdekoodi",
+    "summary": "Se sisältää seuraavat {{count}} avoimen lähdekoodin pakettia. Kunkin paketin lisenssi ja tekijänoikeusilmoitus on toistettu kokonaisuudessaan alla.",
+    "licenses_used": "Lisenssit",
+    "filter_placeholder": "Suodata nimen, lisenssin tai julkaisijan mukaan",
+    "no_matches": "Mikään paketti ei vastaa tätä suodatinta",
+    "no_text": "Tämän paketin mukana ei toimitettu lisenssitekstiä — katso paketin kotisivu yllä."
+  },
+  "service": {
+    "start": "Käynnistä",
+    "stop": "Pysäytä",
+    "restart": "Käynnistä uudelleen",
+    "reload": "Lataa uudelleen",
+    "running": "Käynnissä",
+    "stopped": "Pysäytetty",
+    "failed": "Epäonnistunut",
+    "not_installed": "Ei asennettu",
+    "unknown": "Tuntematon",
+    "confirm_action": "Vahvista",
+    "confirm_start_title": "Käynnistetäänkö palvelu?",
+    "confirm_start_body": "Palvelu käynnistetään.",
+    "confirm_stop_title": "Pysäytetäänkö palvelu?",
+    "confirm_stop_body": "Palvelu pysäytetään.",
+    "confirm_restart_title": "Käynnistetäänkö palvelu uudelleen?",
+    "confirm_restart_body": "Palvelu käynnistetään uudelleen.",
+    "confirm_reload_title": "Ladataanko palvelu uudelleen?",
+    "confirm_reload_body": "Palvelun asetukset ladataan uudelleen."
+  },
+  "toast": {
+    "service_started": "Palvelu käynnistetty",
+    "service_stopped": "Palvelu pysäytetty",
+    "service_restarted": "Palvelu käynnistetty uudelleen",
+    "service_reloaded": "Asetukset ladattu uudelleen"
+  }
+}

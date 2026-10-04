@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "حدث خطأ ما"
+  },
+  "pluginPage": {
+    "errorTitle": "خطأ في تحميل الإضافة"
+  },
+  "logViewer": {
+    "searchPlaceholder": "البحث في السجلات…",
+    "emptyMessage": "لا توجد إدخالات في السجل.",
+    "noMatchesMessage": "لا توجد إدخالات مطابقة.",
+    "errorTitle": "فشل تحميل السجلات",
+    "refreshAriaLabel": "تحديث",
+    "retry": "إعادة المحاولة",
+    "linesSuffix": "سطر",
+    "regexToggle": "تبديل البحث بالتعبيرات النمطية",
+    "prettyPrint": "تنسيق JSON",
+    "jumpTop": "الانتقال إلى الأعلى",
+    "jumpBottom": "الانتقال إلى الأسفل",
+    "pause": "إيقاف مؤقت",
+    "resume": "استئناف",
+    "download": "تنزيل السجلات",
+    "savedTo": "حُفظ في {{path}}",
+    "textFiles": "ملفات نصية"
+  },
+  "externalLinkModal": {
+    "title": "فتح رابط خارجي",
+    "ariaLabel": "تأكيد الرابط الخارجي",
+    "warningTitle": "أنت على وشك مغادرة هذا التطبيق",
+    "continueButton": "متابعة"
+  },
+  "common": {
+    "cancel": "إلغاء",
+    "close": "إغلاق"
+  },
+  "layoutSelector": {
+    "ariaLabel": "تغيير التخطيط",
+    "groupLabel": "التخطيط",
+    "tooltip": "التخطيط: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "اسم المتغير",
+    "valueAria": "قيمة المتغير",
+    "markSensitive": "وضع علامة حساس",
+    "markNotSensitive": "إزالة علامة حساس",
+    "showValue": "إظهار القيمة",
+    "hideValue": "إخفاء القيمة",
+    "deleteRow": "حذف الصف"
+  },
+  "notices": {
+    "title": "تراخيص المصادر المفتوحة",
+    "aria_label": "تراخيص المصادر المفتوحة",
+    "intro": "{{product}} مرخّص بموجب {{license}}.",
+    "source_link": "الحصول على الكود المصدري",
+    "summary": "يتضمّن حزم المصادر المفتوحة التالية وعددها {{count}}. نصّ ترخيص كل حزمة وإشعار حقوق النشر الخاص بها مُدرَج بالكامل أدناه.",
+    "licenses_used": "التراخيص",
+    "filter_placeholder": "التصفية حسب الاسم أو الترخيص أو الناشر",
+    "no_matches": "لا توجد حزم مطابقة لهذا الفلتر",
+    "no_text": "لم تُشحن أي نصوص ترخيص مع هذه الحزمة — راجع صفحة الحزمة أعلاه."
+  },
+  "service": {
+    "start": "بدء",
+    "stop": "وقف",
+    "restart": "إعادة التشغيل",
+    "reload": "إعادة التحميل",
+    "running": "قيد التشغيل",
+    "stopped": "متوقف",
+    "failed": "فشل",
+    "not_installed": "غير مثبت",
+    "unknown": "غير معروف",
+    "confirm_action": "تأكيد",
+    "confirm_start_title": "بدء الخدمة؟",
+    "confirm_start_body": "سيتم بدء الخدمة.",
+    "confirm_stop_title": "إيقاف الخدمة؟",
+    "confirm_stop_body": "سيتم إيقاف الخدمة.",
+    "confirm_restart_title": "إعادة تشغيل الخدمة؟",
+    "confirm_restart_body": "سيتم إعادة تشغيل الخدمة.",
+    "confirm_reload_title": "إعادة تحميل الخدمة؟",
+    "confirm_reload_body": "سيتم إعادة تحميل إعدادات الخدمة."
+  },
+  "toast": {
+    "service_started": "بدأت الخدمة",
+    "service_stopped": "توقفت الخدمة",
+    "service_restarted": "أُعيد تشغيل الخدمة",
+    "service_reloaded": "أُعيد تحميل الإعدادات"
+  }
+}

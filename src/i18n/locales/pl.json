@@ -2,6 +2,9 @@
   "errorBoundary": {
     "title": "Coś poszło nie tak"
   },
+  "pluginPage": {
+    "errorTitle": "Błąd ładowania wtyczki"
+  },
   "logViewer": {
     "searchPlaceholder": "Szukaj w logach…",
     "emptyMessage": "Brak wpisów w logu.",
@@ -9,7 +12,16 @@
     "errorTitle": "Nie udało się załadować logów",
     "refreshAriaLabel": "Odśwież",
     "retry": "Ponów",
-    "linesSuffix": "wierszy"
+    "linesSuffix": "wierszy",
+    "regexToggle": "Przełącz wyszukiwanie regex",
+    "prettyPrint": "Formatuj JSON",
+    "jumpTop": "Przejdź na górę",
+    "jumpBottom": "Przejdź na dół",
+    "pause": "Wstrzymaj",
+    "resume": "Wznów",
+    "download": "Pobierz dzienniki",
+    "savedTo": "Zapisano w {{path}}",
+    "textFiles": "Pliki tekstowe"
   },
   "externalLinkModal": {
     "title": "Otwórz link zewnętrzny",
@@ -18,7 +30,33 @@
     "continueButton": "Kontynuuj"
   },
   "common": {
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "close": "Zamknij"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Zmień układ",
+    "groupLabel": "Układ",
+    "tooltip": "Układ: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Nazwa zmiennej",
+    "valueAria": "Wartość zmiennej",
+    "markSensitive": "Oznacz jako poufne",
+    "markNotSensitive": "Oznacz jako niepoufne",
+    "showValue": "Pokaż wartość",
+    "hideValue": "Ukryj wartość",
+    "deleteRow": "Usuń wiersz"
+  },
+  "notices": {
+    "title": "Licencje open source",
+    "aria_label": "Licencje open source",
+    "intro": "{{product}} jest objęty licencją {{license}}.",
+    "source_link": "Pobierz kod źródłowy",
+    "summary": "Zawiera następujące pakiety open source ({{count}}). Licencja i informacja o prawach autorskich każdego pakietu są w całości przytoczone poniżej.",
+    "licenses_used": "Licencje",
+    "filter_placeholder": "Filtruj według nazwy, licencji lub wydawcy",
+    "no_matches": "Żaden pakiet nie pasuje do tego filtra",
+    "no_text": "Do tego pakietu nie dołączono tekstu licencji — zobacz stronę pakietu powyżej."
   },
   "service": {
     "start": "Uruchom",

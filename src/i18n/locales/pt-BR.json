@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Algo deu errado"
+  },
+  "pluginPage": {
+    "errorTitle": "Erro ao carregar o plugin"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Pesquisar logs…",
+    "emptyMessage": "Nenhuma entrada de log.",
+    "noMatchesMessage": "Nenhuma entrada correspondente.",
+    "errorTitle": "Falha ao carregar os logs",
+    "refreshAriaLabel": "Atualizar",
+    "retry": "Tentar novamente",
+    "linesSuffix": "linhas",
+    "regexToggle": "Alternar pesquisa por regex",
+    "prettyPrint": "Formatar JSON",
+    "jumpTop": "Ir para o topo",
+    "jumpBottom": "Ir para o final",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "download": "Baixar logs",
+    "savedTo": "Salvo em {{path}}",
+    "textFiles": "Arquivos de texto"
+  },
+  "externalLinkModal": {
+    "title": "Abrir link externo",
+    "ariaLabel": "Confirmação de link externo",
+    "warningTitle": "Você está prestes a sair deste aplicativo",
+    "continueButton": "Continuar"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "close": "Fechar"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Alterar layout",
+    "groupLabel": "Layout",
+    "tooltip": "Layout: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Nome da variável",
+    "valueAria": "Valor da variável",
+    "markSensitive": "Marcar como confidencial",
+    "markNotSensitive": "Marcar como não confidencial",
+    "showValue": "Mostrar valor",
+    "hideValue": "Ocultar valor",
+    "deleteRow": "Excluir linha"
+  },
+  "notices": {
+    "title": "Licenças de código aberto",
+    "aria_label": "Licenças de código aberto",
+    "intro": "{{product}} é licenciado sob {{license}}.",
+    "source_link": "Obter o código-fonte",
+    "summary": "Ele empacota os {{count}} pacotes de código aberto a seguir. A licença e o aviso de direitos autorais de cada pacote são reproduzidos na íntegra abaixo.",
+    "licenses_used": "Licenças",
+    "filter_placeholder": "Filtrar por nome, licença ou publicador",
+    "no_matches": "Nenhum pacote corresponde a este filtro",
+    "no_text": "Nenhum texto de licença foi fornecido com este pacote — consulte a página do pacote acima."
+  },
+  "service": {
+    "start": "Iniciar",
+    "stop": "Parar",
+    "restart": "Reiniciar",
+    "reload": "Recarregar",
+    "running": "Em execução",
+    "stopped": "Parado",
+    "failed": "Falhou",
+    "not_installed": "Não instalado",
+    "unknown": "Desconhecido",
+    "confirm_action": "Confirmar",
+    "confirm_start_title": "Iniciar o serviço?",
+    "confirm_start_body": "O serviço será iniciado.",
+    "confirm_stop_title": "Parar o serviço?",
+    "confirm_stop_body": "O serviço será parado.",
+    "confirm_restart_title": "Reiniciar o serviço?",
+    "confirm_restart_body": "O serviço será reiniciado.",
+    "confirm_reload_title": "Recarregar o serviço?",
+    "confirm_reload_body": "A configuração do serviço será recarregada."
+  },
+  "toast": {
+    "service_started": "Serviço iniciado",
+    "service_stopped": "Serviço parado",
+    "service_restarted": "Serviço reiniciado",
+    "service_reloaded": "Configuração recarregada"
+  }
+}

@@ -24,7 +24,7 @@ Both resolve to the same source either way; it's purely about which import state
 
 ## Setting up i18n
 
-See [Getting Started § i18n setup](Getting-Started.md#i18n-setup) and [§ Inheriting base component translations](Getting-Started.md#inheriting-base-component-translations) — `buildLocaleResources` removes the per-locale wrapping boilerplate, and spreading `baseTranslations` into your own resources gets you real (non-English-fallback) translations for shared component strings like `ErrorBoundary`'s default title or `ServiceControl`'s button labels.
+See [Getting Started § i18n setup](Getting-Started.md#i18n-setup) and [§ Inheriting base component translations](Getting-Started.md#inheriting-base-component-translations) — `buildLocaleResources` removes the per-locale wrapping boilerplate, and `withBaseTranslations` merges `baseTranslations` under your own resources to get real (non-English-fallback) translations for shared component strings like `ErrorBoundary`'s default title or `ServiceControl`'s button labels.
 
 ## Using the shared tooling config
 

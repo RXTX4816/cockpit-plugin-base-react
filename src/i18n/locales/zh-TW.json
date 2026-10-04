@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "發生錯誤"
+  },
+  "pluginPage": {
+    "errorTitle": "載入外掛程式時發生錯誤"
+  },
+  "logViewer": {
+    "searchPlaceholder": "搜尋日誌…",
+    "emptyMessage": "沒有日誌項目。",
+    "noMatchesMessage": "沒有符合的項目。",
+    "errorTitle": "載入日誌失敗",
+    "refreshAriaLabel": "重新整理",
+    "retry": "重試",
+    "linesSuffix": "行",
+    "regexToggle": "切換規則運算式搜尋",
+    "prettyPrint": "格式化 JSON",
+    "jumpTop": "跳至頂部",
+    "jumpBottom": "跳至底部",
+    "pause": "暫停",
+    "resume": "繼續",
+    "download": "下載日誌",
+    "savedTo": "已儲存至 {{path}}",
+    "textFiles": "文字檔案"
+  },
+  "externalLinkModal": {
+    "title": "開啟外部連結",
+    "ariaLabel": "外部連結確認",
+    "warningTitle": "你即將離開此應用程式",
+    "continueButton": "繼續"
+  },
+  "common": {
+    "cancel": "取消",
+    "close": "關閉"
+  },
+  "layoutSelector": {
+    "ariaLabel": "變更版面",
+    "groupLabel": "版面",
+    "tooltip": "版面：{{layout}}"
+  },
+  "envTable": {
+    "keyAria": "變數名稱",
+    "valueAria": "變數值",
+    "markSensitive": "標記為敏感",
+    "markNotSensitive": "取消敏感標記",
+    "showValue": "顯示值",
+    "hideValue": "隱藏值",
+    "deleteRow": "刪除列"
+  },
+  "notices": {
+    "title": "開源授權條款",
+    "aria_label": "開源授權條款",
+    "intro": "{{product}} 依據 {{license}} 授權條款發布。",
+    "source_link": "取得原始碼",
+    "summary": "它整合了下列 {{count}} 個開源套件。各套件的授權條款與版權聲明全文如下。",
+    "licenses_used": "授權條款",
+    "filter_placeholder": "依名稱、授權條款或發行者篩選",
+    "no_matches": "沒有套件符合此篩選條件",
+    "no_text": "此套件未隨附授權條款文字 — 請參閱上方的套件首頁。"
+  },
+  "service": {
+    "start": "啟動",
+    "stop": "停止",
+    "restart": "重新啟動",
+    "reload": "重新載入",
+    "running": "執行中",
+    "stopped": "已停止",
+    "failed": "失敗",
+    "not_installed": "未安裝",
+    "unknown": "未知",
+    "confirm_action": "確認",
+    "confirm_start_title": "啟動服務？",
+    "confirm_start_body": "服務將會啟動。",
+    "confirm_stop_title": "停止服務？",
+    "confirm_stop_body": "服務將會停止。",
+    "confirm_restart_title": "重新啟動服務？",
+    "confirm_restart_body": "服務將會重新啟動。",
+    "confirm_reload_title": "重新載入服務？",
+    "confirm_reload_body": "服務設定將會重新載入。"
+  },
+  "toast": {
+    "service_started": "服務已啟動",
+    "service_stopped": "服務已停止",
+    "service_restarted": "服務已重新啟動",
+    "service_reloaded": "設定已重新載入"
+  }
+}

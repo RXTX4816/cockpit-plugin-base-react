@@ -1,0 +1,87 @@
+{
+  "errorBoundary": {
+    "title": "Bir şeyler ters gitti"
+  },
+  "pluginPage": {
+    "errorTitle": "Eklenti yüklenirken hata oluştu"
+  },
+  "logViewer": {
+    "searchPlaceholder": "Günlüklerde ara…",
+    "emptyMessage": "Günlük kaydı yok.",
+    "noMatchesMessage": "Eşleşen kayıt yok.",
+    "errorTitle": "Günlükler yüklenemedi",
+    "refreshAriaLabel": "Yenile",
+    "retry": "Tekrar Dene",
+    "linesSuffix": "satır",
+    "regexToggle": "Regex aramayı aç/kapat",
+    "prettyPrint": "JSON'u biçimlendir",
+    "jumpTop": "En üste git",
+    "jumpBottom": "En alta git",
+    "pause": "Duraklat",
+    "resume": "Devam et",
+    "download": "Günlükleri indir",
+    "savedTo": "{{path}} konumuna kaydedildi",
+    "textFiles": "Metin dosyaları"
+  },
+  "externalLinkModal": {
+    "title": "Harici bağlantıyı aç",
+    "ariaLabel": "Harici bağlantı onayı",
+    "warningTitle": "Bu uygulamadan ayrılmak üzeresiniz",
+    "continueButton": "Devam Et"
+  },
+  "common": {
+    "cancel": "İptal",
+    "close": "Kapat"
+  },
+  "layoutSelector": {
+    "ariaLabel": "Düzeni değiştir",
+    "groupLabel": "Düzen",
+    "tooltip": "Düzen: {{layout}}"
+  },
+  "envTable": {
+    "keyAria": "Değişken adı",
+    "valueAria": "Değişken değeri",
+    "markSensitive": "Hassas olarak işaretle",
+    "markNotSensitive": "Hassas işaretini kaldır",
+    "showValue": "Değeri göster",
+    "hideValue": "Değeri gizle",
+    "deleteRow": "Satırı sil"
+  },
+  "notices": {
+    "title": "Açık kaynak lisansları",
+    "aria_label": "Açık kaynak lisansları",
+    "intro": "{{product}}, {{license}} lisansı altında dağıtılmaktadır.",
+    "source_link": "Kaynak kodunu edinin",
+    "summary": "Aşağıdaki {{count}} açık kaynak paketini içerir. Her paketin lisansı ve telif hakkı bildirimi aşağıda tam olarak yer almaktadır.",
+    "licenses_used": "Lisanslar",
+    "filter_placeholder": "Ada, lisansa veya yayıncıya göre filtrele",
+    "no_matches": "Bu filtreyle eşleşen paket yok",
+    "no_text": "Bu paketle birlikte lisans metni gelmiyor — yukarıdaki paket ana sayfasına bakın."
+  },
+  "service": {
+    "start": "Başlat",
+    "stop": "Durdur",
+    "restart": "Yeniden Başlat",
+    "reload": "Yeniden yükle",
+    "running": "Çalışıyor",
+    "stopped": "Durduruldu",
+    "failed": "Başarısız",
+    "not_installed": "Kurulu değil",
+    "unknown": "Bilinmiyor",
+    "confirm_action": "Onayla",
+    "confirm_start_title": "Hizmet başlatılsın mı?",
+    "confirm_start_body": "Hizmet başlatılacak.",
+    "confirm_stop_title": "Hizmet durdurulsun mu?",
+    "confirm_stop_body": "Hizmet durdurulacak.",
+    "confirm_restart_title": "Hizmet yeniden başlatılsın mı?",
+    "confirm_restart_body": "Hizmet yeniden başlatılacak.",
+    "confirm_reload_title": "Hizmet yeniden yüklensin mi?",
+    "confirm_reload_body": "Hizmet yapılandırması yeniden yüklenecek."
+  },
+  "toast": {
+    "service_started": "Hizmet başlatıldı",
+    "service_stopped": "Hizmet durduruldu",
+    "service_restarted": "Hizmet yeniden başlatıldı",
+    "service_reloaded": "Yapılandırma yeniden yüklendi"
+  }
+}

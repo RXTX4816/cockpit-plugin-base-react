@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, type ReactNode } from "react";
 import { Button, ToggleGroup, ToggleGroupItem } from "@patternfly/react-core";
 import { Tooltip } from "./Tooltip";
 import { SlidersHIcon } from "@patternfly/react-icons";
+import { useTranslation } from "react-i18next";
 import "./LayoutSelector.css";
 
 export interface LayoutOption<T extends string = string> {
@@ -21,8 +22,11 @@ export function LayoutSelector<T extends string>({
   layout,
   onLayoutChange,
   layouts,
-  ariaLabel = "Change layout",
+  ariaLabel,
 }: Props<T>) {
+  const { t, i18n } = useTranslation();
+  const tf = (key: string, fallback: string, opts?: Record<string, unknown>) =>
+    i18n.isInitialized ? t(key, { defaultValue: fallback, ...opts }) : fallback.replace("{{layout}}", String(opts?.layout ?? ""));
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -41,19 +45,19 @@ export function LayoutSelector<T extends string>({
 
   return (
     <div ref={containerRef} className={`ls-wrap${open ? " ls-wrap--open" : ""}`}>
-      <Tooltip content={`Layout: ${current?.label ?? layout}`}>
+      <Tooltip content={tf("layoutSelector.tooltip", "Layout: {{layout}}", { layout: current?.label ?? layout })}>
         <Button
           variant="plain"
           size="sm"
           onClick={() => setOpen(o => !o)}
-          aria-label={ariaLabel}
+          aria-label={ariaLabel ?? tf("layoutSelector.ariaLabel", "Change layout")}
           className={`ls-trigger${open ? " ls-trigger--active" : ""}`}
         >
           {current?.icon ?? <SlidersHIcon />}
         </Button>
       </Tooltip>
       {open && (
-        <ToggleGroup aria-label="Layout" isCompact className="ls-toggle">
+        <ToggleGroup aria-label={tf("layoutSelector.groupLabel", "Layout")} isCompact className="ls-toggle">
           {layouts.map(({ key, icon, label }) => (
             <Tooltip key={key} content={label}>
               <ToggleGroupItem
