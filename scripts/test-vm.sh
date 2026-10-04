@@ -75,6 +75,7 @@ FEDORA_IMAGE_URL="https://download.fedoraproject.org/pub/fedora/linux/releases/$
 die()  { echo "ERROR: $*" >&2; exit 1; }
 info() { echo "==> $*"; }
 ok()   { echo "    ✓ $*"; }
+warn() { echo "    ! $*" >&2; }
 
 usage() {
   cat <<EOF
@@ -479,12 +480,31 @@ cmd_stop() {
   for vm in "${vms[@]}"; do
     local pf; pf="$(pid_file "$vm")"
     if is_running "$vm"; then
-      info "$vm: stopping (PID $(cat "$pf"))..."
-      kill "$(cat "$pf")"
+      local pid; pid="$(cat "$pf")"
+      info "$vm: shutting down (PID $pid)..."
+      # Ask the guest to power off first. Killing QEMU outright is a power cut: Docker
+      # never stops its containers (they come back "Exited (255)"), writes from the last
+      # seconds never reach the disk (deleted files reappear), and Docker's container
+      # records can be left damaged, as ghosts that can be neither started nor removed.
+      ssh -p "$(ssh_port "$vm")" \
+        -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+        -o BatchMode=yes -o ConnectTimeout=5 -o LogLevel=ERROR \
+        test@localhost 'sudo -n systemctl poweroff' >/dev/null 2>&1 || true
       local i=0
-      while kill -0 "$(cat "$pf")" 2>/dev/null && [[ $i -lt 20 ]]; do
+      while kill -0 "$pid" 2>/dev/null && [[ $i -lt 120 ]]; do
         sleep 0.5; i=$((i+1))
       done
+      # Fall back to the old behaviour only if the guest did not shut down within 60s
+      # (SSH unreachable, or a hung guest).
+      if kill -0 "$pid" 2>/dev/null; then
+        warn "$vm: no clean shutdown within 60s, killing QEMU"
+        kill "$pid" 2>/dev/null || true
+        i=0
+        while kill -0 "$pid" 2>/dev/null && [[ $i -lt 20 ]]; do
+          sleep 0.5; i=$((i+1))
+        done
+        kill -0 "$pid" 2>/dev/null && kill -9 "$pid" 2>/dev/null || true
+      fi
       rm -f "$pf"
       ok "$vm: stopped"
     else
