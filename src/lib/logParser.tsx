@@ -62,7 +62,7 @@ export function colorizeJson(json: string): ReactNode {
     }
     last = m.index + m[0].length;
   }
-  if (last < json.length) parts.push(<span key={k++}>{json.slice(last)}</span>);
+  if (last < json.length) parts.push(<span key={k}>{json.slice(last)}</span>);
   return <>{parts}</>;
 }
 
@@ -117,7 +117,7 @@ export function highlightMessage(msg: string): ReactNode {
     );
     last = m.index + m[0].length;
   }
-  if (last < msg.length) parts.push(<span key={k++}>{msg.slice(last)}</span>);
+  if (last < msg.length) parts.push(<span key={k}>{msg.slice(last)}</span>);
   return parts.length ? <>{parts}</> : msg;
 }
 
