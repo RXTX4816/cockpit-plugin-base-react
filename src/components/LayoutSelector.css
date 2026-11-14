@@ -19,11 +19,6 @@
   background: rgba(0, 0, 0, 0.06);
 }
 
-.ls-trigger--active.pf-v6-c-button {
-  color: var(--pf-t--global--color--brand--default, #0066cc);
-  background: rgba(0, 102, 204, 0.08);
-}
-
 .ls-toggle {
   animation: ls-expand 0.12s ease-out;
 }
