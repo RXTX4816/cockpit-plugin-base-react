@@ -29,12 +29,19 @@ export function LayoutSelector<T extends string>({
     i18n.isInitialized ? t(key, { defaultValue: fallback, ...opts }) : fallback.replace("{{layout}}", String(opts?.layout ?? ""));
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const restoreFocus = useRef(false);
+
+  const close = (refocus: boolean) => {
+    restoreFocus.current = refocus;
+    setOpen(false);
+  };
 
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as HTMLElement)) {
-        setOpen(false);
+        close(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -43,32 +50,54 @@ export function LayoutSelector<T extends string>({
 
   const current = layouts.find(l => l.key === layout);
 
+  // Moves focus across the trigger/toggle swap: into the selected option on
+  // open, and back to the trigger when closed by keyboard or by picking a
+  // layout (not by a click elsewhere, which has already moved focus).
+  // Skipped on first render.
+  useEffect(() => {
+    if (open) {
+      containerRef.current?.querySelector<HTMLButtonElement>("button[aria-pressed='true']")?.focus();
+    } else if (restoreFocus.current) {
+      restoreFocus.current = false;
+      triggerRef.current?.focus();
+    }
+  }, [open]);
+
+  // While open, the toggle replaces the trigger: showing both looked like one
+  // more layout option than there is.
   return (
     <div ref={containerRef} className={`ls-wrap${open ? " ls-wrap--open" : ""}`}>
-      <Tooltip content={tf("layoutSelector.tooltip", "Layout: {{layout}}", { layout: current?.label ?? layout })}>
-        <Button
-          variant="plain"
-          size="sm"
-          onClick={() => setOpen(o => !o)}
-          aria-label={ariaLabel ?? tf("layoutSelector.ariaLabel", "Change layout")}
-          className={`ls-trigger${open ? " ls-trigger--active" : ""}`}
+      {open ? (
+        <ToggleGroup
+          aria-label={tf("layoutSelector.groupLabel", "Layout")}
+          isCompact
+          className="ls-toggle"
+          onKeyDown={e => { if (e.key === "Escape") close(true); }}
         >
-          {current?.icon ?? <SlidersHIcon />}
-        </Button>
-      </Tooltip>
-      {open && (
-        <ToggleGroup aria-label={tf("layoutSelector.groupLabel", "Layout")} isCompact className="ls-toggle">
           {layouts.map(({ key, icon, label }) => (
             <Tooltip key={key} content={label}>
               <ToggleGroupItem
                 icon={icon}
                 isSelected={layout === key}
-                onChange={() => { onLayoutChange(key); setOpen(false); }}
+                onChange={() => { onLayoutChange(key); close(true); }}
                 aria-label={label}
               />
             </Tooltip>
           ))}
         </ToggleGroup>
+      ) : (
+        <Tooltip content={tf("layoutSelector.tooltip", "Layout: {{layout}}", { layout: current?.label ?? layout })}>
+          <Button
+            ref={triggerRef}
+            variant="plain"
+            size="sm"
+            onClick={() => setOpen(true)}
+            aria-label={ariaLabel ?? tf("layoutSelector.ariaLabel", "Change layout")}
+            className="ls-trigger"
+          >
+            {current?.icon ?? <SlidersHIcon />}
+          </Button>
+        </Tooltip>
       )}
     </div>
   );
