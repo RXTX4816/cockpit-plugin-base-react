@@ -1,8 +1,17 @@
 import eslint from "@eslint/js";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
-import react from "eslint-plugin-react";
+import { fixupPluginRules } from "@eslint/compat";
+import reactPlugin from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
+
+// eslint-plugin-react 7.37.x still calls RuleContext methods that ESLint 10 removed
+// (context.getFilename() during React version detection, among others), so every
+// react/* rule crashes on ESLint 10. fixupPluginRules() wraps each rule so its context
+// gets back only the methods the running ESLint lacks, which keeps ESLint 9 setups
+// behaving as before. Drop it once eslint-plugin-react ships ESLint 10 support
+// (https://github.com/jsx-eslint/eslint-plugin-react/issues/3977).
+const react = fixupPluginRules(reactPlugin);
 
 // Globals shared by all Cockpit plugins.
 // Pass extraGlobals to add plugin-specific names (e.g. CockpitHttpClient for caddy).
