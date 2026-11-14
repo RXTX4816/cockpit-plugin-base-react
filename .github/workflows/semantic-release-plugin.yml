@@ -1,29 +1,36 @@
 name: Semantic Release (reusable)
 
-# Tags a CI-verified commit on main with the next semantic version, behind a
-# manual approval. The calling repo triggers this after its CI succeeds on a
-# push to main (see docs/wiki/CI-CD.md for the caller template), so every
-# merged commit gets a pending "Release" run that does nothing until the
-# maintainer approves the `release` environment's deployment.
+# Tags a CI-verified commit on main with the next semantic version. Releases
+# are started by hand: the calling repo's semantic-release.yml only has a
+# workflow_dispatch trigger (the "Run workflow" button, see docs/wiki/CI-CD.md
+# for the caller template) and passes its `dry_run` input through.
 #
-# The `release` environment MUST exist in the calling repo with the
-# maintainer as required reviewer — GitHub silently creates an unprotected
-# environment on first use otherwise. The verify job refuses to continue if
-# it has no required-reviewer rule.
+# The verify job refuses any ref other than main, checks that the commit has a
+# successful CI run, computes the next version and writes it, together with
+# the commits since the last tag, to the run summary. With `dry_run` it stops
+# there. Otherwise the release job creates the tag; it runs in the `release`
+# environment, so any protection rules configured there (e.g. a required
+# reviewer) still apply.
 
 on:
   workflow_call:
     inputs:
       sha:
-        description: Commit to release. Must be on main and have a successful CI run.
+        description: >-
+          Commit to release. Must be on main and have a successful CI run.
+          Defaults to the commit the run was started on, i.e. the tip of main.
         type: string
-        required: true
+        default: ''
+      dry_run:
+        description: Only compute and print the next version and changelog, do not tag
+        type: boolean
+        default: false
       ci-workflow:
-        description: Workflow file whose successful push run on `sha` gates the release
+        description: Workflow file whose successful push run on the commit gates the release
         type: string
         default: ci.yml
       environment:
-        description: Environment holding the required-reviewer rule
+        description: Environment the tagging job runs in
         type: string
         default: release
       initial_version:
@@ -44,39 +51,63 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       next_version: ${{ steps.version.outputs.next_version }}
+      sha: ${{ steps.sha.outputs.sha }}
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
-      SHA: ${{ inputs.sha }}
     steps:
-      - name: Require a protected release environment
+      - name: Require main
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [ "$REF" != "refs/heads/main" ]; then
+            echo "::error::Releases are only made from main, this run was started on $REF."
+            exit 1
+          fi
+
+      - name: Resolve commit
+        id: sha
+        env:
+          SHA: ${{ inputs.sha || github.sha }}
+        run: echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Check the release environment
         env:
           ENVIRONMENT: ${{ inputs.environment }}
+          EVENT: ${{ github.event_name }}
         run: |
           RULES=$(gh api "repos/$REPO/environments/$ENVIRONMENT" \
             --jq '[.protection_rules[]? | select(.type == "required_reviewers")] | length' 2>/dev/null || echo 0)
           if [ "$RULES" = "0" ]; then
-            echo "::error::Environment '$ENVIRONMENT' is missing or has no required reviewers. Refusing to release without a manual approval gate."
-            exit 1
+            # Callers still on the old automatic workflow_run trigger rely on
+            # the reviewer as their only gate; a manual run is its own gate.
+            if [ "$EVENT" = "workflow_run" ]; then
+              echo "::error::Environment '$ENVIRONMENT' is missing or has no required reviewers. Refusing an automatic release without a manual approval gate."
+              exit 1
+            fi
+            echo "::notice::Environment '$ENVIRONMENT' has no required reviewers; the tag is created without a further approval."
           fi
 
       - name: Require a successful CI run on this commit
         env:
           CI_WORKFLOW: ${{ inputs.ci-workflow }}
+          SHA: ${{ steps.sha.outputs.sha }}
         run: |
           OK=$(gh api "repos/$REPO/actions/workflows/$CI_WORKFLOW/runs?head_sha=$SHA&event=push&branch=main&status=success&per_page=1" \
             --jq '.total_count')
           if [ "$OK" = "0" ]; then
-            echo "::error::No successful '$CI_WORKFLOW' push run on main for $SHA."
+            echo "::error::No successful '$CI_WORKFLOW' push run on main for $SHA (yet). Wait for CI to finish on main, then start the release again."
             exit 1
           fi
 
       - uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.sha }}
+          ref: ${{ steps.sha.outputs.sha }}
           fetch-depth: 0
 
       - name: Require the commit to be on main
+        env:
+          SHA: ${{ steps.sha.outputs.sha }}
         run: |
           git fetch --quiet origin main
           if ! git merge-base --is-ancestor "$SHA" origin/main; then
@@ -87,25 +118,30 @@ jobs:
       - name: Determine next version
         id: version
         env:
+          SHA: ${{ steps.sha.outputs.sha }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          ENVIRONMENT: ${{ inputs.environment }}
           INITIAL_VERSION: ${{ inputs.initial_version }}
         run: |
           LAST_TAG=$(git describe --tags --abbrev=0 --match 'v*' "$SHA" 2>/dev/null || echo "NONE")
           echo "Last tag: $LAST_TAG"
 
           if [ "$LAST_TAG" = "NONE" ]; then
+            RANGE="$SHA"
             NEXT_VERSION="$INITIAL_VERSION"
             CHANGE_TYPE="initial"
           else
+            RANGE="${LAST_TAG}..${SHA}"
             # Subjects only, for the feat/fix classification.
-            SUBJECTS=$(git log "${LAST_TAG}..${SHA}" --format='%s')
+            SUBJECTS=$(git log "$RANGE" --format='%s')
             # Commit bodies (no subject), for the breaking-change footer. Matched
             # only when it starts a line, per Conventional Commits — a prose
             # mention of the phrase mid-sentence must NOT trigger a major bump.
-            BODIES=$(git log "${LAST_TAG}..${SHA}" --format='%b')
+            BODIES=$(git log "$RANGE" --format='%b')
 
             if [ -z "$SUBJECTS" ]; then
               echo "No commits since $LAST_TAG. Nothing to release."
-              echo "### Nothing to release — $SHA is already tagged $LAST_TAG" >> "$GITHUB_STEP_SUMMARY"
+              echo "### Nothing to release — \`$SHA\` is already tagged \`$LAST_TAG\`" >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi
 
@@ -134,29 +170,42 @@ jobs:
             exit 1
           fi
 
+          CHANGELOG=$(git log "$RANGE" --format='- %s (%h)')
           echo "Next version: $NEXT_VERSION ($CHANGE_TYPE bump)"
-          echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Commits since $LAST_TAG:"
+          echo "$CHANGELOG"
+
           {
-            echo "### Approve to release \`$NEXT_VERSION\` ($CHANGE_TYPE)"
-            echo
-            echo "Commit \`$SHA\`, since \`$LAST_TAG\`:"
-            echo
-            if [ "$LAST_TAG" != "NONE" ]; then
-              git log "${LAST_TAG}..${SHA}" --format='- %s'
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "### Dry run: next release would be \`$NEXT_VERSION\` ($CHANGE_TYPE)"
+              echo
+              echo "Nothing was tagged. Run the workflow again with *dry run* unchecked to release."
+            else
+              echo "### Releasing \`$NEXT_VERSION\` ($CHANGE_TYPE)"
+              echo
+              echo "The tag is created by the *Tag release* job in the \`$ENVIRONMENT\` environment."
             fi
+            echo
+            echo "Commit \`$SHA\`, commits since \`$LAST_TAG\`:"
+            echo
+            echo "$CHANGELOG"
           } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$DRY_RUN" != "true" ]; then
+            echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+          fi
 
   release:
     name: Tag release
     needs: verify
-    if: needs.verify.outputs.next_version != ''
+    if: needs.verify.outputs.next_version != '' && !inputs.dry_run
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
       - name: Create tag
         env:
           NEXT_VERSION: ${{ needs.verify.outputs.next_version }}
-          SHA: ${{ inputs.sha }}
+          SHA: ${{ needs.verify.outputs.sha }}
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           # RELEASE_TOKEN (a PAT) rather than GITHUB_TOKEN, so the tag push

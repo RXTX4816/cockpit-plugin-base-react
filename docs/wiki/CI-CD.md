@@ -44,9 +44,18 @@ Required inputs:
 
 ### semantic-release-plugin.yml
 
-Determines the next version from conventional commits since the last git tag and creates the tag, **after a manual approval**. Does not build or publish anything — it only tags. The tag then triggers whatever release workflow you have listening on `push.tags`.
+Determines the next version from conventional commits since the last git tag and creates the tag. Releases are **started by hand**; nothing happens on a merge. Does not build or publish anything — it only tags. The tag then triggers whatever release workflow you have listening on `push.tags`.
 
-Flow: every push to main whose CI passes starts a run. The `verify` job checks that the commit is on main and has a successful CI run, computes the next version and writes it to the run summary. The `release` job then waits on the `release` environment until the maintainer approves it — in the Actions tab, open the run and click **Review deployments → Approve**. A newer commit on main cancels the previous pending run, so only the tip of main is ever offered. If nothing changed since the last tag, no approval is requested.
+To release: Actions → **Semantic Release** → **Run workflow** on `main`, or from a shell:
+
+```sh
+gh workflow run semantic-release.yml -R <owner>/<repo>                 # dry run
+gh workflow run semantic-release.yml -R <owner>/<repo> -f dry_run=false # release
+```
+
+The `dry_run` input is checked by default, so a run that is started without thinking about it never tags anything.
+
+Flow: the `verify` job refuses any ref other than `main`, checks that the tip of main has a successful CI run (if CI is still running, wait and start it again), computes the next version and writes it, with the commits since the last tag, to the run summary — in dry and real runs alike. In a dry run it stops there. Otherwise the `release` job creates the tag. It runs in the `release` environment, so a required reviewer configured there still has to approve it (**Review deployments → Approve**); without one the tag is created right away. If nothing changed since the last tag, nothing is tagged.
 
 Version bump rules:
 - `!` before the `:` in a commit header, or a `BREAKING CHANGE:` footer in a commit body → major
@@ -60,16 +69,24 @@ Caller (`.github/workflows/semantic-release.yml` in the plugin repo):
 ```yaml
 name: Semantic Release
 
+# Releases are started by hand: Actions → Semantic Release → Run workflow (on
+# main), or `gh workflow run semantic-release.yml -f dry_run=false`. With
+# "dry run" checked (the default) the run only computes the next version and
+# writes it, with the commits since the last tag, to the run summary. Unchecked,
+# it tags the tip of main, which starts the Release workflow. Tagging runs in
+# the `release` environment, so its protection rules still apply.
+
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Dry run (only show the next version and changelog, do not tag)
+        type: boolean
+        default: true
 
 concurrency:
   group: semantic-release
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -77,21 +94,16 @@ permissions:
 
 jobs:
   semantic-release:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     uses: RXTX4816/cockpit-plugin-base-react/.github/workflows/semantic-release-plugin.yml@main
     with:
-      sha: ${{ github.event.workflow_run.head_sha || github.sha }}
+      dry_run: ${{ inputs.dry_run }}
     secrets: inherit
 ```
 
-`workflow_dispatch` re-offers the current tip of main, e.g. after a pending approval expired (GitHub drops them after 30 days).
-
-Required repository setup — **create this before the caller workflow lands**, because GitHub silently creates an unprotected environment on first use (the verify job refuses to run against one, but it is still a mess to clean up):
+Required repository setup — **create this before the caller workflow lands**, because GitHub otherwise creates an empty environment on first use:
 
 - Environment `release` (Settings → Environments) with:
-  - **Required reviewers**: the maintainer, with "Prevent self-review" off
+  - **Required reviewers** (optional — the manual start already is the decision): the maintainer, with "Prevent self-review" off
   - **Deployment branches**: selected branches → `main`
 
   Or with the API (`<user-id>` from `gh api user --jq .id`):
@@ -109,9 +121,10 @@ Required secrets:
 - `RELEASE_TOKEN` — a GitHub token with `contents: write` permission. A PAT, so the tag it creates triggers the release workflow.
 
 Inputs:
-- `sha` (required) — the commit to tag
-- `ci-workflow` — workflow file that must have succeeded on `sha` (default: `ci.yml`)
-- `environment` — environment holding the approval rule (default: `release`)
+- `dry_run` — only compute and print the next version and changelog, do not tag (default: `false`; the caller template passes its own input, which defaults to `true`)
+- `sha` — the commit to tag (default: the commit the run was started on, i.e. the tip of main)
+- `ci-workflow` — workflow file that must have succeeded on the commit (default: `ci.yml`)
+- `environment` — environment the tagging job runs in (default: `release`)
 
 ### release-plugin.yml
 
