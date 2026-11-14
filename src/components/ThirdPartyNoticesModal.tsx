@@ -76,7 +76,10 @@ export function ThirdPartyNoticesModal({
   // fallback has to interpolate too — i18next only does that on the initialised path,
   // and several of these strings carry {{...}} placeholders.
   const tf = (key: string, fallback: string, opts?: Record<string, unknown>) => {
-    if (i18n.isInitialized) return t(key, fallback, opts);
+    // Two calls rather than t(key, fallback, opts): i18next >= 26.6 types the
+    // options argument as required in the three-argument overload, so passing a
+    // possibly-undefined opts no longer typechecks in consumers on newer i18next.
+    if (i18n.isInitialized) return opts ? t(key, fallback, opts) : t(key, fallback);
     if (!opts) return fallback;
     return fallback.replace(/\{\{(\w+)\}\}/g, (m, name) =>
       name in opts ? String(opts[name]) : m,
