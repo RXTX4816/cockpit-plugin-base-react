@@ -103,7 +103,7 @@ $(for i in "${!ALL_VMS[@]}"; do
     "$vm" "$((COCKPIT_BASE + i))" "$((SSH_BASE + i))"
 done)
 
-Login: test / test  (your ~/.ssh/id_*.pub is also injected if found)
+Login: test / test  (SSH uses a throwaway key in .vms/id_ed25519, never your agent)
 
 Environment overrides:
   VM_MEM=2048   VM_CPUS=2   VM_DISK_SIZE=12G
@@ -208,11 +208,42 @@ resolve_distros() {
   echo "${out[@]}"
 }
 
+# A throwaway key per project for the test VMs (#202). Using the developer's own
+# identity meant every connection went through their ssh-agent, which with a
+# password-manager agent (KeePassXC, 1Password, ...) pops up a confirmation per login.
+VM_KEY="$VM_DIR/id_ed25519"
+
+ensure_vm_key() {
+  [[ -f "$VM_KEY" ]] && return
+  mkdir -p "$VM_DIR"
+  ssh-keygen -q -t ed25519 -N "" -C "cockpit-test-vm" -f "$VM_KEY" >/dev/null
+}
+
 find_ssh_pubkey() {
-  for key in ~/.ssh/id_ed25519.pub ~/.ssh/id_rsa.pub ~/.ssh/id_ecdsa.pub; do
-    [[ -f "$key" ]] && { cat "$key"; return; }
-  done
-  echo ""
+  ensure_vm_key
+  cat "$VM_KEY.pub"
+}
+
+# ssh into a VM with only the throwaway key; the agent is never asked.
+# VMs provisioned before #202 only know the developer's key: fall back to the old
+# behaviour for those, and say once how to get rid of it.
+vm_ssh() {
+  local port="$1"; shift
+  local common=(-p "$port" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR)
+  if [[ -f "$VM_KEY" ]]; then
+    ssh -n "${common[@]}" -i "$VM_KEY" -o IdentitiesOnly=yes -o IdentityAgent=none \
+      -o BatchMode=yes -o ConnectTimeout=2 test@localhost true 2>/dev/null \
+      && { ssh "${common[@]}" -i "$VM_KEY" -o IdentitiesOnly=yes -o IdentityAgent=none "$@"; return; }
+  fi
+  if [[ -z "${_VM_KEY_WARNED:-}" ]]; then
+    warn "this VM doesn't accept the throwaway key (.vms/id_ed25519); using your ssh-agent. Re-provision with: $0 clean <vm>" >&2
+    _VM_KEY_WARNED=1
+  fi
+  ssh "${common[@]}" "$@"
+}
+
+vm_ssh_hint() {
+  echo "ssh -p $1 -i $VM_KEY -o IdentitiesOnly=yes -o IdentityAgent=none -o StrictHostKeyChecking=no test@localhost"
 }
 
 make_seed_iso() {
@@ -318,7 +349,7 @@ YAML
 final_message: |
   ${vm} VM ready.
   Cockpit : https://localhost:$(cockpit_port "$vm")
-  SSH     : ssh -p $(ssh_port "$vm") -o StrictHostKeyChecking=no test@localhost
+  SSH     : $0 ssh ${vm}
   Login   : test / test
 YAML
 }
@@ -395,7 +426,7 @@ cmd_start() {
       local ssh_pubkey
       ssh_pubkey="$(find_ssh_pubkey)"
       info "$vm: generating cloud-init seed..."
-      [[ -n "$ssh_pubkey" ]] && ok "Found SSH public key — injecting into VM"
+      [[ -n "$ssh_pubkey" ]] && ok "Injecting the throwaway SSH key (.vms/id_ed25519)"
       generate_userdata "$vm" "$ssh_pubkey" "$udata"
       printf 'instance-id: %s-01\nlocal-hostname: %s-test\n' "$vm" "$vm" > "$mdata"
       make_seed_iso "$siso" "$udata" "$mdata"
@@ -425,7 +456,7 @@ cmd_start() {
     ok "$vm: started (PID $(cat "$(pid_file "$vm")"))"
     echo ""
     echo "    Cockpit → https://localhost:${cp}  (accept self-signed cert)"
-    echo "    SSH     → ssh -p ${sp} -o StrictHostKeyChecking=no test@localhost"
+    echo "    SSH     → $0 ssh ${vm}  ($(vm_ssh_hint "$sp"))"
     echo "    Ready?  → $0 wait $vm"
     echo "    Logs    → $0 logs $vm"
     echo ""
@@ -442,12 +473,13 @@ cmd_wait() {
 
   info "$vm: waiting for SSH on port $sp..."
   local elapsed=0 timeout=300
-  while ! ssh -p "$sp" \
-              -o StrictHostKeyChecking=no \
-              -o UserKnownHostsFile=/dev/null \
-              -o ConnectTimeout=2 \
-              -o BatchMode=yes \
-              test@localhost true 2>/dev/null; do
+  # Port probe only, so a VM that's still booting never reaches the agent fallback.
+  # Wait until sshd answers, without offering any key: an auth-less probe gets
+  # "Permission denied" from a running sshd, so the agent is never involved.
+  local probe
+  while probe="$(ssh -p "$sp" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+                     -o ConnectTimeout=2 -o BatchMode=yes -o PreferredAuthentications=none \
+                     -o IdentityAgent=none test@localhost true 2>&1)"; [[ "$probe" != *"Permission denied"* ]]; do
     sleep 5; elapsed=$((elapsed + 5))
     [[ $elapsed -ge $timeout ]] && die "Timed out after ${timeout}s waiting for SSH"
     printf "."
@@ -455,11 +487,7 @@ cmd_wait() {
   echo ""
   info "$vm: SSH ready — waiting for cloud-init to complete..."
   local ci_out
-  ci_out=$(ssh -p "$sp" \
-               -o StrictHostKeyChecking=no \
-               -o UserKnownHostsFile=/dev/null \
-               -o ConnectTimeout=5 \
-               -o BatchMode=yes \
+  ci_out=$(vm_ssh "$sp" -o ConnectTimeout=5 -o BatchMode=yes \
                test@localhost 'sudo cloud-init status --wait' 2>/dev/null || true)
   if ! echo "$ci_out" | grep -q "status: done"; then
     echo "WARNING: cloud-init did not reach 'done' (got: $ci_out)"
@@ -486,9 +514,7 @@ cmd_stop() {
       # never stops its containers (they come back "Exited (255)"), writes from the last
       # seconds never reach the disk (deleted files reappear), and Docker's container
       # records can be left damaged, as ghosts that can be neither started nor removed.
-      ssh -p "$(ssh_port "$vm")" \
-        -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-        -o BatchMode=yes -o ConnectTimeout=5 -o LogLevel=ERROR \
+      vm_ssh "$(ssh_port "$vm")" -o BatchMode=yes -o ConnectTimeout=5 \
         test@localhost 'sudo -n systemctl poweroff' >/dev/null 2>&1 || true
       local i=0
       while kill -0 "$pid" 2>/dev/null && [[ $i -lt 120 ]]; do
@@ -556,11 +582,7 @@ cmd_ssh() {
   [[ -n "$vm" ]] || die "Usage: $0 ssh <vm>"
   vm_index "$vm" > /dev/null
   is_running "$vm" || die "$vm is not running — start it: $0 start $vm"
-  exec ssh \
-    -p "$(ssh_port "$vm")" \
-    -o StrictHostKeyChecking=no \
-    -o UserKnownHostsFile=/dev/null \
-    test@localhost
+  vm_ssh "$(ssh_port "$vm")" test@localhost
 }
 
 cmd_logs() {
