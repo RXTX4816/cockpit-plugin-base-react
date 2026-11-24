@@ -1,99 +1,104 @@
-import { vi, describe, it, expect, beforeEach } from "vitest";
-import { mockProcess } from "../testing/helpers";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { resetHost } from "../host";
+import { installFakeHost, type FakeHost } from "../testing/host";
 import {
   getServiceStatus,
   startService,
   stopService,
   restartService,
   reloadService,
+  fetchServiceLogs,
+  readFile,
+  writeFile,
 } from "./api";
 
-const mockSpawn = vi.fn();
-vi.stubGlobal("cockpit", { spawn: mockSpawn });
+let host: FakeHost;
+beforeEach(() => { host = installFakeHost(); });
+afterEach(() => resetHost());
 
-beforeEach(() => { mockSpawn.mockReset(); });
+const binary = (found: boolean) => host.onRun(["sh", "-c"], () => { if (!found) throw new Error("not found"); });
+const isActive = (answer: string | Error) =>
+  host.onRun(["systemctl", "is-active"], () => { if (answer instanceof Error) throw answer; return `${answer}\n`; });
 
 describe("getServiceStatus", () => {
-  it("returns 'not-installed' when which fails", async () => {
-    mockSpawn.mockRejectedValueOnce(new Error("not found"));
+  it("returns 'not-installed' when the binary is not there", async () => {
+    binary(false);
     expect(await getServiceStatus("caddy")).toBe("not-installed");
+    expect(host.commands.some(c => c.startsWith("systemctl"))).toBe(false);
   });
 
-  it("returns 'active' when systemctl reports active", async () => {
-    mockSpawn.mockResolvedValueOnce(""); // which succeeds
-    mockSpawn.mockResolvedValueOnce("active\n");
-    expect(await getServiceStatus("caddy")).toBe("active");
-  });
-
-  it("returns 'inactive' when systemctl reports inactive", async () => {
-    mockSpawn.mockResolvedValueOnce("");
-    mockSpawn.mockResolvedValueOnce("inactive\n");
-    expect(await getServiceStatus("caddy")).toBe("inactive");
-  });
-
-  it("returns 'failed' when systemctl reports failed", async () => {
-    mockSpawn.mockResolvedValueOnce("");
-    mockSpawn.mockResolvedValueOnce("failed\n");
-    expect(await getServiceStatus("caddy")).toBe("failed");
+  it.each(["active", "inactive", "failed"] as const)("returns '%s' when systemctl reports it", async state => {
+    binary(true);
+    isActive(state);
+    expect(await getServiceStatus("caddy")).toBe(state);
   });
 
   it("returns 'unknown' for unexpected systemctl output", async () => {
-    mockSpawn.mockResolvedValueOnce("");
-    mockSpawn.mockResolvedValueOnce("activating\n");
+    binary(true);
+    isActive("activating");
     expect(await getServiceStatus("caddy")).toBe("unknown");
   });
 
   it("returns 'unknown' when systemctl itself throws", async () => {
-    mockSpawn.mockResolvedValueOnce("");
-    mockSpawn.mockRejectedValueOnce(new Error("timeout"));
+    binary(true);
+    isActive(new Error("timeout"));
     expect(await getServiceStatus("nginx")).toBe("unknown");
   });
 
   it("passes the unit name to command -v as an argument, not into the shell string", async () => {
-    mockSpawn.mockRejectedValueOnce(new Error("not found"));
+    binary(false);
     await getServiceStatus("nginx");
-    expect(mockSpawn).toHaveBeenCalledWith(["sh", "-c", 'command -v "$1"', "sh", "nginx"]);
+    expect(host.calls[0]?.argv).toEqual(["sh", "-c", 'command -v "$1"', "sh", "nginx"]);
   });
 
   it("looks for the binary without the .service suffix", async () => {
-    mockSpawn.mockResolvedValueOnce("");
-    mockSpawn.mockResolvedValueOnce("active\n");
+    binary(true);
+    isActive("active");
     expect(await getServiceStatus("nginx.service")).toBe("active");
-    expect(mockSpawn).toHaveBeenNthCalledWith(1, ["sh", "-c", 'command -v "$1"', "sh", "nginx"]);
-    expect(mockSpawn).toHaveBeenNthCalledWith(2, ["systemctl", "is-active", "nginx.service"]);
+    expect(host.commands).toEqual(['sh -c command -v "$1" sh nginx', "systemctl is-active nginx.service"]);
   });
 
   it("does not let a unit name inject shell syntax", async () => {
-    mockSpawn.mockRejectedValueOnce(new Error("not found"));
+    binary(false);
     await getServiceStatus("x; touch /tmp/pwned");
-    const argv = mockSpawn.mock.calls[0][0] as string[];
+    const argv = host.calls[0]?.argv ?? [];
     expect(argv[2]).toBe('command -v "$1"');
     expect(argv[4]).toBe("x; touch /tmp/pwned");
   });
 });
 
 describe("service control functions", () => {
-  beforeEach(() => {
-    mockSpawn.mockResolvedValue(mockProcess(""));
+  beforeEach(() => { host.onRun(["systemctl"], ""); });
+
+  it.each([
+    ["startService", startService, "start"],
+    ["stopService", stopService, "stop"],
+    ["restartService", restartService, "restart"],
+    ["reloadService", reloadService, "reload"],
+  ] as const)("%s runs systemctl %s with superuser", async (_n, fn, verb) => {
+    await fn("caddy");
+    expect(host.calls).toEqual([{ kind: "run", argv: ["systemctl", verb, "caddy"], stdin: undefined, superuser: "try" }]);
   });
 
-  it("startService calls systemctl start with the unit", async () => {
-    await startService("caddy");
-    expect(mockSpawn).toHaveBeenCalledWith(["systemctl", "start", "caddy"], { superuser: "try" });
+  it("a failing systemctl rejects with its message", async () => {
+    host.onRun(["systemctl", "restart"], () => { throw new Error("Unit caddy.service not found."); });
+    await expect(restartService("caddy")).rejects.toThrow("Unit caddy.service not found.");
   });
+});
 
-  it("stopService calls systemctl stop with the unit", async () => {
-    await stopService("nginx");
-    expect(mockSpawn).toHaveBeenCalledWith(["systemctl", "stop", "nginx"], { superuser: "try" });
+describe("fetchServiceLogs", () => {
+  it("asks journalctl for the last N lines of the unit", async () => {
+    host.onRun(["journalctl"], "line\n");
+    expect(await fetchServiceLogs("caddy", 50)).toBe("line\n");
+    expect(host.commands).toEqual(["journalctl -u caddy -n 50 --no-pager --output=short-iso"]);
   });
+});
 
-  it("restartService calls systemctl restart with the unit", async () => {
-    await restartService("caddy");
-    expect(mockSpawn).toHaveBeenCalledWith(["systemctl", "restart", "caddy"], { superuser: "try" });
-  });
-
-  it("reloadService calls systemctl reload with the unit", async () => {
-    await reloadService("caddy");
-    expect(mockSpawn).toHaveBeenCalledWith(["systemctl", "reload", "caddy"], { superuser: "try" });
+describe("readFile / writeFile (deprecated: the Host does this)", () => {
+  it("read and write with superuser", async () => {
+    await writeFile("/etc/x", "1");
+    expect(await readFile("/etc/x")).toBe("1");
+    expect(host.calls.map(c => c.superuser)).toEqual(["try", "try"]);
+    expect(await readFile("/etc/missing")).toBeNull();
   });
 });
