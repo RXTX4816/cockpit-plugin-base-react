@@ -74,3 +74,7 @@ jobs:
       - name: Build ${{ matrix.repo }} against packed base
         working-directory: consumer
         run: npm run build
+
+      - name: Unit-test ${{ matrix.repo }} against packed base
+        working-directory: consumer
+        run: npm test
