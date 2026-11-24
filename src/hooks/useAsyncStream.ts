@@ -1,4 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { createLineBuffer, tailLines, type LineBuffer } from "../lib/lineBuffer";
+
+export interface AsyncStreamOptions {
+  /** Remove ANSI escape sequences from the output. Default `false`. */
+  stripAnsi?: boolean;
+  /** Keep only the last N lines. Default: keep all. */
+  maxLines?: number;
+  /** While this returns `true`, incoming output is dropped (a paused log view). */
+  isPaused?: () => boolean;
+}
 
 /**
  * Accumulated result of a streaming Cockpit process.
@@ -48,17 +58,20 @@ export interface DetachedStream {
  *
  * @param startProcess - Factory that receives a `launch` callback and must call it with the process.
  * @param deps - Re-run dependencies (same semantics as `useEffect`).
+ * @param options - Output handling: ANSI stripping, a line cap, pausing.
  */
 export function useAsyncStream(
   startProcess: (launch: (proc: CockpitProcess) => void) => Promise<void>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   deps: any[],
+  options: AsyncStreamOptions = {},
 ): AsyncStreamResult {
   const [lines, setLines] = useState<string[]>([]);
   const [done, setDone] = useState(false);
   const [failed, setFailed] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const bufRef = useRef("");
+  const optionsRef = useRef(options);
+  const bufRef = useRef<LineBuffer>(createLineBuffer({ stripAnsi: options.stripAnsi }));
   const procRef = useRef<CockpitProcess | null>(null);
   // A ref, not an effect-local variable, so cancel() can reach it. `startProcess` is
   // free to await before it calls `launch` (resolving superuser access, say), which
@@ -67,9 +80,12 @@ export function useAsyncStream(
   // cancelled and the work ran anyway.
   const cancelledRef = useRef(false);
 
+  // Declared before the stream effect so the latest options are in place when it runs.
+  useEffect(() => { optionsRef.current = options; });
+
   useEffect(() => {
     cancelledRef.current = false;
-    bufRef.current = "";
+    bufRef.current = createLineBuffer({ stripAnsi: optionsRef.current.stripAnsi });
     setLines([]);
     setDone(false);
     setFailed(false);
@@ -81,15 +97,11 @@ export function useAsyncStream(
 
       proc.stream(data => {
         // Cancelled or detached: the output is no longer this hook's to show.
-        if (cancelledRef.current) return;
-        bufRef.current += data;
-        const parts = bufRef.current.split("\n");
-        bufRef.current = parts.pop() ?? "";
-        const newLines = parts
-          .map(line => line.split("\r").pop() ?? "")
-          .filter(line => line.trim() !== "");
+        if (cancelledRef.current || optionsRef.current.isPaused?.()) return;
+        const newLines = bufRef.current.push(data);
         if (newLines.length > 0) {
-          setLines(prev => [...prev, ...newLines]);
+          const max = optionsRef.current.maxLines;
+          setLines(prev => (max ? tailLines([...prev, ...newLines], max) : [...prev, ...newLines]));
         }
       });
 
@@ -138,9 +150,7 @@ export function useAsyncStream(
     // ref is cleared so neither cancel() nor unmount can close the process.
     cancelledRef.current = true;
     procRef.current = null;
-    const pending = bufRef.current;
-    bufRef.current = "";
-    return { proc, pending };
+    return { proc, pending: bufRef.current.take() };
   }, []);
 
   return { lines, done, failed, errorMsg, cancel, detach };

@@ -77,6 +77,16 @@ describe("cockpit adapter", () => {
     expect(file).toHaveBeenCalledWith("/nope", { superuser: "try" });
   });
 
+  it("opens a file without options when it does not escalate", async () => {
+    const file = vi.fn(() => ({ read: async () => "x", replace: async () => undefined }));
+    vi.stubGlobal("cockpit", { spawn, file });
+    const host = createCockpitHost();
+    await host.readFile("/a");
+    await host.writeFile("/b", "y");
+    expect(file).toHaveBeenNthCalledWith(1, "/a");
+    expect(file).toHaveBeenNthCalledWith(2, "/b");
+  });
+
   it("wraps file failures in a HostError", async () => {
     vi.stubGlobal("cockpit", { spawn, file: () => ({ read: async () => { throw { problem: "access-denied", message: "" }; } }) });
     const err = await createCockpitHost().readFile("/etc/shadow").catch(e => e);

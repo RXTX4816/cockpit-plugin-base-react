@@ -85,6 +85,8 @@ const MANIFEST: Record<string, { importer: () => Promise<unknown>; exports: stri
   "./lib/parseJsonOutput": { importer: () => import("../lib/parseJsonOutput"), exports: ["parseJsonOutput"] },
   "./lib/timestamp": { importer: () => import("../lib/timestamp"), exports: ["formatArchiveTimestamp"] },
   "./lib/color": { importer: () => import("../lib/color"), exports: ["hashStr", "colorForKey"] },
+  "./lib/lineBuffer": { importer: () => import("../lib/lineBuffer"), exports: ["createLineBuffer", "tailLines"] },
+  "./lib/saveText": { importer: () => import("../lib/saveText"), exports: ["saveTextToDownloads"] },
   "./lib/tar": { importer: () => import("../lib/tar"), exports: [
     "createTarArchive", "extractTarArchive", "listArchiveMembers", "readArchiveMember", "listTarArchives",
   ] },

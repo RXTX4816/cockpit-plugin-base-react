@@ -28,6 +28,10 @@ export function toHostError(e: unknown, argv: string[], output: string): HostErr
   return new HostError(message, { argv, exitStatus, problem: f.problem, output });
 }
 
+function openFile(path: string, options: FileOptions) {
+  return options.superuser ? cockpit.file(path, { superuser: options.superuser }) : cockpit.file(path);
+}
+
 /** The real adapter: runs everything through the `cockpit` global. */
 export function createCockpitHost(): Host {
   return {
@@ -64,7 +68,7 @@ export function createCockpitHost(): Host {
 
     async readFile(path: string, options: FileOptions = {}): Promise<string | null> {
       try {
-        return (await cockpit.file(path, options.superuser ? { superuser: options.superuser } : undefined).read()) as string | null;
+        return (await openFile(path, options).read()) as string | null;
       } catch (e) {
         throw toHostError(e, [], "");
       }
@@ -72,7 +76,7 @@ export function createCockpitHost(): Host {
 
     async writeFile(path: string, content: string, options: FileOptions = {}): Promise<void> {
       try {
-        await cockpit.file(path, options.superuser ? { superuser: options.superuser } : undefined).replace(content);
+        await openFile(path, options).replace(content);
       } catch (e) {
         throw toHostError(e, [], "");
       }
