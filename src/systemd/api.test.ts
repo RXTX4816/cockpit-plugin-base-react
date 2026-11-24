@@ -49,10 +49,26 @@ describe("getServiceStatus", () => {
     expect(await getServiceStatus("nginx")).toBe("unknown");
   });
 
-  it("passes the unit name to which", async () => {
+  it("passes the unit name to command -v as an argument, not into the shell string", async () => {
     mockSpawn.mockRejectedValueOnce(new Error("not found"));
     await getServiceStatus("nginx");
-    expect(mockSpawn).toHaveBeenCalledWith(["sh", "-c", "command -v nginx"]);
+    expect(mockSpawn).toHaveBeenCalledWith(["sh", "-c", 'command -v "$1"', "sh", "nginx"]);
+  });
+
+  it("looks for the binary without the .service suffix", async () => {
+    mockSpawn.mockResolvedValueOnce("");
+    mockSpawn.mockResolvedValueOnce("active\n");
+    expect(await getServiceStatus("nginx.service")).toBe("active");
+    expect(mockSpawn).toHaveBeenNthCalledWith(1, ["sh", "-c", 'command -v "$1"', "sh", "nginx"]);
+    expect(mockSpawn).toHaveBeenNthCalledWith(2, ["systemctl", "is-active", "nginx.service"]);
+  });
+
+  it("does not let a unit name inject shell syntax", async () => {
+    mockSpawn.mockRejectedValueOnce(new Error("not found"));
+    await getServiceStatus("x; touch /tmp/pwned");
+    const argv = mockSpawn.mock.calls[0][0] as string[];
+    expect(argv[2]).toBe('command -v "$1"');
+    expect(argv[4]).toBe("x; touch /tmp/pwned");
   });
 });
 
