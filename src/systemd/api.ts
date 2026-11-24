@@ -4,14 +4,17 @@ import { readFile as fsReadFile, writeFile as fsWriteFile } from "../lib/cockpit
 /**
  * Returns the current {@link ServiceStatus} of a systemd unit.
  *
- * Checks with `command -v` first — returns `"not-installed"` when the unit binary is absent.
+ * Checks with `command -v` first (on the unit name without `.service`) — returns
+ * `"not-installed"` when that binary is absent.
  * Then calls `systemctl is-active` and maps the output to a {@link ServiceStatus} value.
  *
  * @param unit - The systemd unit name (e.g. `"nginx.service"`).
  */
 export async function getServiceStatus(unit: string): Promise<ServiceStatus> {
   try {
-    await cockpit.spawn(["sh", "-c", `command -v ${unit}`]);
+    // The unit name is an argument, never part of the shell string, and a
+    // trailing ".service" is dropped because the binary has no such suffix.
+    await cockpit.spawn(["sh", "-c", 'command -v "$1"', "sh", unit.replace(/\.service$/, "")]);
   } catch {
     return "not-installed";
   }
