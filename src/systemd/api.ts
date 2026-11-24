@@ -67,6 +67,7 @@ export async function reloadService(unit: string): Promise<void> {
 /**
  * Reads a file from the host filesystem via Cockpit, requesting superuser escalation.
  * @param path - Absolute path to the file.
+ * @deprecated Use `getHost().readFile(path, { superuser: "try" })` from `@rxtx4816/cockpit-plugin-base-react/host`.
  */
 export async function readFile(path: string): Promise<string | null> {
   return fsReadFile(path, "try");
@@ -76,6 +77,7 @@ export async function readFile(path: string): Promise<string | null> {
  * Writes content to a file on the host filesystem via Cockpit, requesting superuser escalation.
  * @param path    - Absolute path to the file.
  * @param content - UTF-8 string content to write.
+ * @deprecated Use `getHost().writeFile(path, content, { superuser: "try" })` from `@rxtx4816/cockpit-plugin-base-react/host`.
  */
 export async function writeFile(path: string, content: string): Promise<void> {
   return fsWriteFile(path, content, "try");

@@ -4,6 +4,7 @@
  *
  * @param path      - Absolute path to the file.
  * @param superuser - Optional superuser escalation: `"try"` or `"require"`.
+ * @deprecated Use `getHost().readFile` from `@rxtx4816/cockpit-plugin-base-react/host`.
  */
 export async function readFile(
   path: string,
@@ -19,6 +20,7 @@ export async function readFile(
  * @param path      - Absolute path to the file.
  * @param content   - UTF-8 string content to write.
  * @param superuser - Optional superuser escalation: `"try"` or `"require"`.
+ * @deprecated Use `getHost().writeFile` from `@rxtx4816/cockpit-plugin-base-react/host`.
  */
 export async function writeFile(
   path: string,
