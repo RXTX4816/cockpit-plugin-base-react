@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, type CSSProperties, type ReactNode } from "react";
 import "../log-tokens.css";
+import { saveTextToDownloads } from "../lib/saveText";
 import {
   Alert,
   AlertActionCloseButton,
@@ -204,11 +205,7 @@ export function LogViewer({
       }
     }
     try {
-      const user = await cockpit.user();
-      const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-      const savePath = `${user.home}/Downloads/${downloadFileName}-${ts}.txt`;
-      await cockpit.spawn(["mkdir", "-p", "--", `${user.home}/Downloads`], { err: "message" });
-      await cockpit.file(savePath).replace(text);
+      const savePath = await saveTextToDownloads(text, downloadFileName);
       setDownloadNote(savePath);
     } catch (err) {
       setDownloadError((err as { message?: string })?.message ?? String(err));

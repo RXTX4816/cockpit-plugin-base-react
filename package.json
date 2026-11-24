@@ -117,6 +117,12 @@
     "./lib/tar": {
       "default": "./src/lib/tar.ts"
     },
+    "./lib/lineBuffer": {
+      "default": "./src/lib/lineBuffer.ts"
+    },
+    "./lib/saveText": {
+      "default": "./src/lib/saveText.ts"
+    },
     "./lib/envLint": {
       "default": "./src/lib/envLint.ts"
     },

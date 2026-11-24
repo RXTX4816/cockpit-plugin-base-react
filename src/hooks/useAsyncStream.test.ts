@@ -228,4 +228,30 @@ describe("useAsyncStream", () => {
     await waitFor(() => expect(result.current.done).toBe(true));
     expect(result.current.lines).toHaveLength(1);
   });
+
+  it("strips ANSI and keeps only the last maxLines when asked", async () => {
+    const { result } = renderHook(() =>
+      useAsyncStream(async launch => {
+        launch(mockProcess("\u001b[31ma\u001b[0m\nb\nc\n"));
+      }, [], { stripAnsi: true, maxLines: 2 }),
+    );
+    await waitFor(() => expect(result.current.done).toBe(true));
+    expect(result.current.lines).toEqual(["b", "c"]);
+  });
+
+  it("drops output while isPaused() is true", async () => {
+    let paused = true;
+    let emit!: (d: string) => void;
+    const p = new Promise<string>(() => {});
+    const proc = Object.assign(p, {
+      stream: (cb: (d: string) => void) => { emit = cb; return p as CockpitProcess; },
+      close: vi.fn(), input: vi.fn(),
+    }) as unknown as CockpitProcess;
+    const { result } = renderHook(() => useAsyncStream(async launch => { launch(proc); }, [], { isPaused: () => paused }));
+    await waitFor(() => expect(emit).toBeDefined());
+    act(() => emit("skipped\n"));
+    paused = false;
+    act(() => emit("kept\n"));
+    expect(result.current.lines).toEqual(["kept"]);
+  });
 });
