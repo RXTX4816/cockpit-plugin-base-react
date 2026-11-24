@@ -1,14 +1,15 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
+import { resetHost } from "../host";
+import { installFakeHost, type FakeHost } from "../testing/host";
 import { useServiceStatus } from "./useServiceStatus";
 
-const mockSpawn = vi.fn();
-vi.stubGlobal("cockpit", { spawn: mockSpawn });
+let host: FakeHost;
 
+// The binary is found, and systemctl reports `status`.
 function stubStatus(status: string) {
-  mockSpawn
-    .mockResolvedValueOnce("") // which <unit> succeeds
-    .mockResolvedValueOnce(`${status}\n`); // systemctl is-active <unit>
+  host.onRun(["sh", "-c"], "");
+  host.onRun(["systemctl", "is-active"], `${status}\n`);
 }
 
 const flushAsync = async () => {
@@ -17,7 +18,8 @@ const flushAsync = async () => {
   await Promise.resolve();
 };
 
-beforeEach(() => { mockSpawn.mockReset(); });
+beforeEach(() => { host = installFakeHost(); });
+afterEach(() => resetHost());
 
 describe("useServiceStatus", () => {
   it("starts with loading=true and status='unknown'", () => {
@@ -43,7 +45,7 @@ describe("useServiceStatus", () => {
   });
 
   it("resolves 'not-installed' when which fails", async () => {
-    mockSpawn.mockRejectedValueOnce(new Error("not found"));
+    host.onRun(["sh", "-c"], () => { throw new Error("not found"); });
     const { result } = renderHook(() => useServiceStatus("caddy"));
     await waitFor(() => expect(result.current.status).toBe("not-installed"));
   });
@@ -51,7 +53,7 @@ describe("useServiceStatus", () => {
   it("passes the unit name through spawn calls", async () => {
     stubStatus("active");
     renderHook(() => useServiceStatus("nginx"));
-    await waitFor(() => expect(mockSpawn).toHaveBeenCalledWith(["sh", "-c", 'command -v "$1"', "sh", "nginx"]));
+    await waitFor(() => expect(host.calls[0]?.argv).toEqual(["sh", "-c", 'command -v "$1"', "sh", "nginx"]));
   });
 
   it("polls at the given interval", async () => {
@@ -61,14 +63,14 @@ describe("useServiceStatus", () => {
       renderHook(() => useServiceStatus("caddy", 2000));
 
       await act(flushAsync);
-      expect(mockSpawn).toHaveBeenCalledTimes(2); // which + systemctl (1 poll)
+      expect(host.calls).toHaveLength(2); // which + systemctl (1 poll)
 
       stubStatus("active");
       await act(async () => {
         vi.advanceTimersByTime(2000);
         await flushAsync();
       });
-      expect(mockSpawn).toHaveBeenCalledTimes(4); // 2 more spawn calls for 2nd poll
+      expect(host.calls).toHaveLength(4); // 2 more spawn calls for 2nd poll
     } finally {
       vi.useRealTimers();
     }

@@ -1,5 +1,5 @@
 import type { ServiceStatus } from "./types";
-import { readFile as fsReadFile, writeFile as fsWriteFile } from "../lib/cockpit-fs";
+import { getHost } from "../host";
 
 /**
  * Returns the current {@link ServiceStatus} of a systemd unit.
@@ -14,13 +14,13 @@ export async function getServiceStatus(unit: string): Promise<ServiceStatus> {
   try {
     // The unit name is an argument, never part of the shell string, and a
     // trailing ".service" is dropped because the binary has no such suffix.
-    await cockpit.spawn(["sh", "-c", 'command -v "$1"', "sh", unit.replace(/\.service$/, "")]);
+    await getHost().run(["sh", "-c", 'command -v "$1"', "sh", unit.replace(/\.service$/, "")], { stderr: "ignore" });
   } catch {
     return "not-installed";
   }
 
   try {
-    const status = await cockpit.spawn(["systemctl", "is-active", unit]);
+    const status = await getHost().run(["systemctl", "is-active", unit], { stderr: "ignore" });
     const trimmed = status.trim();
     if (trimmed === "active") return "active";
     if (trimmed === "inactive") return "inactive";
@@ -36,7 +36,7 @@ export async function getServiceStatus(unit: string): Promise<ServiceStatus> {
  * @param unit - The systemd unit name (e.g. `"nginx.service"`).
  */
 export async function startService(unit: string): Promise<void> {
-  await cockpit.spawn(["systemctl", "start", unit], { superuser: "try" });
+  await getHost().run(["systemctl", "start", unit], { superuser: "try" });
 }
 
 /**
@@ -44,7 +44,7 @@ export async function startService(unit: string): Promise<void> {
  * @param unit - The systemd unit name (e.g. `"nginx.service"`).
  */
 export async function stopService(unit: string): Promise<void> {
-  await cockpit.spawn(["systemctl", "stop", unit], { superuser: "try" });
+  await getHost().run(["systemctl", "stop", unit], { superuser: "try" });
 }
 
 /**
@@ -52,7 +52,7 @@ export async function stopService(unit: string): Promise<void> {
  * @param unit - The systemd unit name (e.g. `"nginx.service"`).
  */
 export async function restartService(unit: string): Promise<void> {
-  await cockpit.spawn(["systemctl", "restart", unit], { superuser: "try" });
+  await getHost().run(["systemctl", "restart", unit], { superuser: "try" });
 }
 
 /**
@@ -61,7 +61,7 @@ export async function restartService(unit: string): Promise<void> {
  * @param unit - The systemd unit name (e.g. `"nginx.service"`).
  */
 export async function reloadService(unit: string): Promise<void> {
-  await cockpit.spawn(["systemctl", "reload", unit], { superuser: "try" });
+  await getHost().run(["systemctl", "reload", unit], { superuser: "try" });
 }
 
 /**
@@ -69,7 +69,7 @@ export async function reloadService(unit: string): Promise<void> {
  * @param path - Absolute path to the file.
  */
 export async function readFile(path: string): Promise<string | null> {
-  return fsReadFile(path, "try");
+  return getHost().readFile(path, { superuser: "try" });
 }
 
 /**
@@ -78,7 +78,7 @@ export async function readFile(path: string): Promise<string | null> {
  * @param content - UTF-8 string content to write.
  */
 export async function writeFile(path: string, content: string): Promise<void> {
-  return fsWriteFile(path, content, "try");
+  return getHost().writeFile(path, content, { superuser: "try" });
 }
 
 /**
@@ -87,7 +87,7 @@ export async function writeFile(path: string, content: string): Promise<void> {
  * @param lines - Number of lines to return (default 300).
  */
 export async function fetchServiceLogs(unit: string, lines = 300): Promise<string> {
-  return cockpit.spawn(
+  return getHost().run(
     ["journalctl", "-u", unit, "-n", String(lines), "--no-pager", "--output=short-iso"],
     { superuser: "try" },
   );
