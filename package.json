@@ -80,6 +80,10 @@
     "./host": {
       "default": "./src/host/index.ts"
     },
+    "./cockpit": {
+      "types": "./src/cockpit.d.ts",
+      "default": "./src/cockpit.d.ts"
+    },
     "./testing": {
       "default": "./src/testing/setup.ts"
     },

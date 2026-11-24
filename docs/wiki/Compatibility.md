@@ -4,11 +4,13 @@ Tracks which versions of `cockpit-plugin-base-react`, `cockpit-compose`, and `co
 
 ## Compatibility matrix
 
-| Base version | `cockpit-compose` | `cockpit-caddy` | Status | Notes |
+| Base version | `cockpit-compose` pin | `cockpit-caddy` pin | Status | Notes |
 |---|---|---|---|---|
-| `v1.0.15` (current) | `v0.10.3` | `v0.4.0` | ✅ Supported | Current state of all three `main` branches as of this writing. Both consumers pin base as an exact devDependency version (`1.0.15`, no `^`/`~` range) — bumping requires an explicit PR in each consumer, not an automatic `npm update`. |
+| `v2.3.x` (current, `v2.3.2` latest) | `^2.3.0` | `^2.3.2` | ✅ Supported | Both consumers take base as a caret-range devDependency, so a minor or patch release reaches them through Renovate/Dependabot PRs; a major needs an explicit migration PR in each. `downstream-check.yml` verifies typecheck, build and the consumers' unit tests against every base PR. |
 
-Base's own `package.json` `"version"` field reads `0.0.0` — this is expected, not a bug. `semantic-release-plugin.yml` manages the real released version via git tags (`v1.0.15` etc.) and npm publishes; the committed `package.json` field isn't kept in sync with it.
+**ESLint:** base develops and lints on ESLint 10 (it overrides `eslint-plugin-react`'s peer), but the published peer range stays `^9.39.4`, because `eslint-plugin-react` 7.37.x does not accept ESLint 10 and a wider range would make consumers' `npm install` fail. Consumers should stay on ESLint 9 until that plugin supports 10.
+
+Base's own `package.json` `"version"` field reads `0.0.0` — this is expected, not a bug. `semantic-release-plugin.yml` manages the real released version via git tags (`v2.3.2` etc.) and npm publishes; the committed `package.json` field isn't kept in sync with it.
 
 Add a new row here whenever a base release changes what either consumer needs (a new minimum version, a newly-required migration step, etc.) — not for every patch release.
 

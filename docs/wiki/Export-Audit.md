@@ -11,9 +11,9 @@ For every exported symbol, checked whether `cockpit-compose` and/or `cockpit-cad
 **Generic base, used by both** — hooks (`useAutoRefresh`, `useAdminMode`, `useDialogState`, `useLayout`, `usePollingFetch`), `ErrorBoundary`, `ToastProvider`/`useToast`, `LogViewer`, `Tooltip`, `LayoutSelector`, `CodeEditor`, `bootstrapPlugin`, `initCockpitI18n`, `formatArchiveTimestamp`, `createTarArchive` (confirmed both consumers import this directly — corrects an earlier open question about whether `cockpit-compose` had its own local reimplementation; it doesn't), all five shared tooling config presets (`tsconfig.base.json`, `eslint.config.base`, `vitest.config.base`, `playwright.config.base`, `esbuild.config.base`), `testing/helpers`, `./e2e`.
 
 **Generic base, used by one consumer only (legitimate)** — this is a normal, healthy state for a shared library; not every export needs every consumer.
-- `EnvEditor`/`EnvTable` — compose only (no `.env`-file concept in a reverse-proxy plugin).
+- `EnvEditor`/`EnvTable` — compose only (reached through one-line re-export files there) (no `.env`-file concept in a reverse-proxy plugin).
 - `DiffEditor`, `StatusBadge`, `useAsyncAction`, `useAsyncStream`, `useKeyboardShortcuts`, `useOperationCounter`, `usePersistedSet` — compose only.
-- `ConfirmDialog`, `useConfirmAction`, `useLocalStorage`, `ExternalAddressInput`, `CollapsibleSearch`, `PluginFooter`, `systemd/*` (`ServiceControl`, `ServiceStatusBadge`, `useServiceStatus`, the `api` helpers) — caddy only (no single-systemd-service or multi-listener-address concept in compose).
+- `ConfirmDialog`, `useConfirmAction`, `useLocalStorage`, `ExternalAddressInput`, `CollapsibleSearch`, `PluginFooter`, `systemd/*` (`ServiceStatusBadge`, `useServiceStatus`, the `api` helpers) — caddy only. `ServiceControl` itself is currently used by neither: caddy builds its own `ServiceControl` from the badge and the service actions, because the base one's ~20 optional label strings are nearly as large as what it does (no single-systemd-service or multi-listener-address concept in compose).
 - `lib/tar` — caddy only, for config backup/restore.
 - `lib/envLint` — not imported directly by either consumer, but exercised indirectly through `EnvEditor` (compose).
 
