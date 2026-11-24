@@ -77,11 +77,17 @@
     "./systemd": {
       "default": "./src/systemd/index.ts"
     },
+    "./host": {
+      "default": "./src/host/index.ts"
+    },
     "./testing": {
       "default": "./src/testing/setup.ts"
     },
     "./testing/helpers": {
       "default": "./src/testing/helpers.ts"
+    },
+    "./testing/host": {
+      "default": "./src/testing/host.ts"
     },
     "./tsconfig.base.json": "./tsconfig.base.json",
     "./eslint.config.base": {

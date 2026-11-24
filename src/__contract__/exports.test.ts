@@ -56,10 +56,14 @@ const MANIFEST: Record<string, { importer: () => Promise<unknown>; exports: stri
     "getServiceStatus", "startService", "stopService", "restartService", "reloadService",
     "readFile", "writeFile", "fetchServiceLogs", "useServiceStatus", "ServiceControl", "ServiceStatusBadge",
   ] },
+  "./host": { importer: () => import("../host/index"), exports: [
+    "HostError", "createCockpitHost", "toHostError", "getHost", "setHost", "resetHost", "exists", "mkdirp", "remove",
+  ] },
   "./testing": { importer: () => import("../testing/setup"), exports: [] },
   "./testing/helpers": { importer: () => import("../testing/helpers"), exports: [
     "mockProcess", "mockHttpClient", "mockCockpitFile", "mockCockpitPermission", "mockCockpitUser",
   ] },
+  "./testing/host": { importer: () => import("../testing/host"), exports: ["FakeHost", "installFakeHost"] },
   // The four entries below are plain JS with no declaration file (not part of
   // the TS-checked source, no build step); each import() is followed by a
   // ts-expect-error to suppress the resulting "implicitly has an 'any' type".
