@@ -13,6 +13,8 @@ type PendingAction = "start" | "stop" | "restart" | "reload";
  * Every field is optional — unset fields fall back to the active locale's base
  * translation (see `baseTranslations` in `../i18n`), or an English literal if
  * i18next isn't initialized.
+ *
+ * @deprecated Goes away with {@link ServiceControl}.
  */
 export interface ServiceControlLabels {
   /** Start button label. */
@@ -90,6 +92,11 @@ interface Props {
  * both inline in the dialog and via the nearest `ToastProvider`.
  *
  * Pair with `useServiceStatus` for reactive status updates.
+ */
+/**
+ * @deprecated No plugin uses it, and it will be removed in the next major version. Build the
+ * controls from `useServiceStatus` and `ServiceStatusBadge` instead (the systemd calls go through
+ * the `Host`, so they can be faked in tests).
  */
 export function ServiceControl({ unit, status, loading = false, onRefresh, statusBadge, labels, extraActions }: Props) {
   const toast = useToast();

@@ -75,7 +75,7 @@ const MANIFEST: Record<string, { importer: () => Promise<unknown>; exports: stri
   "./playwright.config.base": { importer: () => import("../../playwright.config.base.js"), exports: ["createPlaywrightConfig"] },
   // @ts-expect-error see comment above
   "./esbuild.config.base": { importer: () => import("../../esbuild.config.base.js"), exports: [
-    "createEsbuildConfig", "createWatchConfig", "copyPatternFlyAssets",
+    "createEsbuildConfig", "createWatchConfig", "copyPatternFlyAssets", "runBuild", "runWatch",
   ] },
   "./lib/logParser": { importer: () => import("../lib/logParser"), exports: [
     "extractJsonPayload", "colorizeJson", "TOKEN_RE", "tokenColor", "tokenWeight", "highlightMessage", "highlightWithSearch",

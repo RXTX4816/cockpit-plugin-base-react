@@ -22,11 +22,11 @@ KVM access is strongly recommended. Without it the VMs run without hardware acce
 
 Each plugin provides `scripts/test-vm.config.sh` to customise the harness:
 
-```bash
-PLUGIN_NAME="cockpit-caddy"
-MOUNT_TAG="cockpit_caddy"
-INSTALL_PATH="/usr/share/cockpit/cockpit-caddy"
+`PLUGIN_NAME`, `MOUNT_TAG` and `INSTALL_PATH` default from the `name` in `package.json`
+(`cockpit-caddy`, `cockpit_caddy`, `/usr/share/cockpit/cockpit-caddy`); set them only when
+those are wrong.
 
+```bash
 extra_packages() {
   echo "caddy"
 }

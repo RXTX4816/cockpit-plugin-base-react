@@ -127,3 +127,59 @@ export async function copyPatternFlyAssets(destDir = "src/assets") {
   await cp(join(pfBase, "fonts"), join(destDir, "fonts"), { recursive: true, force: true });
   await cp(join(pfBase, "pficon"), join(destDir, "pficon"), { recursive: true, force: true });
 }
+
+/**
+ * Runs the whole production build of a plugin: PatternFly assets, an optional
+ * `beforeBuild` hook, one bundle with a metafile, and the third-party notices.
+ *
+ * Pass `embedNotices: true` when the plugin imports the generated notices JSON into its
+ * own bundle (for a licenses modal). The first pass then tells us which packages got
+ * bundled, and a second pass embeds the resulting JSON. It converges in two passes,
+ * because importing a JSON file pulls in no npm package.
+ *
+ * esbuild is passed in rather than imported, so the base does not depend on it.
+ *
+ * @param {object} opts
+ * @param {typeof import("esbuild")} opts.esbuild
+ * @param {string} opts.product  product name for the notices header
+ * @param {string} [opts.entryPoint]
+ * @param {string} [opts.assetsDir]  default "src/assets"
+ * @param {() => void | Promise<void>} [opts.beforeBuild]
+ * @param {boolean} [opts.embedNotices]
+ * @param {Omit<Parameters<typeof writeThirdPartyNotices>[0], "metafile" | "product">} [opts.notices]
+ *   extra options for {@link writeThirdPartyNotices} (`jsonOut`, `includeText`, ...)
+ * @returns {Promise<void>}
+ */
+export async function runBuild({
+  esbuild,
+  product,
+  entryPoint = "src/index.tsx",
+  assetsDir = "src/assets",
+  beforeBuild,
+  embedNotices = false,
+  notices = {},
+}) {
+  await copyPatternFlyAssets(assetsDir);
+  await beforeBuild?.();
+  const result = await esbuild.build(createEsbuildConfig({ entryPoint, metafile: true }));
+  await writeThirdPartyNotices({ strict: true, ...notices, metafile: result.metafile, product });
+  if (embedNotices) await esbuild.build(createEsbuildConfig({ entryPoint }));
+}
+
+/**
+ * Starts esbuild in watch mode for a plugin, with the same setup as {@link runBuild}.
+ *
+ * @param {object} opts
+ * @param {typeof import("esbuild")} opts.esbuild
+ * @param {string} [opts.entryPoint]
+ * @param {string} [opts.assetsDir]  default "src/assets"
+ * @param {() => void | Promise<void>} [opts.beforeBuild]
+ * @returns {Promise<void>}
+ */
+export async function runWatch({ esbuild, entryPoint = "src/index.tsx", assetsDir = "src/assets", beforeBuild }) {
+  await copyPatternFlyAssets(assetsDir);
+  await beforeBuild?.();
+  const ctx = await esbuild.context(createWatchConfig({ entryPoint }));
+  await ctx.watch();
+  console.log("Watching for changes...");
+}
