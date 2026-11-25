@@ -10,7 +10,8 @@
 #   "vm": "node_modules/@rxtx4816/cockpit-plugin-base/scripts/test-vm.sh"
 #
 # Each plugin provides a scripts/test-vm.config.sh that customises:
-#   - PLUGIN_NAME, MOUNT_TAG, INSTALL_PATH
+#   - PLUGIN_NAME, MOUNT_TAG, INSTALL_PATH (default from package.json "name": cockpit-x,
+#     cockpit_x, /usr/share/cockpit/cockpit-x)
 #   - ALL_VMS, SSH_BASE, COCKPIT_BASE
 #   - extra_packages(distro) — echo packages to install
 #   - extra_runcmd(vm) — echo cloud-init runcmd lines
@@ -35,9 +36,12 @@ DIST_DIR="$PROJECT_DIR/src"
 
 # ── Defaults (overridden by test-vm.config.sh) ────────────────────────────────
 
-PLUGIN_NAME="cockpit-plugin"
-MOUNT_TAG="cockpit_plugin"
-INSTALL_PATH="/usr/share/cockpit/cockpit-plugin"
+# The plugin's name comes from its package.json (scope stripped), so a config file only
+# needs to set PLUGIN_NAME, MOUNT_TAG or INSTALL_PATH when the defaults derived from it are wrong.
+PLUGIN_NAME="$(sed -n 's/^[[:space:]]*"name":[[:space:]]*"\(@[^/]*\/\)\{0,1\}\([^"]*\)".*/\2/p' "$PROJECT_DIR/package.json" 2>/dev/null | head -n1)"
+PLUGIN_NAME="${PLUGIN_NAME:-cockpit-plugin}"
+MOUNT_TAG="${PLUGIN_NAME//-/_}"
+INSTALL_PATH="/usr/share/cockpit/${PLUGIN_NAME}"
 
 ALL_VMS=(arch debian fedora)
 SSH_BASE=2220

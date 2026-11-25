@@ -25,6 +25,8 @@ The hook automatically re-polls at a configurable interval, so your UI stays in 
 
 ## ServiceControl
 
+> **Deprecated.** No plugin uses it. It will be removed in the next major version; build the controls from `useServiceStatus` and `ServiceStatusBadge`.
+
 A self-contained component that renders start/stop/restart/enable/disable buttons for a named service. Internally uses `useServiceStatus` for the current state and the `api` helpers to dispatch commands.
 
 Buttons are disabled while an operation is in progress. Status changes are reflected immediately via an optimistic state update, then confirmed by the next poll.

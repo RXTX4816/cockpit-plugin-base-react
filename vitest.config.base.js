@@ -1,5 +1,15 @@
 import { defineConfig } from "vitest/config";
 
+// Files no plugin wants in its coverage numbers: the test support code, the tests, and the
+// entry point and barrel files that only re-export.
+const DEFAULT_COVERAGE_EXCLUDE = [
+  "src/test/**",
+  "src/**/*.test.{ts,tsx}",
+  "src/index.tsx",
+  "src/api/index.ts",
+  "src/api/types.ts",
+];
+
 export function createVitestConfig(overrides = {}) {
   const { coverage: coverageOverrides, setupFiles: extraSetupFiles, ...rest } = overrides;
 
@@ -37,6 +47,7 @@ export function createVitestConfig(overrides = {}) {
           statements: 80,
         },
         ...coverageOverrides,
+        exclude: [...DEFAULT_COVERAGE_EXCLUDE, ...(coverageOverrides?.exclude ?? [])],
       },
       ...rest,
     },

@@ -56,27 +56,30 @@ into your `main.js`. The MIT / BSD / ISC / Apache licenses of those packages
 require their copyright and license text to travel with the distributed
 artifact, so each plugin must ship a `THIRD-PARTY-NOTICES.txt` next to `main.js`.
 
-Build with `metafile: true` and call `writeThirdPartyNotices` with the result:
+`runBuild` does the whole build (PatternFly assets, one bundle, the notices), and
+`runWatch` is the dev-mode twin. Pass `esbuild` in, so the base does not depend on it:
 
 ```js
 // scripts/build.mjs
-import {
-  createEsbuildConfig,
-  copyPatternFlyAssets,
-  writeThirdPartyNotices,
-} from "@rxtx4816/cockpit-plugin-base-react/esbuild.config.base";
+import { runBuild } from "@rxtx4816/cockpit-plugin-base-react/esbuild.config.base";
 import * as esbuild from "esbuild";
 
-await copyPatternFlyAssets("src/assets");
-const result = await esbuild.build(
-  createEsbuildConfig({ entryPoint: "src/index.tsx", metafile: true }),
-);
-await writeThirdPartyNotices({
-  metafile: result.metafile,
-  product: "cockpit-<your-plugin>",
-  strict: true, // fail the build if any bundled package is missing license text
-});
+await runBuild({ esbuild, product: "cockpit-<your-plugin>" });
 ```
+
+```js
+// scripts/watch.mjs
+import { runWatch } from "@rxtx4816/cockpit-plugin-base-react/esbuild.config.base";
+import * as esbuild from "esbuild";
+
+await runWatch({ esbuild });
+```
+
+Both take `beforeBuild` (a hook that runs after the assets are copied) and `entryPoint`.
+`runBuild` fails the build if any bundled package is missing license text. If the plugin
+imports the notices JSON into its own bundle (for a licenses modal), pass
+`embedNotices: true` and `notices: { jsonOut, includeText: true }`; the bundle is then built
+twice, so the second pass embeds the JSON the first pass produced.
 
 This writes `THIRD-PARTY-NOTICES.txt` (full license texts) and
 `third-party-notices.json` (a machine-readable sidecar for `debian/copyright`,
